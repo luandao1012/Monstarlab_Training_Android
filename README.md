@@ -12,6 +12,10 @@ https://user-images.githubusercontent.com/82720293/216945323-e3f4662e-11ad-404a-
 
 https://user-images.githubusercontent.com/82720293/216946141-eca227fd-c1ea-4bd4-ad81-7bbee8ebab53.mp4
 
+**Xóa**
+
+https://user-images.githubusercontent.com/82720293/216953211-8e7d29f7-6d66-4339-a0d6-b8c031357a8f.mp4
+
 **Sắp xếp**
 
 https://user-images.githubusercontent.com/82720293/216946216-6d67f304-708c-4954-acc9-63cbb4838cb7.mp4
