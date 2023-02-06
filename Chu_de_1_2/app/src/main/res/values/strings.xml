@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Chu_de_1_2</string>
+    <string-array name="type">
+        <item>College</item>
+        <item>University</item>
+    </string-array>
+    <string-array name="sort_by">
+        <item>Name</item>
+        <item>Phone</item>
+        <item>Year</item>
+        <item>Specialized</item>
+    </string-array>
+    <string-array name="filter_by">
+        <item>College</item>
+        <item>University</item>
+    </string-array>
+</resources>
