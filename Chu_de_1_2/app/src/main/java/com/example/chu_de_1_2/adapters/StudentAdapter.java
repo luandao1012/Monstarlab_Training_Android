@@ -40,7 +40,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
-        holder.bind(position);
+        holder.bind(holder.getAdapterPosition());
     }
 
     @Override
@@ -72,8 +72,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             binding.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listStudent.remove(listStudent.get(position));
-                    notifyItemRemoved(position);
+                    listStudent.remove(listStudent.get(getAdapterPosition()));
+                    notifyItemRemoved(getAdapterPosition());
                 }
             });
         }

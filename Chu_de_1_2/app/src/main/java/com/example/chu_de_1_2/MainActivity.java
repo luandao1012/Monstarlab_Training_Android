@@ -127,30 +127,6 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         return s;
     }
 
-    @Override
-    public void selectedItem(int position) {
-        binding.edtName.setText(listStudents.get(position).getName());
-        binding.edtYear.setText(listStudents.get(position).getYear());
-        binding.edtPhone.setText(listStudents.get(position).getPhone());
-        binding.edtSpecialized.setText(listStudents.get(position).getSpecialized());
-        if (listStudents.get(position).getType().equals("College")) {
-            binding.spinnerType.setSelection(0);
-        } else {
-            binding.spinnerType.setSelection(1);
-        }
-        Student s = listStudents.get(position);
-        binding.btnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Student student = getStudent(s);
-                if (student != null) {
-                    listStudents.set(position, student);
-                    studentAdapter.notifyItemChanged(position);
-                }
-            }
-        });
-    }
-
     private Student getStudent(Student s) {
         String name = binding.edtName.getText().toString().trim();
         String phone = binding.edtPhone.getText().toString().trim();
@@ -198,5 +174,29 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void selectedItem(int position) {
+        binding.edtName.setText(listStudents.get(position).getName());
+        binding.edtYear.setText(listStudents.get(position).getYear());
+        binding.edtPhone.setText(listStudents.get(position).getPhone());
+        binding.edtSpecialized.setText(listStudents.get(position).getSpecialized());
+        if (listStudents.get(position).getType().equals("College")) {
+            binding.spinnerType.setSelection(0);
+        } else {
+            binding.spinnerType.setSelection(1);
+        }
+        Student s = listStudents.get(position);
+        binding.btnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Student student = getStudent(s);
+                if (student != null) {
+                    listStudents.set(position, student);
+                    studentAdapter.notifyItemChanged(position);
+                }
+            }
+        });
     }
 }
