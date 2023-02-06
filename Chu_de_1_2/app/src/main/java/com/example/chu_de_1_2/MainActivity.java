@@ -133,6 +133,11 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         binding.edtYear.setText(listStudents.get(position).getYear());
         binding.edtPhone.setText(listStudents.get(position).getPhone());
         binding.edtSpecialized.setText(listStudents.get(position).getSpecialized());
+        if (listStudents.get(position).getType().equals("College")) {
+            binding.spinnerType.setSelection(0);
+        } else {
+            binding.spinnerType.setSelection(1);
+        }
         Student s = listStudents.get(position);
         binding.btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
