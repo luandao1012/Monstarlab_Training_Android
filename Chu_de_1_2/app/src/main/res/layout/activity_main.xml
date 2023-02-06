@@ -10,7 +10,8 @@
         android:id="@+id/edtName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name" />
+        android:hint="Name"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/edtYear"
@@ -30,7 +31,8 @@
         android:id="@+id/edtSpecialized"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Specialized" />
+        android:hint="Specialized"
+        android:inputType="text" />
 
 
     <Spinner
@@ -114,7 +116,8 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="15dp"
             android:layout_weight="1"
-            android:hint="Search" />
+            android:hint="Search"
+            android:inputType="text" />
 
         <Button
             android:id="@+id/btnSearch"
