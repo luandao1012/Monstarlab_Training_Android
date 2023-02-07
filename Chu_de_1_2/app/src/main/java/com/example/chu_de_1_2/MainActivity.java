@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.chu_de_1_2.adapters.StudentAdapter;
@@ -14,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MainActivity extends AppCompatActivity implements StudentAdapter.UpdateCallback {
+public class MainActivity extends AppCompatActivity implements StudentAdapter.UpdateCallback, View.OnClickListener {
     private ArrayList<Student> listStudents;
     private ActivityMainBinding binding;
     private StudentAdapter studentAdapter;
+    private int localPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,70 +38,14 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         binding.recyclerViewStudent.setAdapter(studentAdapter);
     }
 
+    //implements onClickListener
     private void initListener() {
-        binding.btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Student student = getStudent(null);
-                if (student != null) {
-                    listStudents.add(student);
-                    studentAdapter.notifyItemInserted(listStudents.size());
-
-                    binding.edtName.setText("");
-                    binding.edtYear.setText("");
-                    binding.edtPhone.setText("");
-                    binding.edtSpecialized.setText("");
-                }
-            }
-        });
-
-        binding.btnSort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sortStudent(studentAdapter.getListStudent());
-            }
-        });
-
-        binding.btnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String type = binding.spinnerFilter.getSelectedItem().toString();
-                ArrayList<Student> listStudentFilter = new ArrayList<>();
-
-                for (Student student : listStudents) {
-                    if (student.getType().equals(type)) {
-                        listStudentFilter.add(student);
-                    }
-                }
-                studentAdapter.setListStudent(listStudentFilter);
-                studentAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                studentAdapter.setListStudent(listStudents);
-                studentAdapter.notifyDataSetChanged();
-            }
-        });
-
-        binding.btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String word = binding.edtSearch.getText().toString().toLowerCase().trim();
-                ArrayList<Student> listStudentSearch = new ArrayList<>();
-                for (Student student : listStudents) {
-                    if (student.getName().toLowerCase().contains(word) || student.getPhone().toLowerCase().contains(word)
-                            || student.getYear().toLowerCase().contains(word) || student.getSpecialized().toLowerCase().contains(word)
-                            || student.getType().toLowerCase().contains(word)) {
-                        listStudentSearch.add(student);
-                    }
-                }
-                studentAdapter.setListStudent(listStudentSearch);
-                studentAdapter.notifyDataSetChanged();
-            }
-        });
+        binding.btnAdd.setOnClickListener(this);
+        binding.btnSort.setOnClickListener(this);
+        binding.btnFilter.setOnClickListener(this);
+        binding.btnReturn.setOnClickListener(this);
+        binding.btnSearch.setOnClickListener(this);
+        binding.btnChange.setOnClickListener(this);
     }
 
     private void sortStudent(ArrayList<Student> arrayList) {
@@ -176,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         return true;
     }
 
+    private void setListAdapter(ArrayList<Student> list) {
+        studentAdapter.setListStudent(list);
+        studentAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void selectedItem(int position) {
         binding.edtName.setText(listStudents.get(position).getName());
@@ -187,16 +138,60 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         } else {
             binding.spinnerType.setSelection(1);
         }
-        Student s = listStudents.get(position);
-        binding.btnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Student student = getStudent(s);
+        localPosition = position;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnAdd:
+                Student student = getStudent(null);
                 if (student != null) {
-                    listStudents.set(position, student);
-                    studentAdapter.notifyItemChanged(position);
+                    listStudents.add(student);
+                    studentAdapter.notifyItemInserted(listStudents.size());
+
+                    binding.edtName.setText("");
+                    binding.edtYear.setText("");
+                    binding.edtPhone.setText("");
+                    binding.edtSpecialized.setText("");
                 }
-            }
-        });
+                break;
+            case R.id.btnSort:
+                sortStudent(studentAdapter.getListStudent());
+                break;
+            case R.id.btnFilter:
+                String type = binding.spinnerFilter.getSelectedItem().toString();
+                ArrayList<Student> listStudentFilter = new ArrayList<>();
+
+                for (Student s : listStudents) {
+                    if (s.getType().equals(type)) {
+                        listStudentFilter.add(s);
+                    }
+                }
+                setListAdapter(listStudentFilter);
+                break;
+            case R.id.btnReturn:
+                setListAdapter(listStudents);
+                break;
+            case R.id.btnSearch:
+                String word = binding.edtSearch.getText().toString().toLowerCase().trim();
+                ArrayList<Student> listStudentSearch = new ArrayList<>();
+                for (Student s : listStudents) {
+                    if (s.searchStudent(word)) {
+                        listStudentSearch.add(s);
+                    }
+                }
+                setListAdapter(listStudentSearch);
+                break;
+            case R.id.btnChange:
+                if (localPosition >= 0) {
+                    Student s = getStudent(listStudents.get(localPosition));
+                    if (s != null) {
+                        listStudents.set(localPosition, s);
+                        studentAdapter.notifyItemChanged(localPosition);
+                    }
+                }
+                break;
+        }
     }
 }

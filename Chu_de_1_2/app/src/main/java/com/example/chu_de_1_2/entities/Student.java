@@ -50,4 +50,13 @@ public class Student {
     public void setType(String type) {
         this.type = type;
     }
+
+    public boolean searchStudent(String word) {
+        if (this.name.toLowerCase().contains(word) || this.phone.toLowerCase().contains(word)
+                || this.year.toLowerCase().contains(word) || this.specialized.toLowerCase().contains(word)
+                || this.type.toLowerCase().contains(word)) {
+            return true;
+        }
+        return false;
+    }
 }

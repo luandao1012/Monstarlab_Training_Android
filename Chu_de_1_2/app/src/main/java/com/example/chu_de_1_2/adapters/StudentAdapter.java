@@ -13,8 +13,8 @@ import com.example.chu_de_1_2.entities.Student;
 import java.util.ArrayList;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
-    ArrayList<Student> listStudent;
-    UpdateCallback updateCallback;
+    private ArrayList<Student> listStudent;
+    private UpdateCallback updateCallback;
 
     public StudentAdapter(ArrayList<Student> listStudent) {
         this.listStudent = listStudent;
@@ -35,7 +35,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     @NonNull
     @Override
     public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new StudentViewHolder(LayoutItemStudentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        StudentViewHolder studentViewHolder = new StudentViewHolder(LayoutItemStudentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        studentViewHolder.initOnclick();
+        return studentViewHolder;
     }
 
     @Override
@@ -62,10 +64,13 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             binding.txtPhone.setText(listStudent.get(position).getPhone());
             binding.txtSpecialized.setText(listStudent.get(position).getSpecialized());
             binding.txtType.setText(listStudent.get(position).getType());
+        }
+
+        void initOnclick() {
             binding.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    updateCallback.selectedItem(position);
+                    updateCallback.selectedItem(getAdapterPosition());
                 }
             });
 
@@ -79,10 +84,10 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         }
     }
 
-
     public interface UpdateCallback {
         void selectedItem(int position);
     }
 }
+
 
 
