@@ -3,6 +3,7 @@ package com.example.chu_de_1_2;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         binding.btnChange.setOnClickListener(this);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void sortStudent(ArrayList<Student> arrayList) {
         String attribute = binding.spinnerSort.getSelectedItem().toString();
         Collections.sort(arrayList, new Comparator<Student>() {
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         return true;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setListAdapter(ArrayList<Student> list) {
         studentAdapter.setListStudent(list);
         studentAdapter.notifyDataSetChanged();
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.Up
         localPosition = position;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
