@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:stretchColumns="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    <TableRow>
+
+        <TextView
+            android:gravity="center"
+            android:text="Tên" />
+
+        <TextView
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Năm sinh" />
+
+        <TextView
+            android:gravity="center"
+            android:text="Chuyên ngành" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_span="2"
+            android:text="Số điện thoại" />
+
+        <TextView
+            android:layout_span="1"
+            android:gravity="center"
+            android:text="Hệ" />
+    </TableRow>
+
+</TableLayout>
