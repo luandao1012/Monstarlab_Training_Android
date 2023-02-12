@@ -9,7 +9,11 @@ import com.example.chu_de_1_2_kotlin.model.Student
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var listStudents: ArrayList<Student>
+
+    companion object {
+        private lateinit var listStudents: ArrayList<Student>
+    }
+
     private lateinit var studentAdapter: StudentAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
