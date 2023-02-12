@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     companion object {
-        private lateinit var listStudents: ArrayList<Student>
+        lateinit var listStudents: ArrayList<Student>
     }
 
     private lateinit var studentAdapter: StudentAdapter
