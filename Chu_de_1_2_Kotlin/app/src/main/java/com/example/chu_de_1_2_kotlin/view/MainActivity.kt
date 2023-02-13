@@ -55,12 +55,22 @@ class MainActivity : AppCompatActivity() {
             selectedTextBack()
             selectedText(it, binding.txtSortByYob.text.toString())
         }
+        binding.txtSortByPhoneNumber.setOnClickListener {
+            selectedTextBack()
+            selectedText(it, binding.txtSortByPhoneNumber.text.toString())
+        }
+        binding.txtSortByMajor.setOnClickListener {
+            selectedTextBack()
+            selectedText(it, binding.txtSortByMajor.text.toString())
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun selectedTextBack() {
         binding.layoutOption.forEach { view ->
-            view.background = resources.getDrawable(R.drawable.layout_search)
+            if (view.id != R.id.txt_filter_by_college && view.id != R.id.txt_filter_by_university) {
+                view.background = resources.getDrawable(R.drawable.layout_search)
+            }
         }
     }
 
