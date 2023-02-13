@@ -1,5 +1,6 @@
 package com.example.chu_de_1_2_kotlin.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
@@ -23,11 +24,18 @@ class NewStudentActivity : AppCompatActivity() {
     }
 
     private fun initOnClickListener() {
-        val name = binding.edtName.text.toString().trim()
-        val yob = binding.edtName.text.toString().trim()
-        val major = binding.edtName.text.toString().trim()
-        val phoneNumber = binding.edtName.text.toString().trim()
-        val type = binding.edtName.text.toString().trim()
-        viewModel.addStudent(Student(name, yob, major, phoneNumber, type))
+        binding.btnAddStudent.setOnClickListener {
+            val name = binding.edtName.text.toString().trim()
+            val yob = binding.edtYob.text.toString().trim()
+            val major = binding.edtMajor.text.toString().trim()
+            val phoneNumber = binding.edtPhoneNumber.text.toString().trim()
+            val type = binding.spinnerType.selectedItem.toString()
+            val student = Student(name, yob, major, phoneNumber, type)
+            viewModel.addStudent(
+                student
+            )
+            setResult(RESULT_OK)
+            onBackPressed()
+        }
     }
 }
