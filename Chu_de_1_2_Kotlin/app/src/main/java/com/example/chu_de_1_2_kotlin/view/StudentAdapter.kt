@@ -17,6 +17,10 @@ class StudentAdapter : Adapter<StudentAdapter.StudentViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun getData(): ArrayList<Student> {
+        return listStudent
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val binding = ItemStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return StudentViewHolder(binding)

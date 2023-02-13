@@ -2,6 +2,7 @@ package com.example.chu_de_1_2_kotlin.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val REQUEST_SUCCESS = 1
     private var textSortIsSelected: Boolean = false
+    private var textFilterIsSelected: Boolean = false
     private lateinit var mainViewModel: MainViewModel
 
     companion object List {
@@ -63,6 +65,12 @@ class MainActivity : AppCompatActivity() {
             selectedTextBack()
             selectedText(it, binding.txtSortByMajor.text.toString())
         }
+        binding.txtFilterByCollege.setOnClickListener {
+            selectionTextFilter(it, binding.txtFilterByUniversity, "Cao đẳng")
+        }
+        binding.txtFilterByUniversity.setOnClickListener {
+            selectionTextFilter(it, binding.txtFilterByCollege, "Đại học")
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -78,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     private fun selectedText(view: View, element: String) {
         if (!textSortIsSelected) {
             view.background = resources.getDrawable(R.drawable.layout_selected)
-            sort(element, listStudents)
+            sort(element, studentAdapter.getData())
             textSortIsSelected = true
         } else {
             view.background = resources.getDrawable(R.drawable.layout_search)
@@ -92,6 +100,28 @@ class MainActivity : AppCompatActivity() {
         studentAdapter.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun filter(element: String, list: ArrayList<Student>) {
+        val listFilter = mainViewModel.filter(element, list)
+        studentAdapter.setData(listFilter)
+        studentAdapter.notifyDataSetChanged()
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun selectionTextFilter(view: View, otherView: View, element: String) {
+        if (!textFilterIsSelected) {
+            view.background = resources.getDrawable(R.drawable.layout_selected)
+            filter(element, listStudents)
+            textFilterIsSelected = true
+        } else {
+            studentAdapter.setData(listStudents)
+            view.background = resources.getDrawable(R.drawable.layout_search)
+            textFilterIsSelected = false
+        }
+        otherView.background = resources.getDrawable(R.drawable.layout_search)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

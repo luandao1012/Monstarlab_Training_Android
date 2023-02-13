@@ -17,4 +17,10 @@ class MainViewModel : ViewModel() {
             "Số điện thoại" -> list.sortBy { it.phoneNumber }
         }
     }
+
+    fun filter(element: String, list: ArrayList<Student>): ArrayList<Student> {
+        var listFilter = arrayListOf<Student>()
+        listFilter = list.filter { it.type == element } as ArrayList<Student>
+        return listFilter
+    }
 }
