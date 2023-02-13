@@ -10,7 +10,7 @@ import com.example.chu_de_1_2_kotlin.model.Student
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    companion object {
+    companion object List {
         lateinit var listStudents: ArrayList<Student>
     }
 

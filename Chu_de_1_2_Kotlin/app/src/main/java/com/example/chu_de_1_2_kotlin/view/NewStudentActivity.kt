@@ -3,8 +3,8 @@ package com.example.chu_de_1_2_kotlin.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.example.chu_de_1_2_kotlin.R
 import com.example.chu_de_1_2_kotlin.databinding.ActivityNewStudentBinding
+import com.example.chu_de_1_2_kotlin.model.Student
 import com.example.chu_de_1_2_kotlin.viewmodel.NewStudentViewModel
 
 class NewStudentActivity : AppCompatActivity() {
@@ -28,6 +28,6 @@ class NewStudentActivity : AppCompatActivity() {
         val major = binding.edtName.text.toString().trim()
         val phoneNumber = binding.edtName.text.toString().trim()
         val type = binding.edtName.text.toString().trim()
-        viewModel.addStudent(name, yob, major, phoneNumber, type)
+        viewModel.addStudent(Student(name, yob, major, phoneNumber, type))
     }
 }
