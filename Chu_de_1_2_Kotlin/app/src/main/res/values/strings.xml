@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Chu_de_1_2_Kotlin</string>
-    <string-array name="type">
-        <item>Cao đẳng</item>
-        <item>Đại học</item>
-    </string-array>
-</resources>
