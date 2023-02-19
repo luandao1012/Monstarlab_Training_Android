@@ -1,29 +1,3 @@
 # Monstarlab_Training_Android
 
-**Thêm**
-
-https://user-images.githubusercontent.com/82720293/216945247-73a08438-a41d-4077-912a-971bb3cfb788.mp4
-
-**Trùng số điện thoại**
-
-https://user-images.githubusercontent.com/82720293/216945323-e3f4662e-11ad-404a-8501-2b3eb1cb468e.mp4
-
-**Sửa**
-
-https://user-images.githubusercontent.com/82720293/216946141-eca227fd-c1ea-4bd4-ad81-7bbee8ebab53.mp4
-
-**Xóa**
-
-https://user-images.githubusercontent.com/82720293/216953211-8e7d29f7-6d66-4339-a0d6-b8c031357a8f.mp4
-
-**Sắp xếp**
-
-https://user-images.githubusercontent.com/82720293/216946216-6d67f304-708c-4954-acc9-63cbb4838cb7.mp4
-
-**Lọc**
-
-https://user-images.githubusercontent.com/82720293/216946250-f25d78ca-ec3b-4f38-b97f-5ec0d46408e3.mp4
-
-**Tìm kiếm**
-
-https://user-images.githubusercontent.com/82720293/216946283-ace0da04-f80b-4b26-aaf3-9e5c29b1de9d.mp4
+![Screenshot_1676785463](https://user-images.githubusercontent.com/82720293/219930319-a35fa73a-1425-4f10-aaed-d87089cf2437.png)
