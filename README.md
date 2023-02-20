@@ -1,7 +1,8 @@
 # Monstarlab_Training_Android
 
 # Dashboard Screen
-![Screenshot_1676785463](https://user-images.githubusercontent.com/82720293/219930319-a35fa73a-1425-4f10-aaed-d87089cf2437.png)
+![image](https://user-images.githubusercontent.com/82720293/220011280-335cbbc1-8f09-44ca-bffa-f270c9e6c212.png)
+
 
 # Pay Screen
 ![Screenshot_1676819184](https://user-images.githubusercontent.com/82720293/219956790-af250f4b-11c9-422c-bf4a-989c1ba85e76.png)
