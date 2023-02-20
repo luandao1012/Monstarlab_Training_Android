@@ -1,29 +1,14 @@
 # Monstarlab_Training_Android
 
-**Thêm**
+# Dashboard Screen
 
-https://user-images.githubusercontent.com/82720293/216945247-73a08438-a41d-4077-912a-971bb3cfb788.mp4
+![Screenshot_1676868320](https://user-images.githubusercontent.com/82720293/220011574-d7a7d5c9-6c65-45cb-ba8d-90c0531910f7.png)
+![Screenshot_1676868324](https://user-images.githubusercontent.com/82720293/220011583-3d32f852-efc0-4530-aa16-1ab812ad8feb.png)
 
-**Trùng số điện thoại**
+# Pay Screen
 
-https://user-images.githubusercontent.com/82720293/216945323-e3f4662e-11ad-404a-8501-2b3eb1cb468e.mp4
+![Screenshot_1676868332](https://user-images.githubusercontent.com/82720293/220011611-ecaf3deb-877d-437c-9a08-a5de99cbc6e9.png)
 
-**Sửa**
+# Cards Screen
 
-https://user-images.githubusercontent.com/82720293/216946141-eca227fd-c1ea-4bd4-ad81-7bbee8ebab53.mp4
-
-**Xóa**
-
-https://user-images.githubusercontent.com/82720293/216953211-8e7d29f7-6d66-4339-a0d6-b8c031357a8f.mp4
-
-**Sắp xếp**
-
-https://user-images.githubusercontent.com/82720293/216946216-6d67f304-708c-4954-acc9-63cbb4838cb7.mp4
-
-**Lọc**
-
-https://user-images.githubusercontent.com/82720293/216946250-f25d78ca-ec3b-4f38-b97f-5ec0d46408e3.mp4
-
-**Tìm kiếm**
-
-https://user-images.githubusercontent.com/82720293/216946283-ace0da04-f80b-4b26-aaf3-9e5c29b1de9d.mp4
+![Screenshot_1676868341](https://user-images.githubusercontent.com/82720293/220011651-238dcb42-8fb5-4ac0-9b5c-6e1998a75b7d.png)
