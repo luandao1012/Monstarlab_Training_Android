@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         binding.imgAvatarTaskbar.setOnClickListener {
             startActivity(Intent(this, PayActivity::class.java))
         }
+        binding.fab.setOnClickListener {
+            startActivity(Intent(this, CardsActivity::class.java))
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         listEnviars += Enviar("Carlos Roca", R.drawable.bitmap_copy)
         listEnviars += Enviar("Ruby Sanz", R.drawable.bitmap_copy_3)
         listEnviars += Enviar("Mary Rich", R.drawable.bitmap_copy_4)
+        listEnviars += Enviar("José Porto", R.drawable.bitmap_copy_5)
         listEnviars += Enviar("José Porto", R.drawable.bitmap_copy_5)
     }
 
