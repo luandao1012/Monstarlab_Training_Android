@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -24,11 +25,14 @@ class ActivityAdapter : Adapter<ActivityAdapter.ActivityViewHolder>() {
             binding.txtNameActivity.text = listActivity[position].name
             binding.txtContentActivity.text = listActivity[position].content
             binding.txtPriceActivity.text = listActivity[position].price
-            var price = listActivity[position].price.dropLast(1).toInt()
-            if(price > 0){
+            val price = listActivity[position].price.dropLast(1).toInt()
+            if (price > 0) {
                 binding.txtPriceActivity.setTextColor(Color.parseColor("#00c55b"))
             } else {
                 binding.txtPriceActivity.setTextColor(Color.parseColor("#1b1b1b"))
+            }
+            if (position == listActivity.lastIndex) {
+                binding.dotted.visibility = View.GONE
             }
         }
     }

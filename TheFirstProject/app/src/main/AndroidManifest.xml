@@ -13,6 +13,13 @@
         android:theme="@style/Theme.TheFirstProject"
         tools:targetApi="31">
         <activity
+            android:name=".CardsActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".PayActivity"
             android:exported="false">
             <meta-data
