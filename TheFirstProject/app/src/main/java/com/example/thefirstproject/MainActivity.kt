@@ -1,6 +1,7 @@
 package com.example.thefirstproject
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.lang.UCharacter.VerticalOrientation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         init()
+        binding.imgAvatarTaskbar.setOnClickListener {
+            startActivity(Intent(this, PayActivity::class.java))
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -55,4 +59,5 @@ class MainActivity : AppCompatActivity() {
         listActivities += Activity("Maria Lujan", "Pago aceptado", "250€")
         listActivities += Activity("Maria Lujan", "Pago aceptado", "250€")
     }
+
 }
