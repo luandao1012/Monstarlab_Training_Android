@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="19dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_name_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="El corte inglés"
+                android:textColor="#1b1b1b"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_content_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="El corte inglés"
+                android:textColor="#999999"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_price_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="-50€"
+            android:textColor="#1b1b1b"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="19dp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/dotted"
+        android:layerType="software"/>
+</LinearLayout>

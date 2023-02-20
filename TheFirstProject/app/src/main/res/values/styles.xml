@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Fab_Bottom_app_bar" parent="Widget.Design.FloatingActionButton">
+        <item name="android:foreground">@drawable/layout_fab_dashboard</item>
+    </style>
+
+    <style name="Base.Theme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+</resources>
