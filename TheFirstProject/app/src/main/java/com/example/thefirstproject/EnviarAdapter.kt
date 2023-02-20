@@ -19,8 +19,8 @@ class EnviarAdapter : Adapter<EnviarAdapter.EviarViewHolder>() {
     inner class EviarViewHolder(private val binding: ItemEnviarDeNuevoBinding) :
         ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.imgAvatar.setImageResource(listEnviar[position].img)
-            binding.txtName.text = listEnviar[position].name
+            binding.ivAvatar.setImageResource(listEnviar[position].img)
+            binding.tvName.text = listEnviar[position].name
         }
     }
 

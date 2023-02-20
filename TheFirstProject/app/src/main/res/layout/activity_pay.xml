@@ -19,7 +19,7 @@
             android:padding="17dp">
 
             <LinearLayout
-                android:id="@+id/layout_back_pay"
+                android:id="@+id/ll_back_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -43,7 +43,7 @@
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardview_info_pay"
+                android:id="@+id/card_info_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
@@ -52,7 +52,7 @@
                 app:cardElevation="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_back_pay">
+                app:layout_constraintTop_toBottomOf="@id/ll_back_pay">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     android:paddingBottom="22dp">
 
                     <ImageView
-                        android:id="@+id/img_avatar_info_pay"
+                        android:id="@+id/iv_avatar_info_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="17dp"
@@ -80,7 +80,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/txt_name_pay"
+                        android:id="@+id/tv_name_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="7dp"
@@ -89,10 +89,10 @@
                         android:textColor="#1b1b1b"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/img_avatar_info_pay" />
+                        app:layout_constraintTop_toBottomOf="@id/iv_avatar_info_pay" />
 
                     <TextView
-                        android:id="@+id/txt_mail_pay"
+                        android:id="@+id/tv_mail_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -101,7 +101,7 @@
                         android:textColor="#999999"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_name_pay" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_name_pay" />
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
                         app:cardBackgroundColor="@color/green_blue"
                         app:cardCornerRadius="19.5dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/img_avatar_info_pay">
+                        app:layout_constraintTop_toBottomOf="@id/iv_avatar_info_pay">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:id="@+id/txt_message_info_pay"
+                        android:id="@+id/tv_message_info_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -134,10 +134,10 @@
                         android:textColor="#501b1b1b"
                         android:textSize="10sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_mail_pay" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_mail_pay" />
 
                     <TextView
-                        android:id="@+id/txt_content_info_pay"
+                        android:id="@+id/tv_content_info_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -147,7 +147,7 @@
                         android:textColor="#666666"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_message_info_pay" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_message_info_pay" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -168,7 +168,7 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="2dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardview_info_pay">
+                app:layout_constraintTop_toBottomOf="@id/card_info_pay">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -333,7 +333,7 @@
                 android:layout_marginTop="44dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/background_buttom_pay"
+                android:background="@drawable/bg_buttom_pay"
                 android:elevation="15dp"
                 android:fontFamily="@font/montserrat_semi_bold"
                 android:letterSpacing="0.01"

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         init()
-        binding.imgAvatarTaskbar.setOnClickListener {
+        binding.ivAvatarTaskbar.setOnClickListener {
             startActivity(Intent(this, PayActivity::class.java))
         }
         binding.fab.setOnClickListener {

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/linear_top_taskbar_dashboard"
+                android:id="@+id/ll_top_taskbar_dashboard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -29,10 +29,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="26dp"
-                    android:background="@drawable/background_transparent">
+                    android:background="@drawable/bg_transparent">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/img_avatar_taskbar"
+                        android:id="@+id/iv_avatar_taskbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingEnd="4dp"
@@ -45,7 +45,7 @@
                         android:layout_height="8dp"
                         android:src="@color/dark_hot_pink"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/img_avatar_taskbar" />
+                        app:layout_constraintTop_toTopOf="@id/iv_avatar_taskbar" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
@@ -73,17 +73,17 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linear_top_taskbar_dashboard">
+                app:layout_constraintTop_toBottomOf="@id/ll_top_taskbar_dashboard">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/layout_card_info_dashboard"
+                    android:background="@drawable/bg_card_info_dashboard"
                     android:paddingStart="30dp"
                     android:paddingBottom="23dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/avt_card_info_dashboard"
+                        android:id="@+id/iv_avt_card_info_dashboard"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginTop="16dp"
@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="23dp"
                         android:layout_marginEnd="14dp"
-                        android:background="@drawable/layout_hoy_card_info_dashboard"
+                        android:background="@drawable/bg_hoy_card_info_dashboard"
                         android:fontFamily="@font/montserrat_semi_bold"
                         android:padding="5dp"
                         android:paddingStart="10dp"
@@ -108,7 +108,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/txt_name_card_info_dashboard"
+                        android:id="@+id/tv_name_card_info_dashboard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
@@ -117,10 +117,10 @@
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/avt_card_info_dashboard" />
+                        app:layout_constraintTop_toBottomOf="@+id/iv_avt_card_info_dashboard" />
 
                     <TextView
-                        android:id="@+id/txt_current_amount_dashboard"
+                        android:id="@+id/tv_current_amount_dashboard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_semi_bold"
@@ -128,14 +128,14 @@
                         android:textColor="@color/white"
                         android:textSize="28sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_name_card_info_dashboard" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_name_card_info_dashboard" />
 
                     <TextView
-                        android:id="@+id/ver_detalles"
+                        android:id="@+id/tv_ver_detalles"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:background="@drawable/layout_ver_detalles_dashboard"
+                        android:background="@drawable/bg_ver_detalles_dashboard"
                         android:fontFamily="@font/montserrat_semi_bold"
                         android:paddingStart="21dp"
                         android:paddingTop="7dp"
@@ -146,32 +146,32 @@
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_current_amount_dashboard" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_current_amount_dashboard" />
 
                     <TextView
-                        android:id="@+id/mensaje"
+                        android:id="@+id/tv_mensaje"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_medium"
                         android:text="Mensaje"
                         android:textColor="@color/white_60"
                         android:textSize="10sp"
-                        app:layout_constraintStart_toStartOf="@id/txt_por_la_cena"
-                        app:layout_constraintTop_toTopOf="@id/ver_detalles" />
+                        app:layout_constraintStart_toStartOf="@id/tv_por_la_cena"
+                        app:layout_constraintTop_toTopOf="@id/tv_ver_detalles" />
 
                     <TextView
-                        android:id="@+id/txt_por_la_cena"
+                        android:id="@+id/tv_por_la_cena"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_medium"
                         android:text="Por la cena..."
                         android:textColor="@color/white"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toStartOf="@id/img_pizza"
-                        app:layout_constraintTop_toBottomOf="@id/mensaje" />
+                        app:layout_constraintEnd_toStartOf="@id/tv_pizza"
+                        app:layout_constraintTop_toBottomOf="@id/tv_mensaje" />
 
                     <TextView
-                        android:id="@+id/img_pizza"
+                        android:id="@+id/tv_pizza"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
@@ -184,7 +184,7 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/txt_enviar_de_nuevo"
+                android:id="@+id/tv_enviar_de_nuevo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -203,15 +203,15 @@
                 android:layout_marginStart="17.9dp"
                 android:layout_marginTop="19dp"
                 android:layout_marginEnd="36dp"
-                android:background="@drawable/layout_recycler_view_activity"
+                android:background="@drawable/bg_recycler_view_activity"
                 android:backgroundTint="@color/pale_grey"
                 android:orientation="horizontal"
                 android:overScrollMode="never"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_enviar_de_nuevo" />
+                app:layout_constraintTop_toBottomOf="@id/tv_enviar_de_nuevo" />
 
             <TextView
-                android:id="@+id/txt_actividad"
+                android:id="@+id/tv_actividad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="17.9dp"
@@ -244,12 +244,12 @@
                 android:layout_marginTop="17dp"
                 android:layout_marginEnd="21.1dp"
                 android:layout_marginBottom="115dp"
-                android:background="@drawable/background_rv_activity"
+                android:background="@drawable/bg_rv_activity"
                 android:elevation="2dp"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_actividad" />
+                app:layout_constraintTop_toBottomOf="@id/tv_actividad" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -279,7 +279,7 @@
                 android:id="@+id/bottom_navigation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_transparent"
+                android:background="@drawable/bg_transparent"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 app:itemTextColor="#999999"

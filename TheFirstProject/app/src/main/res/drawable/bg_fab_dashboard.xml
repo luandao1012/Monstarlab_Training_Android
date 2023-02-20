@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:angle="45"
+                android:endColor="@color/darkish_blue"
+                android:startColor="@color/ocean_blue" />
+        </shape>
+    </item>
+    <item
+        android:bottom="24dp"
+        android:end="24dp"
+        android:gravity="center"
+        android:drawable="@drawable/assignment_returned_black_18_dp_copy"
+        android:start="24dp"
+        android:top="24dp" />
+</layer-list>

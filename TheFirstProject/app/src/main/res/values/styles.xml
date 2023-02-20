@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Fab_Bottom_app_bar" parent="Widget.Design.FloatingActionButton">
-        <item name="android:foreground">@drawable/layout_fab_dashboard</item>
+        <item name="android:foreground">@drawable/bg_fab_dashboard</item>
     </style>
 
     <style name="Base.Theme" parent="Theme.MaterialComponents.NoActionBar">
@@ -10,6 +10,6 @@
     </style>
 
     <style name="Fab.Cards" parent="Widget.Design.FloatingActionButton">
-        <item name="android:foreground">@drawable/layout_fab_cards</item>
+        <item name="android:foreground">@drawable/bg_fab_cards</item>
     </style>
 </resources>

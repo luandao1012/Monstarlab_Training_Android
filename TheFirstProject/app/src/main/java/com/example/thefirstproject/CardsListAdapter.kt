@@ -20,19 +20,19 @@ class CardsListAdapter : Adapter<CardsListAdapter.CardsViewHolder>() {
 
     inner class CardsViewHolder(private val binding: ItemCardBinding) : ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.imgCardType.setImageResource(listCard[position].image)
-            binding.txtCardName.text = listCard[position].name
-            binding.txtCardNumber.text = listCard[position].number
+            binding.ivCardType.setImageResource(listCard[position].image)
+            binding.tvCardName.text = listCard[position].name
+            binding.tvCardNumber.text = listCard[position].number
         }
 
         fun bindOnclick() {
-            binding.imgShowOption.setOnClickListener {
-                binding.layoutOptionCards.visibility = View.VISIBLE
-                binding.imgShowOption.visibility = View.GONE
+            binding.ivShowOption.setOnClickListener {
+                binding.llOptionCards.visibility = View.VISIBLE
+                binding.ivShowOption.visibility = View.GONE
             }
-            binding.imgClearOption.setOnClickListener {
-                binding.layoutOptionCards.visibility = View.GONE
-                binding.imgShowOption.visibility = View.VISIBLE
+            binding.ivClearOption.setOnClickListener {
+                binding.llOptionCards.visibility = View.GONE
+                binding.ivShowOption.visibility = View.VISIBLE
             }
         }
     }

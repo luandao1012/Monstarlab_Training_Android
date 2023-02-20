@@ -22,14 +22,14 @@ class ActivityAdapter : Adapter<ActivityAdapter.ActivityViewHolder>() {
     inner class ActivityViewHolder(private val binding: ItemActivityBinding) :
         ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.txtNameActivity.text = listActivity[position].name
-            binding.txtContentActivity.text = listActivity[position].content
-            binding.txtPriceActivity.text = listActivity[position].price
+            binding.tvNameActivity.text = listActivity[position].name
+            binding.tvContentActivity.text = listActivity[position].content
+            binding.tvPriceActivity.text = listActivity[position].price
             val price = listActivity[position].price.dropLast(1).toInt()
             if (price > 0) {
-                binding.txtPriceActivity.setTextColor(Color.parseColor("#00c55b"))
+                binding.tvPriceActivity.setTextColor(Color.parseColor("#00c55b"))
             } else {
-                binding.txtPriceActivity.setTextColor(Color.parseColor("#1b1b1b"))
+                binding.tvPriceActivity.setTextColor(Color.parseColor("#1b1b1b"))
             }
             if (position == listActivity.lastIndex) {
                 binding.dotted.visibility = View.GONE

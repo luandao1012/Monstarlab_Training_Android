@@ -17,66 +17,83 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_cards_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:elevation="4dp"
                 android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:background="@drawable/bg_cards_back"
+                    app:layout_constraintBottom_toTopOf="@id/view"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="36dp"
+                    android:src="@drawable/group_6"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_cuentas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="13dp"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:text="Cuentas bancarias y tarjetas"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_back" />
+
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12sp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="100dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:lineHeight="18sp"
+                    android:text="Mantenemos tus datos financieros protegidos para que nadie vea la información confidencial."
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tv_cuentas"
+                    app:layout_constraintTop_toBottomOf="@id/tv_cuentas" />
+
+                <ImageView
+                    android:id="@+id/iv_mastercard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/backgroud_cards_back"
-                    android:elevation="4dp"
-                    android:orientation="vertical"
-                    android:padding="18dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UselessParent">
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="24dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/mastercard"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="36dp"
-                        android:src="@drawable/group_6" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="13dp"
-                        android:fontFamily="@font/montserrat_semi_bold"
-                        android:text="Cuentas bancarias y tarjetas"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12sp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginBottom="100dp"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:lineHeight="18sp"
-                        android:text="Mantenemos tus datos financieros protegidos para que nadie vea la información confidencial."
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/img_mastercard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/mastercard"
-                app:layout_constraintBottom_toBottomOf="@id/layout_cards_back"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_cards_back" />
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_mastercard"
+                    app:layout_constraintTop_toTopOf="@id/iv_mastercard" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/txt_cards_list"
+                android:id="@+id/tv_cards_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="21dp"
@@ -86,7 +103,7 @@
                 android:textColor="#001d50"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_mastercard" />
+                app:layout_constraintTop_toBottomOf="@id/layout_cards_back" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_cards_list"
@@ -98,7 +115,7 @@
                 android:layout_marginBottom="110dp"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_cards_list" />
+                app:layout_constraintTop_toBottomOf="@id/tv_cards_list" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
