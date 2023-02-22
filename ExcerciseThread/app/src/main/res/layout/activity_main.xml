@@ -10,7 +10,7 @@
         android:id="@+id/tv_show_number"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:background="@color/teal_200"
+        android:background="@color/white"
         android:gravity="center"
         android:text="0"
         android:textSize="100dp"
@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_button"
             android:text="-"
             android:textSize="40sp" />
 
@@ -37,8 +38,10 @@
             android:id="@+id/btn_increase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_button"
             android:text="+"
             android:textSize="40sp" />
     </LinearLayout>
