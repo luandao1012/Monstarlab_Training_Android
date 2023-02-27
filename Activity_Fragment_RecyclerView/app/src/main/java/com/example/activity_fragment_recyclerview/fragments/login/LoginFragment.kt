@@ -8,15 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import androidx.core.view.ContentInfoCompat.Flags
+import androidx.fragment.app.setFragmentResultListener
 import com.example.activity_fragment_recyclerview.R
 import com.example.activity_fragment_recyclerview.activities.MainActivity
 import com.example.activity_fragment_recyclerview.databinding.FragmentLoginBinding
 
 class LoginFragment() : Fragment(), OnClickListener {
-    private lateinit var loginBinding: FragmentLoginBinding
-    private var email = ""
-    private var password = ""
+    private lateinit var binding: FragmentLoginBinding
     var callbackLoginFragment: CallbackLoginFragment? = null
 
     interface CallbackLoginFragment {
@@ -37,23 +35,28 @@ class LoginFragment() : Fragment(), OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
-        return loginBinding.root
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.edtEmailLogin.setText("")
+        binding.edtPasswordLogin.setText("")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginBinding.tvBackSignup.setOnClickListener(this)
-        loginBinding.btnLogin.setOnClickListener(this)
-        if (email.isNotEmpty() && password.isNotEmpty()) {
-            loginBinding.edtEmailLogin.setText(email)
-            loginBinding.edtPasswordLogin.setText(password)
+        binding.tvBackSignup.setOnClickListener(this)
+        binding.btnLogin.setOnClickListener(this)
+        setFragmentResultListener("signup") { _, bundle ->
+            val email = bundle.getString("email").toString()
+            val password = bundle.getString("password").toString()
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                binding.edtEmailLogin.setText(email)
+                binding.edtPasswordLogin.setText(password)
+            }
         }
-    }
-
-    fun getDataFromSignup(e: String, p: String) {
-        email = e
-        password = p
     }
 
     override fun onClick(view: View?) {

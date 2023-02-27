@@ -2,6 +2,7 @@ package com.example.activity_fragment_recyclerview.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import com.example.activity_fragment_recyclerview.R
@@ -18,11 +19,18 @@ class LoginActivity : AppCompatActivity(), LoginFragment.CallbackLoginFragment,
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initView()
-        if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                add<LoginFragment>(R.id.layout_fragment_login)
-            }
+        supportFragmentManager.commit {
+            add(R.id.layout_fragment_login, loginFragment)
+            addToBackStack("login")
+        }
+    }
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        if(supportFragmentManager.backStackEntryCount == 1) {
+            finish()
+        } else {
+            supportFragmentManager.popBackStack()
         }
     }
 
@@ -33,19 +41,12 @@ class LoginActivity : AppCompatActivity(), LoginFragment.CallbackLoginFragment,
 
     override fun backSignup() {
         supportFragmentManager.commit {
-            setReorderingAllowed(true)
             replace(R.id.layout_fragment_login, signupFragment)
+            addToBackStack("login")
         }
     }
 
     override fun backLogin() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.layout_fragment_login, loginFragment)
-        }
-    }
-
-    override fun sendDataForLogin(email: String, password: String) {
-        loginFragment.getDataFromSignup(email, password)
+        supportFragmentManager.popBackStack()
     }
 }
