@@ -1,7 +1,8 @@
-package com.example.activity_fragment_recyclerview
+package com.example.activity_fragment_recyclerview.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.activity_fragment_recyclerview.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
