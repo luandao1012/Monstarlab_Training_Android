@@ -14,22 +14,22 @@ import com.example.activity_fragment_recyclerview.fragments.login.SignUpFragment
 
 class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
-    private val loginFragment by lazy { LoginFragment() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         supportFragmentManager.commit {
-            add(R.id.layout_fragment_login, loginFragment)
-            addToBackStack("login")
+            add(R.id.layout_fragment_login, LoginFragment(), LoginFragment.TAG)
+            addToBackStack(LoginFragment.TAG)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val bundle = Bundle().apply {
-            putString("password", intent?.getStringExtra("password"))
+        intent?.getStringExtra("password")?.let { newPass ->
+            val fragment = supportFragmentManager.findFragmentByTag(LoginFragment.TAG)
+            (fragment as? LoginFragment)?.setNewPassword(newPass)
         }
-        loginFragment.arguments = bundle
     }
 
     override fun onBackPressed() {

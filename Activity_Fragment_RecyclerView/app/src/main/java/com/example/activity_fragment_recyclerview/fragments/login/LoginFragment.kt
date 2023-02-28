@@ -2,7 +2,6 @@ package com.example.activity_fragment_recyclerview.fragments.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,11 @@ import com.example.activity_fragment_recyclerview.activities.MainActivity
 import com.example.activity_fragment_recyclerview.databinding.FragmentLoginBinding
 
 class LoginFragment() : Fragment(), OnClickListener {
+
+    companion object {
+        const val TAG = "LoginFragment"
+    }
+
     private lateinit var binding: FragmentLoginBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +59,7 @@ class LoginFragment() : Fragment(), OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.tv_back_signup -> {
-                fragmentManager?.commit {
+                parentFragmentManager.commit {
                     replace(R.id.layout_fragment_login, SignUpFragment())
                     addToBackStack("login")
                 }
@@ -69,5 +73,9 @@ class LoginFragment() : Fragment(), OnClickListener {
                 startActivity(Intent(activity, EmailActivity::class.java))
             }
         }
+    }
+
+    fun setNewPassword(password: String) {
+        binding.edtPasswordLogin.setText(password)
     }
 }
