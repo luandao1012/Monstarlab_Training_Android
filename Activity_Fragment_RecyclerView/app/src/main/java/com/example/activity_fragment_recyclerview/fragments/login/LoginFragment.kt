@@ -29,18 +29,6 @@ class LoginFragment() : Fragment(), OnClickListener {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (arguments != null) {
-            binding.edtPasswordLogin.setText(requireArguments().getString("password"))
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        arguments = null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBackSignup.setOnClickListener(this)
