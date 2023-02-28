@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import com.example.activity_fragment_recyclerview.R
 import com.example.activity_fragment_recyclerview.activities.MainActivity
@@ -15,21 +16,6 @@ import com.example.activity_fragment_recyclerview.databinding.FragmentLoginBindi
 
 class LoginFragment() : Fragment(), OnClickListener {
     private lateinit var binding: FragmentLoginBinding
-    var callbackLoginFragment: CallbackLoginFragment? = null
-
-    interface CallbackLoginFragment {
-        fun backSignup()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbackLoginFragment = context as CallbackLoginFragment
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbackLoginFragment = null
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +48,10 @@ class LoginFragment() : Fragment(), OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.tv_back_signup -> {
-                callbackLoginFragment?.backSignup()
+                fragmentManager?.commit {
+                    replace(R.id.layout_fragment_login, SignUpFragment())
+                    addToBackStack("login")
+                }
             }
             R.id.btn_login -> {
                 val intent = Intent(activity, MainActivity::class.java)

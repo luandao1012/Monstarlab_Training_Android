@@ -14,21 +14,6 @@ import com.example.activity_fragment_recyclerview.databinding.FragmentSignUpBind
 
 class SignUpFragment : Fragment(), OnClickListener {
     private lateinit var binding: FragmentSignUpBinding
-    var callbackSignupFragment: CallbackSignupFragment? = null
-
-    interface CallbackSignupFragment {
-        fun backLogin()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbackSignupFragment = context as CallbackSignupFragment
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbackSignupFragment = null
-    }
 
     override fun onPause() {
         super.onPause()
@@ -58,10 +43,10 @@ class SignUpFragment : Fragment(), OnClickListener {
                     putString("password", binding.edtPasswordSignUp.text.toString().trim())
                 }
                 setFragmentResult("signup", bundle)
-                callbackSignupFragment?.backLogin()
+                fragmentManager?.popBackStack()
             }
             R.id.tv_back_login -> {
-                callbackSignupFragment?.backLogin()
+                fragmentManager?.popBackStack()
             }
         }
     }
