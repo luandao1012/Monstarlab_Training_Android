@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".activities.EmailActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_send_email"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_tradix_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="126dp"
+            android:fontFamily="@font/raleway_black"
+            android:text="TRADIX"
+            android:textColor="@color/black_1"
+            android:textSize="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/coin_login"
+            app:layout_constraintBottom_toBottomOf="@id/tv_tradix_email"
+            app:layout_constraintStart_toEndOf="@id/tv_tradix_email" />
+
+        <TextView
+            android:id="@+id/tv_future_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato_light"
+            android:text="The future of trading"
+            android:textColor="@color/black_five"
+            android:textSize="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_tradix_email" />
+
+        <ImageView
+            android:id="@+id/iv_letter_send_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_letter_send_email"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_future_email" />
+
+        <TextView
+            android:id="@+id/tv_we_have_sent_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="79dp"
+            android:layout_marginTop="21dp"
+            android:layout_marginEnd="76dp"
+            android:fontFamily="@font/raleway_black"
+            android:text="We have sent you an email to change your password"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_letter_send_email" />
+
+        <Button
+            android:id="@+id/btn_resend_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="63dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="62dp"
+            android:background="@drawable/bg_enabled_button_resend_email"
+            android:fontFamily="@font/lato_black"
+            android:text="RESEND EMAIL"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_we_have_sent_email" />
+
+        <TextView
+            android:id="@+id/tv_time_resend_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="60dp"
+            android:fontFamily="@font/lato_light"
+            android:text="Wait 5 seconds before sending it"
+            android:textAlignment="center"
+            android:textColor="@color/greyish_brown_Three"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_resend_email" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

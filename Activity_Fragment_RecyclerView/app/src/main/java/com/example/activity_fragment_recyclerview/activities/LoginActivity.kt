@@ -1,5 +1,7 @@
 package com.example.activity_fragment_recyclerview.activities
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,13 +14,22 @@ import com.example.activity_fragment_recyclerview.fragments.login.SignUpFragment
 
 class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
+    private val loginFragment by lazy { LoginFragment() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         supportFragmentManager.commit {
-            add(R.id.layout_fragment_login, LoginFragment())
+            add(R.id.layout_fragment_login, loginFragment)
             addToBackStack("login")
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val bundle = Bundle().apply {
+            putString("password", intent?.getStringExtra("password"))
+        }
+        loginFragment.arguments = bundle
     }
 
     override fun onBackPressed() {
