@@ -1,6 +1,5 @@
 package com.example.activity_fragment_recyclerview.fragments.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,12 +10,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import com.example.activity_fragment_recyclerview.R
+import com.example.activity_fragment_recyclerview.activities.EmailActivity
 import com.example.activity_fragment_recyclerview.activities.MainActivity
 import com.example.activity_fragment_recyclerview.databinding.FragmentLoginBinding
 
 class LoginFragment() : Fragment(), OnClickListener {
-    private lateinit var binding: FragmentLoginBinding
 
+    companion object {
+        const val TAG = "LoginFragment"
+    }
+
+    private lateinit var binding: FragmentLoginBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,16 +29,11 @@ class LoginFragment() : Fragment(), OnClickListener {
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        binding.edtEmailLogin.setText("")
-        binding.edtPasswordLogin.setText("")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBackSignup.setOnClickListener(this)
         binding.btnLogin.setOnClickListener(this)
+        binding.tvForgotPassword.setOnClickListener(this)
         setFragmentResultListener("signup") { _, bundle ->
             val email = bundle.getString("email").toString()
             val password = bundle.getString("password").toString()
@@ -48,7 +47,7 @@ class LoginFragment() : Fragment(), OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.tv_back_signup -> {
-                fragmentManager?.commit {
+                parentFragmentManager.commit {
                     replace(R.id.layout_fragment_login, SignUpFragment())
                     addToBackStack("login")
                 }
@@ -58,6 +57,13 @@ class LoginFragment() : Fragment(), OnClickListener {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
+            R.id.tv_forgot_password -> {
+                startActivity(Intent(activity, EmailActivity::class.java))
+            }
         }
+    }
+
+    fun setNewPassword(password: String) {
+        binding.edtPasswordLogin.setText(password)
     }
 }

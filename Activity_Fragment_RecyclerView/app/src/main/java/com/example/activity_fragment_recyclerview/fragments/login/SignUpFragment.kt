@@ -40,10 +40,10 @@ class SignUpFragment : Fragment(), OnClickListener {
                     putString("password", binding.edtPasswordSignUp.text.toString().trim())
                 }
                 setFragmentResult("signup", bundle)
-                fragmentManager?.popBackStack()
+                parentFragmentManager.popBackStack()
             }
             R.id.tv_back_login -> {
-                fragmentManager?.popBackStack()
+                parentFragmentManager.popBackStack()
             }
             R.id.tv_forgot_password -> {
                 startActivity(Intent(activity, EmailActivity::class.java))

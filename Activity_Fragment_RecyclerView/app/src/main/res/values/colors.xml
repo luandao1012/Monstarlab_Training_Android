@@ -13,7 +13,11 @@
     <color name="purple_pink">#e432c1</color>
     <color name="black_1">#2b2828</color>
     <color name="black_five">#171717</color>
+    <color name="black_four">#222222</color>
     <color name="brownish_grey_two">#656565</color>
     <color name="white_four">#d6d6d6</color>
     <color name="warm_grey_two">#9d9d9d</color>
+    <color name="fuchsia">#f21cc8</color>
+    <color name="powder_pink">#fd9feb</color>
+    <color name="greenish_cyan">#2bfeba</color>
 </resources>

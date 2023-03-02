@@ -75,7 +75,7 @@
                 android:background="@drawable/bg_not_selected_fragment_onboarding" />
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_next_fragment_onboarding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -43,7 +43,7 @@
         android:textColor="@color/warm_grey_two"
         android:textSize="14sp" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
