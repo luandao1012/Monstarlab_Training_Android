@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f8f8f8"
+    tools:context=".fragments.main.NewsArticleFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_news_article"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/raggruppa_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/tv_CRYPTOCURRENCY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            app:cardBackgroundColor="@color/aqua80"
+            app:cardCornerRadius="7.5dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="@id/iv_news_article"
+            app:layout_constraintTop_toBottomOf="@id/iv_news_article">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:padding="4dp"
+                android:text="CRYPTOCURRENCY"
+                android:textColor="#0a0909"
+                android:textSize="9dp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_news_article_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="95dp"
+            android:layout_marginTop="10dp"
+            android:background="#806021ea"
+            android:fontFamily="@font/raleway_black"
+            android:padding="4dp"
+            android:text="What is the future of cryptocurrencies?"
+            android:textAlignment="textEnd"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@id/iv_news_article"
+            app:layout_constraintTop_toBottomOf="@id/tv_CRYPTOCURRENCY" />
+
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/icon_calendar"
+            app:layout_constraintStart_toStartOf="@id/iv_news_article"
+            app:layout_constraintTop_toBottomOf="@id/tv_CRYPTOCURRENCY"
+            app:tint="@color/brownish_grey_two" />
+
+        <TextView
+            android:id="@+id/tv_date_news_article"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/lato_light_italic"
+            android:text="02 Set 2020"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/iv_calendar"
+            app:layout_constraintTop_toBottomOf="@id/iv_calendar" />
+
+        <TextView
+            android:id="@+id/tv_content_news_article"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="33dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/lato_regular"
+            android:text="Rem deserunt voluptatem sapiente. Quod sint officiis quae magnam. Qui eaque atque quia. Incidunt dolor reiciendis tenetur libero error consequatur voluptate recusandae. Sequi voluptatum quas. Ullam voluptatem reprehenderit ea commodi. Doloremque autem praesentium qui harum quia sunt voluptatem eius at. Voluptates voluptatem eaque et voluptas maxime molestiae et. Et saepe perferendis ut quidem et est. Et iusto ut nostrum delectus. Libero et modi placeat labore sit et quaerat sed. Dolorem libero earum ipsum illum nemo."
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/tv_news_article_title"
+            app:layout_constraintStart_toStartOf="@id/tv_date_news_article"
+            app:layout_constraintTop_toBottomOf="@id/tv_news_article_title" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="33dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/lato_regular"
+            android:text="Rem deserunt voluptatem sapiente. Quod sint officiis quae magnam. Qui eaque atque quia. Incidunt dolor reiciendis tenetur libero error consequatur voluptate recusandae. Sequi voluptatum quas. Ullam voluptatem reprehenderit ea commodi. Doloremque autem praesentium qui harum quia sunt voluptatem eius at. Voluptates voluptatem eaque et voluptas maxime molestiae et. Et saepe perferendis ut quidem et est. Et iusto ut nostrum delectus. Libero et modi placeat labore sit et quaerat sed. Dolorem libero earum ipsum illum nemo."
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/tv_news_article_title"
+            app:layout_constraintStart_toStartOf="@id/tv_date_news_article"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_news_article" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

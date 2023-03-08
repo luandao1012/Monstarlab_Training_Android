@@ -30,7 +30,7 @@ class EmailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             var time = 5
             binding.btnResendEmail.isEnabled = false
-            while (time >= 0) {
+            repeat(6) {
                 delay(1000)
                 binding.tvTimeResendEmail.text = "Wait $time seconds before sending it"
                 time--

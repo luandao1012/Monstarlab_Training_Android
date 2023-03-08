@@ -14,7 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.activity_fragment_recyclerview.MyBottomNavBar
+    <com.example.activity_fragment_recyclerview.customview.MyBottomNavBar
+        android:background="@color/white"
         android:id="@+id/my_bottom_nav_nar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

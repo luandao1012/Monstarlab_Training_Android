@@ -15,9 +15,7 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
         return when (position) {
             0 -> OnBoardingFragment1()
             1 -> OnBoardingFragment2()
-            2 -> OnBoardingFragment3()
-            else -> throw IllegalArgumentException("Out of fragments, will depend on getItemCount")
+            else -> OnBoardingFragment3()
         }
     }
-
 }

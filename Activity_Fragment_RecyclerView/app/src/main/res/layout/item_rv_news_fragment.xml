@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="21dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_news_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_news_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_news_item_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="11dp"
+        android:fontFamily="@font/raleway_regular"
+        android:text="ALT -3,87%"
+        android:textColor="@color/red"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@id/iv_news_item"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_date_news_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="33dp"
+        android:fontFamily="@font/lato_light"
+        android:text="3 Sept 2020"
+        android:textColor="#080808"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@id/iv_share_news_item"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_news_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_black"
+        android:text="ATLANTIA"
+        android:textColor="#2e2e2e"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/tv_news_item_change"
+        app:layout_constraintTop_toBottomOf="@id/tv_news_item_change" />
+
+    <ImageView
+        android:id="@+id/iv_share_news_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:src="@drawable/icon_share"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/lato_light"
+        android:text="Illum velit nam voluptatum enim aut ratione ratione officiis totam. Mollitia eum sint tempora ducimus"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@id/iv_share_news_item"
+        app:layout_constraintStart_toStartOf="@id/tv_news_item_change"
+        app:layout_constraintTop_toBottomOf="@id/tv_news_item_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>
