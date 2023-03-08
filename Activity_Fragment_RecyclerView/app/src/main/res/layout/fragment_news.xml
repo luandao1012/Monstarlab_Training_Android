@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragments.main.NewsFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_news_fragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_back_news_fragment"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="55dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="7dp"
+        android:fontFamily="@font/raleway_black"
+        android:text="NEWS"
+        android:textColor="@color/black_five"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_back_news_fragment"
+        app:layout_constraintStart_toEndOf="@id/iv_back_news_fragment"
+        app:layout_constraintTop_toTopOf="@id/iv_back_news_fragment" />
+
+    <ImageView
+        android:id="@+id/iv_menu_coin_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/icons_8_menu_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/iv_back_news_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_back_news_fragment" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="21dp"
+        android:background="#f8f8f8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_back_news_fragment">
+
+        <HorizontalScrollView
+            android:id="@+id/hori_sv_news_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="9dp"
+                    android:background="@drawable/bg_selected_item_hozi_sv_news_fragment"
+                    android:fontFamily="@font/lato_regular"
+                    android:padding="8dp"
+                    android:text="EDITORIAL"
+                    android:textColor="@color/black_four"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="9dp"
+                    android:fontFamily="@font/lato_regular"
+                    android:padding="8dp"
+                    android:text="CRYPTO NEWS"
+                    android:textColor="@color/black_four"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="9dp"
+                    android:fontFamily="@font/lato_regular"
+                    android:padding="8dp"
+                    android:text="RAW MATERIAL"
+                    android:textColor="@color/black_four"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="9dp"
+                    android:fontFamily="@font/lato_regular"
+                    android:padding="8dp"
+                    android:text="ECONOMICS"
+                    android:textColor="@color/black_four"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+        <FrameLayout
+            android:id="@+id/fragment_container_view_news_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hori_sv_news_fragment" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,7 +17,7 @@ import com.example.activity_fragment_recyclerview.databinding.FragmentLoginBindi
 class LoginFragment() : Fragment(), OnClickListener {
 
     companion object {
-        const val TAG = "LoginFragment"
+        const val LOGIN_FRAGMENT = "LoginFragment"
     }
 
     private lateinit var binding: FragmentLoginBinding

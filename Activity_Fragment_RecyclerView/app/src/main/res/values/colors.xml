@@ -20,4 +20,8 @@
     <color name="fuchsia">#f21cc8</color>
     <color name="powder_pink">#fd9feb</color>
     <color name="greenish_cyan">#2bfeba</color>
+    <color name="pinkish_grey">#bcbcbc</color>
+    <color name="aqua">#0cf2b4</color>
+    <color name="red">#f00909</color>
+    <color name="aqua80">#800cf2b4</color>
 </resources>

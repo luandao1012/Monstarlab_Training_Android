@@ -1,14 +1,14 @@
-package com.example.activity_fragment_recyclerview
+package com.example.activity_fragment_recyclerview.customview
 
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.children
+import com.example.activity_fragment_recyclerview.R
 import com.example.activity_fragment_recyclerview.databinding.MyBottomNavBarBinding
 
 class MyBottomNavBar @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) :
@@ -19,15 +19,15 @@ class MyBottomNavBar @JvmOverloads constructor(context: Context, attr: Attribute
 
     init {
         binding = MyBottomNavBarBinding.inflate(LayoutInflater.from(context), this, true)
-        changeItemState(binding.ivIncreaseNav, true)
         binding.llBottomNavBar.children.forEachIndexed { index, view ->
+            if (index == indexSelectedItem) changeItemState(view as ImageView, true)
             view.setOnClickListener { onItemClick(index, view as ImageView) }
         }
     }
 
     private fun onItemClick(index: Int, view: ImageView) {
         if (index != indexSelectedItem) {
-            callback?.let { it(index) }
+            callback?.invoke(index)
             val imageView = binding.llBottomNavBar.getChildAt(indexSelectedItem) as ImageView
             changeItemState(imageView, false)
             changeItemState(view, true)
@@ -46,8 +46,19 @@ class MyBottomNavBar @JvmOverloads constructor(context: Context, attr: Attribute
         }
     }
 
-    fun getIndexItemSelected(callbacks: (int: Int) -> Unit) {
+    fun setFragmentSelected(callbacks: (int: Int) -> Unit) {
         callback = callbacks
+    }
+
+    fun setIndexSelected(index: Int) {
+        indexSelectedItem = index
+        binding.llBottomNavBar.children.forEachIndexed { i, view ->
+            if (i == indexSelectedItem) {
+                changeItemState(view as ImageView, true)
+            } else {
+                changeItemState(view as ImageView, false)
+            }
+        }
     }
 }
 
