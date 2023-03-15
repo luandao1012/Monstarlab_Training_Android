@@ -14,11 +14,12 @@ class HomeRVAdapter : Adapter<HomeRVAdapter.HomeViewHolder>() {
     private var listHome = arrayListOf<DataHome>()
     private var callbackListener: ((pos: Int) -> Unit)? = null
 
-    fun setData(list: ArrayList<DataHome>) {
-        listHome = list
+    fun addData(list: ArrayList<DataHome>) {
+        listHome.addAll(list)
         notifyDataSetChanged()
     }
 
+    fun getData() = listHome
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val binding = ItemRvHomeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val homeViewHolder = HomeViewHolder(binding)
@@ -41,8 +42,9 @@ class HomeRVAdapter : Adapter<HomeRVAdapter.HomeViewHolder>() {
     inner class HomeViewHolder(private val binding: ItemRvHomeBinding) : ViewHolder(binding.root) {
         fun bind(position: Int) {
             binding.apply {
-                tvItemNameRvHome.text = listHome[position].name
-                tvItemAddressRvHome.text = listHome[position].address
+                val data = listHome[position]
+                tvItemNameRvHome.text = data.name
+                tvItemAddressRvHome.text = data.address
             }
         }
 

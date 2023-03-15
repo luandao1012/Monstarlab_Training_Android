@@ -25,7 +25,6 @@ class HomeFragment() : Fragment(), OnClickListener {
     private lateinit var itemTouchHelper: ItemTouchHelper.SimpleCallback
     private var homeRVAdapter: HomeRVAdapter? = null
     private var snackBar: Snackbar? = null
-    private var listHomes = arrayListOf<DataHome>()
     private var undoObject: Pair<Int, DataHome>? = null
 
     companion object {
@@ -47,13 +46,12 @@ class HomeFragment() : Fragment(), OnClickListener {
     }
 
     private fun initViews() {
-        addData()
         homeRVAdapter = HomeRVAdapter()
-        homeRVAdapter?.setData(listHomes)
+        addData()
         snackBar = Snackbar.make(binding.root, "Delete", Snackbar.LENGTH_LONG).apply {
             setActionTextColor(Color.YELLOW)
             setAction("Undo") {
-                undoObject?.let { listHomes.add(it.first, it.second) }
+                undoObject?.let { homeRVAdapter?.getData()?.add(it.first, it.second) }
                 homeRVAdapter?.notifyDataSetChanged()
             }
         }
@@ -67,7 +65,7 @@ class HomeFragment() : Fragment(), OnClickListener {
         homeRVAdapter?.setOnClickItemListener {
             (activity as MainActivity).showFragment(1)
             val bundle = Bundle().apply {
-                putString("title", listHomes[it].name)
+                putString("title", homeRVAdapter?.getData()?.get(it)?.name)
             }
             setFragmentResult(HOME_FRAGMENT, bundle)
         }
@@ -81,15 +79,16 @@ class HomeFragment() : Fragment(), OnClickListener {
         binding.btnLoadMore.setOnClickListener(this)
         (itemTouchHelper as RecyclerViewItemTouchHelper).setSwipedListener { data ->
             val index = data.adapterPosition
-            val homeData = listHomes[index]
-            undoObject = Pair(index, homeData)
-            listHomes.removeAt(index)
+            val homeData = homeRVAdapter?.getData()?.get(index)
+            undoObject = Pair(index, homeData!!)
+            homeRVAdapter?.getData()?.removeAt(index)
             homeRVAdapter?.notifyDataSetChanged()
             snackBar?.show()
         }
     }
 
     private fun addData() {
+        val listHomes = arrayListOf<DataHome>()
         listHomes += DataHome("DOWN JONES", "NYSE")
         listHomes += DataHome("FTSE 100", "LONDON")
         listHomes += DataHome("IBEX 35", "MADRID")
@@ -100,6 +99,7 @@ class HomeFragment() : Fragment(), OnClickListener {
         listHomes += DataHome("DAX", "XETRA")
         listHomes += DataHome("DOWN JONES", "NYSE")
         listHomes += DataHome("FTSE 100", "LONDON")
+        homeRVAdapter?.addData(listHomes)
     }
 
     override fun onClick(view: View?) {
@@ -116,7 +116,6 @@ class HomeFragment() : Fragment(), OnClickListener {
             }
             binding.btnLoadMore -> {
                 addData()
-                homeRVAdapter?.notifyDataSetChanged()
             }
         }
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,351 +7,354 @@
     android:background="@color/white"
     tools:context=".fragments.main.CoinFragment">
 
-    <ImageView
-        android:id="@+id/iv_back_coin_fragment"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="55dp"
-        android:src="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_coin_fragment_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/raleway_black"
-        android:text="NEO INDEX"
-        android:textColor="@color/black_five"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
-        app:layout_constraintStart_toEndOf="@id/iv_back_coin_fragment"
-        app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment" />
-
-    <TextView
-        android:id="@+id/tv_USD_coin_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/raleway_medium"
-        android:text="USD"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/tv_coin_fragment_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_coin_fragment_title" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/raleway_regular"
-        android:text="Binance"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@id/tv_USD_coin_fragment"
-        app:layout_constraintTop_toBottomOf="@id/tv_coin_fragment_title" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        app:backgroundTint="#101010"
-        android:src="@drawable/icons_8_alarm"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
-        app:layout_constraintEnd_toStartOf="@id/iv_menu_coin_fragment"
-        app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment"
-        app:tint="@color/white" />
-
-    <ImageView
-        android:id="@+id/iv_menu_coin_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:src="@drawable/icons_8_menu_vertical"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_rate_coin_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="27dp"
-        android:background="@drawable/bg_rate_coin_fragment"
-        android:padding="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_USD_coin_fragment">
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_arrow_up_coin_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icons_8_long_arrow_up"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/tv_rate_coin_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/lato_light"
-            android:text="RATE"
-            android:textColor="@color/pinkish_grey"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@id/iv_arrow_up_coin_fragment"
+            android:id="@+id/iv_back_coin_fragment"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="55dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_rate_usd_coin_fragment"
+            android:id="@+id/tv_coin_fragment_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/raleway_black"
-            android:text="21,1637"
-            android:textColor="@color/white"
+            android:text="NEO INDEX"
+            android:textColor="@color/black_five"
             android:textSize="22sp"
-            app:layout_constraintStart_toEndOf="@id/iv_arrow_up_coin_fragment"
-            app:layout_constraintTop_toBottomOf="@id/tv_rate_coin_fragment" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
+            app:layout_constraintStart_toEndOf="@id/iv_back_coin_fragment"
+            app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment" />
 
         <TextView
+            android:id="@+id/tv_USD_coin_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:fontFamily="@font/raleway_black"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/raleway_medium"
             android:text="USD"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_rate_usd_coin_fragment"
-            app:layout_constraintStart_toEndOf="@id/tv_rate_usd_coin_fragment" />
+            app:layout_constraintStart_toStartOf="@id/tv_coin_fragment_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_coin_fragment_title" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/raleway_regular"
-            android:text="17:00:33 Real time"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            app:layout_constraintStart_toStartOf="@id/tv_rate_usd_coin_fragment"
-            app:layout_constraintTop_toBottomOf="@id/tv_rate_usd_coin_fragment" />
+            android:text="Binance"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/tv_USD_coin_fragment"
+            app:layout_constraintTop_toBottomOf="@id/tv_coin_fragment_title" />
 
-        <TextView
-            android:id="@+id/tv_today_change_coin_fragment"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:fontFamily="@font/lato_light"
-            android:text="TODAY CHANGE"
-            android:textColor="@color/pinkish_grey"
-            android:textSize="10sp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/icons_8_alarm"
+            app:backgroundTint="#101010"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
+            app:layout_constraintEnd_toStartOf="@id/iv_menu_coin_fragment"
+            app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_menu_coin_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/icons_8_menu_vertical"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back_coin_fragment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_back_coin_fragment" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/raleway_bold"
-            android:text="+2,0634 (+9,44%)"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@id/tv_today_change_coin_fragment"
-            app:layout_constraintTop_toBottomOf="@id/tv_today_change_coin_fragment" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_coin_fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_arrow_back_neo_chart_coin_fragment"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="25dp"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_rate_coin_fragment" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/aqua"
-        app:cardCornerRadius="12.5dp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_arrow_back_neo_chart_coin_fragment"
-        app:layout_constraintEnd_toEndOf="@id/iv_arrow_forward_neo_chart_coin_fragment"
-        app:layout_constraintStart_toStartOf="@id/iv_arrow_back_neo_chart_coin_fragment"
-        app:layout_constraintTop_toTopOf="@id/iv_arrow_forward_neo_chart_coin_fragment">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/raleway_regular"
-            android:padding="5dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="15dp"
-            android:text="NEO Chart"
-            android:textColor="@color/black_four"
-            android:textSize="14sp" />
-    </androidx.cardview.widget.CardView>
-
-    <ImageView
-        android:id="@+id/iv_arrow_forward_neo_chart_coin_fragment"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="37dp"
-        android:src="@drawable/ic_arrow_forward"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_arrow_back_neo_chart_coin_fragment" />
-
-    <ImageView
-        android:id="@+id/iv_neo_chart_coin_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:src="@drawable/neo_chart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_arrow_back_neo_chart_coin_fragment" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="28dp"
-        android:background="#f8f8f8"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_neo_chart_coin_fragment">
-
-        <HorizontalScrollView
-            android:id="@+id/hori_sv_coin_fragment"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_rate_coin_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="27dp"
+            android:background="@drawable/bg_rate_coin_fragment"
+            android:padding="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:fontFamily="@font/raleway_medium"
-                    android:padding="8dp"
-                    android:text="General"
-                    android:textColor="@color/black_four"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:background="@drawable/bg_selected_item_horizontal_sv"
-                    android:fontFamily="@font/raleway_medium"
-                    android:padding="8dp"
-                    android:text="Technical Section"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:fontFamily="@font/raleway_medium"
-                    android:padding="8dp"
-                    android:text="Markets"
-                    android:textColor="@color/black_four"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:fontFamily="@font/raleway_medium"
-                    android:padding="8dp"
-                    android:text="Charts"
-                    android:textColor="@color/black_four"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/tv_buy_or_sell_coin_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="40dp"
-            android:fontFamily="@font/raleway_regular"
-            android:text="Buy or Sell for NEO"
-            android:textColor="@color/black_four"
-            android:textSize="10sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/hori_sv_coin_fragment" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7.5dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="@id/tv_buy_or_sell_coin_fragment"
-            app:layout_constraintStart_toStartOf="@id/tv_buy_or_sell_coin_fragment"
-            app:layout_constraintTop_toBottomOf="@id/tv_buy_or_sell_coin_fragment">
+            app:layout_constraintTop_toBottomOf="@id/tv_USD_coin_fragment">
 
             <ImageView
+                android:id="@+id/iv_arrow_up_coin_fragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:src="@drawable/buy_or_sell_coin_fragment" />
-        </androidx.cardview.widget.CardView>
+                android:src="@drawable/icons_8_long_arrow_up"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:id="@+id/tv_mkt_coin_fragment"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_rate_coin_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/lato_light"
+                android:text="RATE"
+                android:textColor="@color/pinkish_grey"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/iv_arrow_up_coin_fragment"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_rate_usd_coin_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/raleway_black"
+                android:text="21,1637"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:layout_constraintStart_toEndOf="@id/iv_arrow_up_coin_fragment"
+                app:layout_constraintTop_toBottomOf="@id/tv_rate_coin_fragment" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:fontFamily="@font/raleway_black"
+                android:text="USD"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_rate_usd_coin_fragment"
+                app:layout_constraintStart_toEndOf="@id/tv_rate_usd_coin_fragment" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="17:00:33 Real time"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="@id/tv_rate_usd_coin_fragment"
+                app:layout_constraintTop_toBottomOf="@id/tv_rate_usd_coin_fragment" />
+
+            <TextView
+                android:id="@+id/tv_today_change_coin_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/lato_light"
+                android:text="TODAY CHANGE"
+                android:textColor="@color/pinkish_grey"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="+2,0634 (+9,44%)"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@id/tv_today_change_coin_fragment"
+                app:layout_constraintTop_toBottomOf="@id/tv_today_change_coin_fragment" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="80dp"
-            android:fontFamily="@font/raleway_regular"
-            android:text="Mkt Capitalization"
-            android:textColor="@color/black_four"
-            android:textSize="10sp"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_coin_fragment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_buy_or_sell_coin_fragment" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_back_coin_fragment" />
+
+        <ImageView
+            android:id="@+id/iv_arrow_back_neo_chart_coin_fragment"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="37dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_rate_coin_fragment" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7.5dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="@id/tv_mkt_coin_fragment"
-            app:layout_constraintStart_toStartOf="@id/tv_mkt_coin_fragment"
-            app:layout_constraintTop_toBottomOf="@id/tv_mkt_coin_fragment">
+            app:cardBackgroundColor="@color/aqua"
+            app:cardCornerRadius="12.5dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_arrow_back_neo_chart_coin_fragment"
+            app:layout_constraintEnd_toEndOf="@id/iv_arrow_forward_neo_chart_coin_fragment"
+            app:layout_constraintStart_toStartOf="@id/iv_arrow_back_neo_chart_coin_fragment"
+            app:layout_constraintTop_toTopOf="@id/iv_arrow_forward_neo_chart_coin_fragment">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:src="@drawable/mkt_coin_fragment" />
+                android:fontFamily="@font/raleway_regular"
+                android:padding="5dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="15dp"
+                android:text="NEO Chart"
+                android:textColor="@color/black_four"
+                android:textSize="14sp" />
         </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/iv_arrow_forward_neo_chart_coin_fragment"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="37dp"
+            android:src="@drawable/ic_arrow_forward"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_arrow_back_neo_chart_coin_fragment" />
+
+        <ImageView
+            android:id="@+id/iv_neo_chart_coin_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/neo_chart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_arrow_back_neo_chart_coin_fragment" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="#f8f8f8"
+            app:layout_constraintTop_toBottomOf="@id/iv_neo_chart_coin_fragment">
+
+            <HorizontalScrollView
+                android:id="@+id/hori_sv_coin_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:fontFamily="@font/raleway_medium"
+                        android:padding="8dp"
+                        android:text="General"
+                        android:textColor="@color/black_four"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/bg_selected_item_horizontal_sv"
+                        android:fontFamily="@font/raleway_medium"
+                        android:padding="8dp"
+                        android:text="Technical Section"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:fontFamily="@font/raleway_medium"
+                        android:padding="8dp"
+                        android:text="Markets"
+                        android:textColor="@color/black_four"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:fontFamily="@font/raleway_medium"
+                        android:padding="8dp"
+                        android:text="Charts"
+                        android:textColor="@color/black_four"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tv_buy_or_sell_coin_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Buy or Sell for NEO"
+                android:textColor="@color/black_four"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hori_sv_coin_fragment" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7.5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="@id/tv_buy_or_sell_coin_fragment"
+                app:layout_constraintStart_toStartOf="@id/tv_buy_or_sell_coin_fragment"
+                app:layout_constraintTop_toBottomOf="@id/tv_buy_or_sell_coin_fragment">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/buy_or_sell_coin_fragment" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_mkt_coin_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="80dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Mkt Capitalization"
+                android:textColor="@color/black_four"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_buy_or_sell_coin_fragment" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7.5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="@id/tv_mkt_coin_fragment"
+                app:layout_constraintStart_toStartOf="@id/tv_mkt_coin_fragment"
+                app:layout_constraintTop_toBottomOf="@id/tv_mkt_coin_fragment">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:src="@drawable/mkt_coin_fragment" />
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
