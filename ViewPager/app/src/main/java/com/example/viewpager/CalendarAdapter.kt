@@ -20,15 +20,31 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         const val DAY_OF_WEEK = "Day of week"
         const val DATE_IN_MONTH = "Day in month"
         const val DATE_NOT_IN_MONTH = "Day not in month"
-        var dateSelected = -1L
     }
 
     private var dateCalendarList = arrayListOf<DateCalendar>()
     private var isDoubleClick = false
+    private var callbackSaveDateSelected: ((Pair<Long, Int>) -> Unit)? = null
+    private var callbackResetDateSelected: (() -> Unit)? = null
+    private var dateSelected = 0L
+    private var colorDateSelected = Color.WHITE
 
     fun setData(list: ArrayList<DateCalendar>) {
         dateCalendarList = list
         notifyDataSetChanged()
+    }
+
+    fun setDateSelected(callback: (Pair<Long, Int>) -> Unit) {
+        callbackSaveDateSelected = callback
+    }
+
+    fun resetDateSelected(callback: (() -> Unit)) {
+        callbackResetDateSelected = callback
+    }
+
+    fun getDateSelected(date: Long, color: Int) {
+        dateSelected = date
+        colorDateSelected = color
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -64,14 +80,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                     date.setTextColor(Color.BLACK)
                 }
                 if (dateSelected == dateCalendarList[position].date && day.type != DAY_OF_WEEK) {
-                    if (!isDoubleClick) {
-                        date.setBackgroundColor(Color.CYAN)
-                    } else {
-                        val random = kotlin.random.Random.Default
-                        date.setBackgroundColor(
-                            Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256))
-                        )
-                    }
+                    date.setBackgroundColor(colorDateSelected)
                 } else {
                     date.setBackgroundColor(Color.WHITE)
                 }
@@ -97,6 +106,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                             } else {
                                 onClick()
                             }
+                            callbackResetDateSelected?.invoke()
                             clickHandler.removeCallbacksAndMessages(null)
                         }, doubleClickTime)
                     }
@@ -107,11 +117,13 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
 
         private fun onClick() {
             isDoubleClick = false
+            colorDateSelected = Color.CYAN
             changeDateColor()
         }
 
         private fun onDoubleClick() {
             isDoubleClick = true
+            colorDateSelected = Color.GREEN
             changeDateColor()
         }
 
@@ -122,7 +134,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                 if (adapterPosition != -1) dateCalendarList[adapterPosition] else null
             if (date != null && date.type != DAY_OF_WEEK) {
                 if (index != null) notifyItemChanged(index)
-                dateSelected = dateCalendarList[adapterPosition].date
+                callbackSaveDateSelected?.invoke(Pair(date.date, colorDateSelected))
                 notifyItemChanged(adapterPosition)
             }
         }
