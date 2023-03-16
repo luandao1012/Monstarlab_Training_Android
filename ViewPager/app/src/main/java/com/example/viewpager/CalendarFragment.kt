@@ -14,7 +14,6 @@ import java.util.*
 class CalendarFragment() : Fragment() {
     companion object {
         const val CALENDAR_FRAGMENT_MONTH_KEY = "Calendar fragment month key"
-        var startDayOfWeek = "SUN"
     }
 
     private lateinit var binding: FragmentCalendarBinding
@@ -36,6 +35,31 @@ class CalendarFragment() : Fragment() {
             monthCalendar.timeInMillis = it.getLong(CALENDAR_FRAGMENT_MONTH_KEY)
         }
         initViews()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        calendarAdapter?.setDateSelected {
+            (activity as MainActivity).dateSelected = it.first
+            (activity as MainActivity).colorDateSelected = it.second
+            getDateSelected()
+        }
+        calendarAdapter?.resetDateSelected((activity as MainActivity)::resetALlFragment)
+    }
+
+    private fun initViews() {
+        calendarAdapter = CalendarAdapter()
+        binding.rvCalendar.adapter = calendarAdapter
+        calendarAdapter?.setData(dateList)
+        selectStartDayOfWeek((activity as MainActivity).startDayOfWeek)
+        getDateSelected()
+    }
+
+    private fun getDateSelected() {
+        calendarAdapter?.getDateSelected(
+            (activity as MainActivity).dateSelected,
+            (activity as MainActivity).colorDateSelected
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -46,14 +70,8 @@ class CalendarFragment() : Fragment() {
         addDateOfMonth(monthCalendar.get(Calendar.MONTH), monthCalendar.get(Calendar.YEAR))
         binding.tvMonth.text =
             SimpleDateFormat("MMMM - yyyy", Locale.ENGLISH).format(monthCalendar.time)
+        getDateSelected()
         calendarAdapter?.notifyDataSetChanged()
-    }
-
-    private fun initViews() {
-        calendarAdapter = CalendarAdapter()
-        binding.rvCalendar.adapter = calendarAdapter
-        calendarAdapter?.setData(dateList)
-        selectStartDayOfWeek(startDayOfWeek)
     }
 
     private fun addDayOfWeek() {
@@ -71,9 +89,9 @@ class CalendarFragment() : Fragment() {
     private fun addDateOfMonth(month: Int, year: Int) {
         val startMonth = Calendar.getInstance()
         val endMonth = Calendar.getInstance()
-        startMonth[Calendar.MONTH] = month
-        startMonth[Calendar.YEAR] = year
-        startMonth[Calendar.DAY_OF_MONTH] = 1
+        startMonth.set(Calendar.MONTH, month)
+        startMonth.set(Calendar.YEAR, year)
+        startMonth.set(Calendar.DAY_OF_MONTH, 1)
         startMonth.set(Calendar.HOUR, 0)
         startMonth.set(Calendar.MINUTE, 0)
         startMonth.set(Calendar.SECOND, 0)
@@ -83,23 +101,25 @@ class CalendarFragment() : Fragment() {
         if (startMonth[Calendar.DATE] != 1 && startMonth[Calendar.MONTH] == month)
             startMonth.add(Calendar.DATE, -7)
 
-        endMonth[Calendar.MONTH] = month + 1
-        endMonth[Calendar.YEAR] = year
-        endMonth[Calendar.DAY_OF_MONTH] = 0
+        endMonth.set(Calendar.MONTH, month + 1)
+        endMonth.set(Calendar.YEAR, year)
+        endMonth.set(Calendar.DAY_OF_MONTH, 0)
         endMonth.time
         endMonth[Calendar.DAY_OF_WEEK] = dateList[6].date.toInt()
         if (endMonth[Calendar.MONTH] == month &&
-            endMonth[Calendar.DATE] < monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-        {
+            endMonth[Calendar.DATE] < monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        ) {
             endMonth.add(Calendar.DATE, 7)
         }
         while (startMonth <= endMonth) {
             if (startMonth[Calendar.MONTH] == month) {
                 dateList.add(
-                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_IN_MONTH))
+                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_IN_MONTH)
+                )
             } else {
                 dateList.add(
-                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_NOT_IN_MONTH))
+                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_NOT_IN_MONTH)
+                )
             }
             startMonth.add(Calendar.DATE, 1)
         }
