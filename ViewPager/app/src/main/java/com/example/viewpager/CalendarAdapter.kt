@@ -7,7 +7,6 @@ import android.os.Looper
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -90,7 +89,6 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         @SuppressLint("ClickableViewAccessibility")
         fun bindOnClick() {
             var firstClickTime = 0L
-            val doubleClickTime = ViewConfiguration.getDoubleTapTimeout().toLong()
             val clickHandler = Handler(Looper.getMainLooper())
             binding.root.setOnTouchListener { _, motionEvent ->
                 when (motionEvent.action) {
@@ -101,14 +99,14 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                         clickHandler.postDelayed({
                             val lastClickTime = SystemClock.elapsedRealtime()
                             val clickDuration = lastClickTime - firstClickTime
-                            if (clickDuration < doubleClickTime) {
+                            if (clickDuration < 150) {
                                 onDoubleClick()
                             } else {
                                 onClick()
                             }
                             callbackResetDateSelected?.invoke()
                             clickHandler.removeCallbacksAndMessages(null)
-                        }, doubleClickTime)
+                        }, 150)
                     }
                 }
                 true
