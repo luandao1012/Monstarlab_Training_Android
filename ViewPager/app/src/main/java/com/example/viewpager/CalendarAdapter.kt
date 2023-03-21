@@ -23,7 +23,6 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     private var dateCalendarList = arrayListOf<DateCalendar>()
     private var callbackSaveDateSelected: ((Pair<Long, Int>) -> Unit)? = null
-    private var callbackResetDateSelected: (() -> Unit)? = null
     private var dateSelected = 0L
     private var colorDateSelected = Color.WHITE
 
@@ -34,10 +33,6 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     fun setDateSelected(callback: (Pair<Long, Int>) -> Unit) {
         callbackSaveDateSelected = callback
-    }
-
-    fun resetDateSelected(callback: (() -> Unit)) {
-        callbackResetDateSelected = callback
     }
 
     fun setDateSelected(date: Long, color: Int) {
@@ -104,7 +99,6 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                                 onClick()
                             }
                             changeDateColor()
-                            callbackResetDateSelected?.invoke()
                             clickHandler.removeCallbacksAndMessages(null)
                         }, 150)
                     }
@@ -124,12 +118,11 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         }
 
         private fun changeDateColor() {
-            val index =
-                dateCalendarList.indices.find { dateCalendarList[it].date == dateSelected }
+            val index = dateCalendarList.indexOfFirst { it.date == dateSelected }
             val date =
                 if (adapterPosition != -1) dateCalendarList[adapterPosition] else null
             if (date != null && date.type != DAY_OF_WEEK) {
-                if (index != null) notifyItemChanged(index)
+                if (index != -1) notifyItemChanged(index)
                 callbackSaveDateSelected?.invoke(Pair(date.date, colorDateSelected))
                 notifyItemChanged(adapterPosition)
             }

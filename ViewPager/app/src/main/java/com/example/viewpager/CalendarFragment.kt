@@ -14,6 +14,7 @@ import java.util.*
 class CalendarFragment() : Fragment() {
     companion object {
         const val CALENDAR_FRAGMENT_MONTH_KEY = "Calendar fragment month key"
+        val DAY_OF_WEEK_LIST = arrayListOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
     }
 
     private lateinit var binding: FragmentCalendarBinding
@@ -40,26 +41,27 @@ class CalendarFragment() : Fragment() {
 
     private fun initListeners() {
         calendarAdapter?.setDateSelected {
-            (activity as MainActivity).dateSelected = it.first
-            (activity as MainActivity).colorDateSelected = it.second
-            setDateSelected()
+            (activity as? MainActivity)?.dateSelected = it.first
+            (activity as? MainActivity)?.colorDateSelected = it.second
+            (activity as? MainActivity)?.resetALlFragment()
         }
-        calendarAdapter?.resetDateSelected((activity as MainActivity)::resetALlFragment)
     }
 
     private fun initViews() {
         calendarAdapter = CalendarAdapter()
         binding.rvCalendar.adapter = calendarAdapter
         calendarAdapter?.setData(dateList)
-        selectStartDayOfWeek((activity as MainActivity).startDayOfWeek)
+        (activity as? MainActivity)?.startDayOfWeek?.let { selectStartDayOfWeek(it) }
         setDateSelected()
     }
 
     private fun setDateSelected() {
-        calendarAdapter?.setDateSelected(
-            (activity as MainActivity).dateSelected,
-            (activity as MainActivity).colorDateSelected
-        )
+        (activity as? MainActivity)?.let {
+            calendarAdapter?.setDateSelected(
+                it.dateSelected,
+                it.colorDateSelected
+            )
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -80,14 +82,8 @@ class CalendarFragment() : Fragment() {
     }
 
     private fun addDayOfWeek() {
-        dateList.apply {
-            add(DateCalendar("SUN", 1, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("MON", 2, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("TUE", 3, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("WED", 4, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("THU", 5, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("FRI", 6, CalendarAdapter.DAY_OF_WEEK))
-            add(DateCalendar("SAT", 7, CalendarAdapter.DAY_OF_WEEK))
+        DAY_OF_WEEK_LIST.forEachIndexed { index, element ->
+            dateList.add(DateCalendar(element, index.toLong(), CalendarAdapter.DAY_OF_WEEK))
         }
     }
 
@@ -110,7 +106,7 @@ class CalendarFragment() : Fragment() {
             startMonth.add(Calendar.DATE, -7)
 
         while (true) {
-            for (i in 1 until 8) {
+            repeat(7) {
                 if (startMonth[Calendar.MONTH] == month) {
                     dateList.add(
                         DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_IN_MONTH)
@@ -129,10 +125,10 @@ class CalendarFragment() : Fragment() {
     }
 
     private fun changeStartDayOfWeek(startDay: String) {
-        val index = dateList.indices.find { dateList[it].day == startDay }
-        val list = index?.let { dateList.subList(it, 7).toList() }
-        if (list != null) {
-            dateList.removeAll(list)
+        val index = dateList.indexOfFirst { it.day == startDay }
+        if (index != -1) {
+            val list = index.let { dateList.subList(it, 7).toList() }
+            dateList.removeAll(list.toSet())
             dateList.addAll(0, list)
         }
     }

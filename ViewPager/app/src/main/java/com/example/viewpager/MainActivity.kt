@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 startDayOfWeek = binding.spSelectStartDay.selectedItem.toString()
                 supportFragmentManager.fragments.forEach {
-                    (it as CalendarFragment).selectStartDayOfWeek(startDayOfWeek)
+                    (it as? CalendarFragment)?.selectStartDayOfWeek(startDayOfWeek)
                 }
             }
 
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     fun resetALlFragment() {
         supportFragmentManager.fragments.forEach {
-            (it as CalendarFragment).resetFragment()
+            (it as? CalendarFragment)?.resetFragment()
         }
     }
 }
