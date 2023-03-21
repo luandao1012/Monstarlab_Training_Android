@@ -22,7 +22,6 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
     }
 
     private var dateCalendarList = arrayListOf<DateCalendar>()
-    private var isDoubleClick = false
     private var callbackSaveDateSelected: ((Pair<Long, Int>) -> Unit)? = null
     private var callbackResetDateSelected: (() -> Unit)? = null
     private var dateSelected = 0L
@@ -41,7 +40,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         callbackResetDateSelected = callback
     }
 
-    fun getDateSelected(date: Long, color: Int) {
+    fun setDateSelected(date: Long, color: Int) {
         dateSelected = date
         colorDateSelected = color
     }
@@ -104,6 +103,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                             } else {
                                 onClick()
                             }
+                            changeDateColor()
                             callbackResetDateSelected?.invoke()
                             clickHandler.removeCallbacksAndMessages(null)
                         }, 150)
@@ -114,15 +114,13 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         }
 
         private fun onClick() {
-            isDoubleClick = false
             colorDateSelected = Color.CYAN
-            changeDateColor()
         }
 
         private fun onDoubleClick() {
-            isDoubleClick = true
-            colorDateSelected = Color.GREEN
-            changeDateColor()
+            val random = kotlin.random.Random.Default
+            colorDateSelected =
+                Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256))
         }
 
         private fun changeDateColor() {

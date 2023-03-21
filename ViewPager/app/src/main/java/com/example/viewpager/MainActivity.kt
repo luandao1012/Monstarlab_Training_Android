@@ -33,10 +33,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDateSelectedIsToday() {
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.apply {
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
         dateSelected = calendar.timeInMillis
     }
 
@@ -49,13 +51,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
+            override fun onNothingSelected(p0: AdapterView<*>?) = Unit
+        }
+        binding.btCurrentDate.setOnClickListener {
+            binding.viewPager.setCurrentItem(50, true)
+            setDateSelectedIsToday()
+            resetALlFragment()
         }
     }
-    fun resetALlFragment(){
+
+    fun resetALlFragment() {
         supportFragmentManager.fragments.forEach {
-            (it as CalendarFragment).selectStartDayOfWeek(startDayOfWeek)
+            (it as CalendarFragment).resetFragment()
         }
     }
 }

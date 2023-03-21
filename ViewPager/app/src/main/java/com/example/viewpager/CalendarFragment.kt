@@ -42,7 +42,7 @@ class CalendarFragment() : Fragment() {
         calendarAdapter?.setDateSelected {
             (activity as MainActivity).dateSelected = it.first
             (activity as MainActivity).colorDateSelected = it.second
-            getDateSelected()
+            setDateSelected()
         }
         calendarAdapter?.resetDateSelected((activity as MainActivity)::resetALlFragment)
     }
@@ -52,14 +52,20 @@ class CalendarFragment() : Fragment() {
         binding.rvCalendar.adapter = calendarAdapter
         calendarAdapter?.setData(dateList)
         selectStartDayOfWeek((activity as MainActivity).startDayOfWeek)
-        getDateSelected()
+        setDateSelected()
     }
 
-    private fun getDateSelected() {
-        calendarAdapter?.getDateSelected(
+    private fun setDateSelected() {
+        calendarAdapter?.setDateSelected(
             (activity as MainActivity).dateSelected,
             (activity as MainActivity).colorDateSelected
         )
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun resetFragment() {
+        setDateSelected()
+        calendarAdapter?.notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -67,10 +73,9 @@ class CalendarFragment() : Fragment() {
         dateList.clear()
         addDayOfWeek()
         changeStartDayOfWeek(day)
-        addDateOfMonth(monthCalendar.get(Calendar.MONTH), monthCalendar.get(Calendar.YEAR))
+        addDateOfMonth()
         binding.tvMonth.text =
             SimpleDateFormat("MMMM - yyyy", Locale.ENGLISH).format(monthCalendar.time)
-        getDateSelected()
         calendarAdapter?.notifyDataSetChanged()
     }
 
@@ -86,42 +91,40 @@ class CalendarFragment() : Fragment() {
         }
     }
 
-    private fun addDateOfMonth(month: Int, year: Int) {
+    private fun addDateOfMonth() {
+        val month = monthCalendar[Calendar.MONTH]
+        val year = monthCalendar[Calendar.YEAR]
         val startMonth = Calendar.getInstance()
-        val endMonth = Calendar.getInstance()
-        startMonth.set(Calendar.MONTH, month)
-        startMonth.set(Calendar.YEAR, year)
-        startMonth.set(Calendar.DAY_OF_MONTH, 1)
-        startMonth.set(Calendar.HOUR, 0)
-        startMonth.set(Calendar.MINUTE, 0)
-        startMonth.set(Calendar.SECOND, 0)
-        startMonth.set(Calendar.MILLISECOND, 0)
+        startMonth.apply {
+            set(Calendar.MONTH, month)
+            set(Calendar.YEAR, year)
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
         startMonth.time
         startMonth[Calendar.DAY_OF_WEEK] = dateList[0].date.toInt()
         if (startMonth[Calendar.DATE] != 1 && startMonth[Calendar.MONTH] == month)
             startMonth.add(Calendar.DATE, -7)
 
-        endMonth.set(Calendar.MONTH, month + 1)
-        endMonth.set(Calendar.YEAR, year)
-        endMonth.set(Calendar.DAY_OF_MONTH, 0)
-        endMonth.time
-        endMonth[Calendar.DAY_OF_WEEK] = dateList[6].date.toInt()
-        if (endMonth[Calendar.MONTH] == month &&
-            endMonth[Calendar.DATE] < monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        ) {
-            endMonth.add(Calendar.DATE, 7)
-        }
-        while (startMonth <= endMonth) {
-            if (startMonth[Calendar.MONTH] == month) {
-                dateList.add(
-                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_IN_MONTH)
-                )
-            } else {
-                dateList.add(
-                    DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_NOT_IN_MONTH)
-                )
+        while (true) {
+            for (i in 1 until 8) {
+                if (startMonth[Calendar.MONTH] == month) {
+                    dateList.add(
+                        DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_IN_MONTH)
+                    )
+                } else {
+                    dateList.add(
+                        DateCalendar("", startMonth.timeInMillis, CalendarAdapter.DATE_NOT_IN_MONTH)
+                    )
+                }
+                startMonth.add(Calendar.DATE, 1)
             }
-            startMonth.add(Calendar.DATE, 1)
+            if ((startMonth[Calendar.MONTH] > month) || (startMonth[Calendar.YEAR] > year)) {
+                break
+            }
         }
     }
 
