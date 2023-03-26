@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/drawer_choose_month"
+        android:title="Choose month"
+        android:icon="@drawable/ic_baseline_calendar_month_24"/>
+</menu>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/menu_current_date"
+        android:title="Current date" />
+    <item
+        android:id="@+id/menu_choose_day"
+        android:title="Choose day">
+        <menu>
+            <item
+                android:id="@+id/choose_sunday"
+                android:title="Sunday" />
+            <item
+                android:id="@+id/choose_monday"
+                android:title="Monday" />
+            <item
+                android:id="@+id/choose_tuesday"
+                android:title="Tuesday" />
+            <item
+                android:id="@+id/choose_wednesday"
+                android:title="Wednesday" />
+            <item
+                android:id="@+id/choose_thursday"
+                android:title="Thursday" />
+            <item
+                android:id="@+id/choose_friday"
+                android:title="Friday" />
+            <item
+                android:id="@+id/choose_saturday"
+                android:title="Saturday" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/menu_setting"
+        android:title="Setting" />
+    <item
+        android:id="@+id/menu_exit"
+        android:title="Exit" />
+</menu>
