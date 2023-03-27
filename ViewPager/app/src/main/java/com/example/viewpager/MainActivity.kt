@@ -1,12 +1,11 @@
 package com.example.viewpager
 
-import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -17,8 +16,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    OnDateSetListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private lateinit var toggle: ActionBarDrawerToggle
@@ -26,8 +24,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var startDayOfWeek = "SUN"
     var dateSelected = 0L
     var colorDateSelected = Color.CYAN
-    var currentMonthShowing = calendar[Calendar.MONTH]
-    var currentYearShowing = calendar[Calendar.YEAR]
+    private var currentMonthShowing = calendar[Calendar.MONTH] + 1
+    private var currentYearShowing = calendar[Calendar.YEAR]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +58,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.navDrawer.setNavigationItemSelectedListener(this)
         binding.drawerExit.setOnClickListener { finish() }
         binding.root.addDrawerListener(toggle)
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.root.isDrawerOpen(GravityCompat.START)) {
+                    binding.root.closeDrawer(GravityCompat.START)
+                } else {
+                    finish()
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun setDateSelectedIsToday() {
@@ -79,26 +87,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.choose_sunday -> {
-                startDayOfWeek = "SUN"
-            }
-            R.id.choose_monday -> {
-                startDayOfWeek = "MON"
-            }
-            R.id.choose_tuesday -> {
-                startDayOfWeek = "TUE"
-            }
-            R.id.choose_wednesday -> {
-                startDayOfWeek = "WED"
-            }
-            R.id.choose_thursday -> {
-                startDayOfWeek = "THU"
-            }
-            R.id.choose_friday -> {
-                startDayOfWeek = "FRI"
-            }
-            R.id.choose_saturday -> {
-                startDayOfWeek = "SAT"
+            R.id.menu_choose_day -> {
+                val subMenuDay = item.subMenu
+                for (i in 0 until subMenuDay!!.size()) {
+                    subMenuDay.getItem(i).setOnMenuItemClickListener {
+                        startDayOfWeek = CalendarFragment.DAY_OF_WEEK_LIST[i]
+                        supportFragmentManager.fragments.forEach {
+                            (it as? CalendarFragment)?.selectStartDayOfWeek(startDayOfWeek)
+                        }
+                        true
+                    }
+                }
             }
             R.id.menu_setting -> {
                 Toast.makeText(applicationContext, "Settings", Toast.LENGTH_SHORT).show()
@@ -108,9 +107,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setDateSelectedIsToday()
                 resetALlFragment()
             }
-        }
-        supportFragmentManager.fragments.forEach {
-            (it as? CalendarFragment)?.selectStartDayOfWeek(startDayOfWeek)
         }
         return true
     }
@@ -124,31 +120,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.drawer_choose_month -> {
-                val monthYearPickerDialog = MonthYearPickerDialog()
-                monthYearPickerDialog.setDatePickerListener(this)
-                monthYearPickerDialog.show(supportFragmentManager, null)
+                showMonthYearPicker(currentMonthShowing, currentYearShowing) { month, year ->
+                    currentMonthShowing = month
+                    currentYearShowing = year
+                    val startMonth =
+                        YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+                    val endMonth = YearMonth.of(year, month)
+                    val monthsBetween = ChronoUnit.MONTHS.between(startMonth, endMonth)
+                    binding.viewPager.setCurrentItem((50 + monthsBetween).toInt(), true)
+                }
                 binding.root.closeDrawer(GravityCompat.START)
             }
         }
         return true
-    }
-
-    override fun onDateSet(view: DatePicker?, year: Int, month: Int, date: Int) {
-        val startMonth = YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
-        val endMonth = YearMonth.of(year, month)
-        currentMonthShowing = month - 1
-        currentYearShowing = year
-        val monthsBetween = ChronoUnit.MONTHS.between(startMonth, endMonth)
-        binding.viewPager.setCurrentItem((50 + monthsBetween).toInt(), true)
-
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (binding.root.isDrawerOpen(GravityCompat.START)) {
-            binding.root.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
     }
 }
