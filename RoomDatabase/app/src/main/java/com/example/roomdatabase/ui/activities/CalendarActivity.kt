@@ -135,6 +135,10 @@ class CalendarActivity : AppCompatActivity() {
             }
             R.id.set_password_menu -> {
                 val intent = Intent(this, MainActivity::class.java)
+                val bundle = Bundle().apply {
+                    putString("setPassword", "setPassword")
+                }
+                intent.putExtras(bundle)
                 activityResultPassword.launch(intent)
             }
             R.id.diary_list_menu -> {

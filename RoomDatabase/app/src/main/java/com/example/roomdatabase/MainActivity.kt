@@ -24,7 +24,9 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
     private fun initViews() {
         password = sharedPreferences.getInt(CalendarActivity.PREFERENCES_PASSWORD, -1)
-        if (isTaskRoot) {
+        val bundle = intent.extras
+        val key = bundle?.getString("setPassword")
+        if (key == null) {
             binding.btSavePassword.visibility = View.GONE
             binding.btConfirmPassword.visibility = View.VISIBLE
             if (password == -1) {
@@ -57,8 +59,12 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             binding.btConfirmPassword -> {
                 if (inputPassword.isNotEmpty()) {
                     if (password == inputPassword.toInt()) {
-                        startActivity(Intent(this, CalendarActivity::class.java))
-                        finish()
+                        if (isTaskRoot) {
+                            startActivity(Intent(this, CalendarActivity::class.java))
+                            finish()
+                        } else {
+                            finish()
+                        }
                     } else {
                         binding.edtPassword.error = "Sai mật khẩu"
                     }
