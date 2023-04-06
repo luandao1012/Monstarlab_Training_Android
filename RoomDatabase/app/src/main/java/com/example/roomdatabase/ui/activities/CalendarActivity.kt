@@ -18,6 +18,7 @@ import com.example.roomdatabase.MainActivity
 import com.example.roomdatabase.R
 import com.example.roomdatabase.data.DiaryRoomDatabase
 import com.example.roomdatabase.databinding.ActivityCalendarBinding
+import com.example.roomdatabase.setTimeCalendar
 import com.example.roomdatabase.ui.adapters.ViewPagerAdapter
 import com.example.roomdatabase.ui.fragments.CalendarFragment
 import com.example.roomdatabase.ui.viewmodels.DiaryViewModel
@@ -26,8 +27,6 @@ import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
     companion object {
-        const val EXTRA_PASSWORD = "extra password"
-        const val PREFERENCES_PASSWORD = "password"
         private const val WRITE_STORAGE_PERMISSION_CODE = 111
         private const val READ_STORAGE_PERMISSION_CODE = 222
     }
@@ -35,16 +34,12 @@ class CalendarActivity : AppCompatActivity() {
     var dateSelected = 0L
     private val binding by lazy { ActivityCalendarBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private lateinit var activityResultPassword: ActivityResultLauncher<Intent>
     private lateinit var activityCreateFile: ActivityResultLauncher<Intent>
     private lateinit var activitySelectFile: ActivityResultLauncher<Intent>
     private val diaryViewModel: DiaryViewModel by viewModels {
         DiaryViewModelFactory(
             DiaryRoomDatabase.getDatabase(applicationContext).diaryDao()
         )
-    }
-    private val sharedPreferences by lazy {
-        getSharedPreferences("passwordPreferences", MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,16 +61,6 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        activityResultPassword =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    val password = result.data?.getStringExtra(EXTRA_PASSWORD)?.toInt()
-                    if (password != null) {
-                        sharedPreferences.edit().putInt(PREFERENCES_PASSWORD, password).apply()
-                    }
-                    Toast.makeText(this, "Đặt mật khẩu thành công", Toast.LENGTH_SHORT).show()
-                }
-            }
         activityCreateFile =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
@@ -98,12 +83,7 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun setDateSelectedIsToday() {
         val calendar = Calendar.getInstance()
-        calendar.apply {
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
+        calendar.setTimeCalendar()
         dateSelected = calendar.timeInMillis
     }
 
@@ -114,7 +94,9 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun checkPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission(permission: String, requestCode: Int) {
@@ -139,7 +121,7 @@ class CalendarActivity : AppCompatActivity() {
                     putString("setPassword", "setPassword")
                 }
                 intent.putExtras(bundle)
-                activityResultPassword.launch(intent)
+                startActivity(intent)
             }
             R.id.diary_list_menu -> {
                 startActivity(Intent(this, DiaryListActivity::class.java))
@@ -166,7 +148,7 @@ class CalendarActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/csv"
+            type = "text/comma-separated-values"
             putExtra(Intent.EXTRA_TITLE, "backup.csv")
         }
         activityCreateFile.launch(intent)

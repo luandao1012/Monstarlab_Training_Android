@@ -36,10 +36,7 @@ fun Context.showDatePickerDialog(
             set(Calendar.YEAR, binding.pickerYear.value)
             set(Calendar.MONTH, binding.pickerMonth.value - 1)
             set(Calendar.DATE, binding.pickerDate.value)
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+            setTimeCalendar()
         }
         callback?.invoke(calendar.timeInMillis)
     }
@@ -65,4 +62,13 @@ fun Context.showDialog(
     }
     val dialog = builder.create()
     dialog.show()
+}
+
+fun Calendar.setTimeCalendar() {
+    this.apply {
+        set(Calendar.HOUR, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 }

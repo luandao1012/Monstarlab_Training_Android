@@ -3,7 +3,6 @@ package com.example.roomdatabase.ui.fragments
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +32,6 @@ class CalendarFragment() : Fragment() {
             DiaryRoomDatabase.getDatabase(requireActivity().applicationContext).diaryDao()
         )
     }
-    private var month = -1
-    private var year = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,8 +52,8 @@ class CalendarFragment() : Fragment() {
     }
 
     private fun initViews() {
-        month = monthCalendar[Calendar.MONTH]
-        year = monthCalendar[Calendar.YEAR]
+        val month = monthCalendar[Calendar.MONTH]
+        val year = monthCalendar[Calendar.YEAR]
         calendarAdapter = CalendarAdapter()
         calendarViewModel.addDateOfMonth(month, year)
         binding.rvCalendar.adapter = calendarAdapter
@@ -75,7 +72,7 @@ class CalendarFragment() : Fragment() {
             startActivity(intent)
         }
 
-        calendarAdapter?.saveDateSelected { date ->
+        calendarAdapter?.setDateSelectedCallback { date ->
             (activity as? CalendarActivity)?.apply {
                 dateSelected = date
                 resetALlFragment()

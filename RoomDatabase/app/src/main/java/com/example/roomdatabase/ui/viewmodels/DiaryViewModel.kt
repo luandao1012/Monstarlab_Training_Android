@@ -19,28 +19,23 @@ class DiaryViewModel(private val dao: DiaryDao) : ViewModel() {
 
     fun getAllDiary() {
         viewModelScope.launch {
-            dao.getFlowDiary().collect {
+            dao.getFlowAllDiary().collect {
                 allDiary.emit(it)
             }
         }
     }
 
     fun search(word: String) {
-        var list: List<Diary>
-        viewModelScope.launch {
-            dao.getFlowDiary().collect {
-                list = it.filter { diary ->
-                    diary.content.contains(word, true)
-                }
-                allDiary.emit(list)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = dao.search(word)
+            allDiary.emit(list)
         }
     }
 
     fun backupToCSV(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val contentResolver: ContentResolver = context.contentResolver
-            val listDiary = dao.getListDiary()
+            val listDiary = dao.getListAllDiary()
             val outputStream = contentResolver.openOutputStream(uri)
             val writer = outputStream?.bufferedWriter()
             writer?.write(""""Date","Content"""")

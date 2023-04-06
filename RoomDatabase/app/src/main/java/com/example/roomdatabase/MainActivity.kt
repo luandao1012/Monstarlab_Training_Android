@@ -4,11 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.roomdatabase.databinding.ActivityMainBinding
 import com.example.roomdatabase.ui.activities.CalendarActivity
 
 class MainActivity : AppCompatActivity(), OnClickListener {
+    companion object {
+        private const val PREFERENCES_PASSWORD = "password"
+    }
     private val sharedPreferences by lazy {
         getSharedPreferences("passwordPreferences", MODE_PRIVATE)
     }
@@ -23,7 +27,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     }
 
     private fun initViews() {
-        password = sharedPreferences.getInt(CalendarActivity.PREFERENCES_PASSWORD, -1)
+        password = sharedPreferences.getInt(PREFERENCES_PASSWORD, -1)
         val bundle = intent.extras
         val key = bundle?.getString("setPassword")
         if (key == null) {
@@ -45,14 +49,12 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        inputPassword = binding.edtPassword.text.toString()
+        inputPassword = binding.edtPassword.text.toString().trim()
         when (view) {
             binding.btSavePassword -> {
                 if (inputPassword.isNotEmpty()) {
-                    setResult(
-                        RESULT_OK,
-                        Intent().putExtra(CalendarActivity.EXTRA_PASSWORD, inputPassword)
-                    )
+                    sharedPreferences.edit().putInt(PREFERENCES_PASSWORD, inputPassword.toInt()).apply()
+                    Toast.makeText(applicationContext, "Đặt mật khẩu thành công", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }

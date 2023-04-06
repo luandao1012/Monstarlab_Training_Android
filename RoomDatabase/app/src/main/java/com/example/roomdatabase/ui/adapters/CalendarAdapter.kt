@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.roomdatabase.R
 import com.example.roomdatabase.data.Diary
 import com.example.roomdatabase.databinding.ItemCalendarBinding
+import com.example.roomdatabase.setTimeCalendar
 import java.util.*
 
 @SuppressLint("NotifyDataSetChanged")
@@ -33,7 +34,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         currentMonth = month
     }
 
-    fun saveDateSelected(callback: (date: Long) -> Unit) {
+    fun setDateSelectedCallback(callback: (date: Long) -> Unit) {
         callbackSaveDateSelected = callback
     }
 
@@ -46,12 +47,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        calendarToday.apply {
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
+        calendarToday.setTimeCalendar()
         val binding =
             ItemCalendarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val calendarViewHolder = CalendarViewHolder(binding)
