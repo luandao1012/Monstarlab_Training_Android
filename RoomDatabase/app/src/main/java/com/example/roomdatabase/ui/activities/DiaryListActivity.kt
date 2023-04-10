@@ -1,5 +1,6 @@
 package com.example.roomdatabase.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -36,6 +37,14 @@ class DiaryListActivity : AppCompatActivity() {
     private fun initListeners() {
         collectFlow(diaryViewModel.allDiary) { selectedDiary ->
             diaryListAdapter?.setData(selectedDiary)
+        }
+        diaryListAdapter?.setOnClickCallback {
+            val bundle = Bundle().apply {
+                putLong("date", it)
+            }
+            val intent = Intent(this, AddDiaryActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
         binding.ivBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
