@@ -12,9 +12,6 @@ import com.example.roomdatabase.data.DiaryDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import org.apache.commons.csv.CSVFormat
-import org.apache.commons.csv.CSVParser
-import org.apache.commons.csv.CSVPrinter
 
 class DiaryViewModel(private val dao: DiaryDao) : ViewModel() {
     var allDiary = MutableSharedFlow<List<Diary>>(replay = 1)
@@ -41,37 +38,50 @@ class DiaryViewModel(private val dao: DiaryDao) : ViewModel() {
             val listDiary = dao.getListAllDiary()
             val outputStream = contentResolver.openOutputStream(uri)
             val writer = outputStream?.bufferedWriter()
-            val csvPrinter = CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Date", "Content"))
-            for (diary in listDiary) {
-                val diaryData = listOf(
-                    diary.date,
-                    diary.content
-                )
-                csvPrinter.printRecord(diaryData);
+            writer?.write(""""Date","Content"""")
+            writer?.newLine()
+            listDiary.forEach {
+                val date = "${it.date},"
+                val content = it.content.replace("\"", "\"\"")
+                writer?.write(date + "\"${content}\"")
+                writer?.newLine()
             }
-            csvPrinter.flush();
-            csvPrinter.close();
+            writer?.flush()
             outputStream?.close()
         }
     }
 
     fun restoreFromCSV(context: Context, uri: Uri) {
-        val contentResolver = context.contentResolver
+        val contentResolver: ContentResolver = context.contentResolver
         val inputStream = contentResolver.openInputStream(uri)
         val reader = inputStream?.bufferedReader()
-        val csvParser = CSVParser(reader, CSVFormat.DEFAULT.withHeader())
-        val header = arrayOf("Date", "Content")
-        if (csvParser.headerMap.keys.toTypedArray() contentEquals header) {
-            for (data in csvParser) {
-                val date = data.get("Date")
-                val content = data.get("Content")
-                addDiary(Diary(date.toLong(), content))
-            }
-            Toast.makeText(context, "Restore thành công", Toast.LENGTH_SHORT).show()
-        } else {
+        var line: String = reader?.readLine().toString()
+        if (line != """"Date","Content"""") {
             Toast.makeText(context, "File không hợp lệ", Toast.LENGTH_SHORT).show()
+        } else {
+            var date = ""
+            var content = ""
+            var count = 0
+            while (reader?.readLine().also { if (it != null) { line = it } } != null) {
+                if (count == 0) {
+                    val columns = line.split(",", limit = 2)
+                    date = columns[0]
+                    content = columns[1]
+                } else {
+                    content += "\n" + line
+                }
+                count += line.count { it == '"' }
+                if ((count % 2 == 0 && line.last() == '"')) {
+                    content = content.substring(1, content.length - 1)
+                    content = content.replace("\"\"", "\"")
+                    addDiary(Diary(date.toLong(), content))
+                    date = ""
+                    content = ""
+                    count = 0
+                }
+            }
+            inputStream?.close()
         }
-        inputStream?.close()
     }
 
     fun getDiary(date: Long) {

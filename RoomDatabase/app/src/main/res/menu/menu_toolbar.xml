@@ -5,7 +5,6 @@
         android:title="Danh sách nhật ký" />
     <item
         android:id="@+id/set_password_menu"
-        android:icon="@drawable/password_icon"
         android:title="Đặt mật khẩu" />
     <item
         android:id="@+id/current_date_menu"
