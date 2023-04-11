@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.roomdatabase.data.Diary
 import com.example.roomdatabase.data.DiaryDao
+import com.example.roomdatabase.setTimeCalendar
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
@@ -20,11 +21,8 @@ class CalendarViewModel(private val dao: DiaryDao) : ViewModel() {
                 set(Calendar.MONTH, month)
                 set(Calendar.YEAR, year)
                 set(Calendar.DAY_OF_MONTH, 1)
-                set(Calendar.HOUR, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
             }
+            startMonth.setTimeCalendar()
             startMonth.time
             startMonth[Calendar.DAY_OF_WEEK] = Calendar.SUNDAY
             if (startMonth[Calendar.DATE] != 1 && startMonth[Calendar.MONTH] == month)
