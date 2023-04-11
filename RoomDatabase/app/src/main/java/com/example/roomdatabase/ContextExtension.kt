@@ -14,7 +14,7 @@ fun Context.showDatePickerDialog(
     val binding = DatePickerDialogBinding.inflate(LayoutInflater.from(this))
     val builder = AlertDialog.Builder(this)
     builder.setView(binding.root)
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance(Locale("vi", "VN"))
     calendar.timeInMillis = date
     binding.pickerMonth.apply {
         minValue = 1
@@ -66,7 +66,7 @@ fun Context.showDialog(
 
 fun Calendar.setTimeCalendar() {
     this.apply {
-        set(Calendar.HOUR, 0)
+        set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)

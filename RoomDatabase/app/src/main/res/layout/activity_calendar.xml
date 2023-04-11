@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/diary_icon"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Nhật ký"
         app:titleTextColor="@color/black" />

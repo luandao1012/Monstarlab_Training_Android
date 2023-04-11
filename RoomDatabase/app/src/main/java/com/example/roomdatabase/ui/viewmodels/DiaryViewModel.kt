@@ -41,7 +41,9 @@ class DiaryViewModel(private val dao: DiaryDao) : ViewModel() {
             writer?.write(""""Date","Content"""")
             writer?.newLine()
             listDiary.forEach {
-                writer?.write("${it.date},\"${it.content}\"")
+                val date = "${it.date},"
+                val content = it.content.replace("\"", "\"\"")
+                writer?.write(date + "\"${content}\"")
                 writer?.newLine()
             }
             writer?.flush()
@@ -57,15 +59,26 @@ class DiaryViewModel(private val dao: DiaryDao) : ViewModel() {
         if (line != """"Date","Content"""") {
             Toast.makeText(context, "File không hợp lệ", Toast.LENGTH_SHORT).show()
         } else {
-            while (reader?.readLine().also {
-                    if (it != null) {
-                        line = it
-                    }
-                } != null) {
-                val columns = line.split(",")
-                val date = columns[0]
-                val content = columns[1].substring(1, columns[1].length - 1)
-                addDiary(Diary(date.toLong(), content))
+            var date = ""
+            var content = ""
+            var count = 0
+            while (reader?.readLine().also { if (it != null) { line = it } } != null) {
+                if (count == 0) {
+                    val columns = line.split(",", limit = 2)
+                    date = columns[0]
+                    content = columns[1]
+                } else {
+                    content += "\n" + line
+                }
+                count += line.count { it == '"' }
+                if ((count % 2 == 0 && line.last() == '"')) {
+                    content = content.substring(1, content.length - 1)
+                    content = content.replace("\"\"", "\"")
+                    addDiary(Diary(date.toLong(), content))
+                    date = ""
+                    content = ""
+                    count = 0
+                }
             }
             inputStream?.close()
         }

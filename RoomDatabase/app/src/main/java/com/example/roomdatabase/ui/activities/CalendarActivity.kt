@@ -75,7 +75,6 @@ class CalendarActivity : AppCompatActivity() {
                 if (result.resultCode == RESULT_OK) {
                     result.data?.data?.let { uri ->
                         diaryViewModel.restoreFromCSV(this, uri)
-                        Toast.makeText(this, "Restore thành công", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
