@@ -8,10 +8,14 @@ import com.example.service_broadcast.databinding.ItemSongBinding
 
 class SongAdapter : Adapter<SongAdapter.SongViewHolder>() {
     private var listMusic = arrayListOf<Song>()
-
+    private var callbackOnClick: ((position: Int) -> Unit)? = null
     fun setData(list: List<Song>) {
         listMusic = list as ArrayList<Song>
         notifyDataSetChanged()
+    }
+
+    fun setOnClickCallback(callback: ((position: Int) -> Unit)? = null) {
+        callbackOnClick = callback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -22,6 +26,7 @@ class SongAdapter : Adapter<SongAdapter.SongViewHolder>() {
                 false
             )
         )
+        songViewHolder.bindListeners()
         return songViewHolder
     }
 
@@ -35,6 +40,12 @@ class SongAdapter : Adapter<SongAdapter.SongViewHolder>() {
         fun bind(position: Int) {
             binding.name.text = listMusic[position].name
             binding.signer.text = listMusic[position].singer
+        }
+
+        fun bindListeners() {
+            binding.root.setOnClickListener {
+                callbackOnClick?.invoke(adapterPosition)
+            }
         }
     }
 }
