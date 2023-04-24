@@ -1,5 +1,6 @@
 package com.example.service_broadcast
 
-import android.net.Uri
+import kotlinx.serialization.Serializable
 
-data class Song(val name: String, val singer: String, val uri: Uri)
+@Serializable
+data class Song(val name: String, val singer: String, val uri: String)

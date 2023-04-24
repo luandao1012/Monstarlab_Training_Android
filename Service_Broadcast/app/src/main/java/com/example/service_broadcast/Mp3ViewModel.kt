@@ -32,7 +32,7 @@ class Mp3ViewModel : ViewModel() {
                 val songUri = ContentUris.withAppendedId(uri, index)
                 val path = cursor.getString(3)
                 if (path.endsWith(".mp3") && File(path).exists()) {
-                    listMp3.add(Song(name, singer, songUri))
+                    listMp3.add(Song(name, singer, songUri.toString()))
                 }
             }
             cursor.close()

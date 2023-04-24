@@ -52,7 +52,6 @@
             android:id="@+id/iv_pre"
             android:layout_width="60dp"
             android:layout_height="60dp"
-
             android:background="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_previous" />
