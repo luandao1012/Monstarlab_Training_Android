@@ -135,6 +135,7 @@ class Mp3Service : Service() {
         showNotification(R.drawable.ic_pause)
         mediaPlayer.setOnCompletionListener {
             if (playMode == PlayMode.REPEAT_ONE.positionMode) playMp3(mp3Position)
+            else if (playMode == PlayMode.DEFAULT.positionMode && mp3Position == mp3Playlist.size - 1)
             else setNextMp3(true)
         }
     }
@@ -146,7 +147,7 @@ class Mp3Service : Service() {
     }
 
     fun setNextMp3(isNext: Boolean) {
-        var position = -1
+        val position: Int
         if (playMode == PlayMode.SHUFFLE.positionMode) {
             position = getShufflePosition()
         } else {
@@ -157,12 +158,9 @@ class Mp3Service : Service() {
             }
         }
         playMp3(position)
-        if (playMode == PlayMode.DEFAULT.positionMode && position == 0) {
-            setEndDefaultMode()
-        }
     }
 
-    private fun setEndDefaultMode() {
+    private fun setDefaultMode() {
         mediaPlayer.pause()
         mediaPlayer.seekTo(0)
         showNotification(R.drawable.ic_play)
