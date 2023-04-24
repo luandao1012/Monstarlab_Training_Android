@@ -34,7 +34,7 @@ class MainActivity : BaseActivity(), OnClickListener {
         binding.rv.adapter = songAdapter
         val channel =
             NotificationChannel(
-                CompanionObject.CHANNEL_ID,
+                Mp3Service.CHANNEL_ID,
                 "Playing MP3",
                 NotificationManager.IMPORTANCE_LOW
             )
@@ -55,20 +55,20 @@ class MainActivity : BaseActivity(), OnClickListener {
 
     private fun initListeners() {
         binding.tvName.isSelected = true
-        binding.ivPlayMain.setOnClickListener(this)
-        binding.ivNextMain.setOnClickListener(this)
-        binding.ivPreMain.setOnClickListener(this)
+        binding.ivPlay.setOnClickListener(this)
+        binding.ivNext.setOnClickListener(this)
+        binding.ivPre.setOnClickListener(this)
         binding.layoutPlayMp3Main.setOnClickListener(this)
         mp3ViewModel.allMp3.observe(this) {
             mp3Service?.setMp3List(it)
             binding.tv.visibility = if (it.isNotEmpty()) View.GONE else View.VISIBLE
             songAdapter?.setData(it)
         }
-        songAdapter?.setOnClickCallback {
+        songAdapter?.setOnClickItem {
             val intent = Intent(this, PlayMp3Activity::class.java)
             val bundle = bundleOf().apply {
-                putBoolean(CompanionObject.IS_CURRENT_MP3, false)
-                putInt(CompanionObject.MP3_POSITION, it)
+                putBoolean(Mp3Service.IS_CURRENT_MP3, false)
+                putInt(Mp3Service.MP3_POSITION, it)
             }
             intent.putExtras(bundle)
             startActivity(intent)
@@ -91,14 +91,14 @@ class MainActivity : BaseActivity(), OnClickListener {
 
     override fun onClick(view: View?) {
         when (view) {
-            binding.ivPlayMain -> mp3Service?.playOrPause()
-            binding.ivNextMain -> mp3Service?.nextMp3()
-            binding.ivPreMain -> mp3Service?.prevMp3()
+            binding.ivPlay -> mp3Service?.setPlayPauseMp3()
+            binding.ivNext -> mp3Service?.setNextMp3(true)
+            binding.ivPre -> mp3Service?.setNextMp3(false)
             binding.layoutPlayMp3Main -> {
                 val intent = Intent(this, PlayMp3Activity::class.java)
                 val bundle = bundleOf().apply {
-                    putBoolean(CompanionObject.IS_CURRENT_MP3, true)
-                    putInt(CompanionObject.MP3_POSITION, mp3Position)
+                    putBoolean(Mp3Service.IS_CURRENT_MP3, true)
+                    putInt(Mp3Service.MP3_POSITION, mp3Position)
                 }
                 intent.putExtras(bundle)
                 startActivity(intent)
@@ -117,9 +117,9 @@ class MainActivity : BaseActivity(), OnClickListener {
     override fun setPlayOrPause(isPlaying: Boolean) {
         super.setPlayOrPause(isPlaying)
         if (isPlaying) {
-            binding.ivPlayMain.setImageResource(R.drawable.ic_pause)
+            binding.ivPlay.setImageResource(R.drawable.ic_pause)
         } else {
-            binding.ivPlayMain.setImageResource(R.drawable.ic_play)
+            binding.ivPlay.setImageResource(R.drawable.ic_play)
         }
     }
 }

@@ -23,7 +23,7 @@ class SongAdapter : Adapter<SongAdapter.SongViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun setOnClickCallback(callback: ((position: Int) -> Unit)? = null) {
+    fun setOnClickItem(callback: ((position: Int) -> Unit)? = null) {
         callbackOnClick = callback
     }
 

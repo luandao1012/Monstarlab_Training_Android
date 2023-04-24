@@ -37,8 +37,8 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
 
     private fun initViews() {
         val bundle = intent.extras
-        mp3Position = bundle?.getInt(CompanionObject.MP3_POSITION, -1)!!
-        isCurrentMp3 = bundle.getBoolean(CompanionObject.IS_CURRENT_MP3)
+        mp3Position = bundle?.getInt(Mp3Service.MP3_POSITION, -1)!!
+        isCurrentMp3 = bundle.getBoolean(Mp3Service.IS_CURRENT_MP3)
         rotateAnimation = ObjectAnimator.ofFloat(binding.ivCd, "rotation", 0f, 360f)
         rotateAnimation?.apply {
             duration = 10000
@@ -92,9 +92,9 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
 
     override fun onClick(view: View?) {
         when (view) {
-            binding.ivPlay -> mp3Service?.playOrPause()
-            binding.ivNext -> mp3Service?.nextMp3()
-            binding.ivPre -> mp3Service?.prevMp3()
+            binding.ivPlay -> mp3Service?.setPlayPauseMp3()
+            binding.ivNext -> mp3Service?.setNextMp3(true)
+            binding.ivPre -> mp3Service?.setNextMp3(false)
             binding.ivMode -> {
                 playMode++
                 setButton()
