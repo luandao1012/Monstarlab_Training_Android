@@ -43,8 +43,8 @@ class Mp3Service : Service() {
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_PREV -> playMp3(getMp3PositionContinue(ActionPlay.ACTION_NEXT))
-                ACTION_NEXT -> playMp3(getMp3PositionContinue(ActionPlay.ACTION_PREV))
+                ACTION_PREV -> setNextMp3()
+                ACTION_NEXT -> setPrevMp3()
                 ACTION_PLAY -> setPlayPauseMp3()
             }
         }
@@ -77,8 +77,17 @@ class Mp3Service : Service() {
         }
         registerReceiver(mp3Receiver, intentFilter)
         mediaPlayer.setOnCompletionListener {
-            if (getMp3PositionContinue(ActionPlay.ACTION_COMPLETE) != -1)
+            if (playMode == PlayMode.DEFAULT.positionMode && mp3Position == mp3Playlist.size - 1) {
+                mediaPlayer.pause()
+                mediaPlayer.seekTo(0)
+                showNotification(R.drawable.ic_play)
+                sendBroadcastToUi(
+                    PLAY_OR_PAUSE,
+                    Bundle().apply { putBoolean(PLAY_OR_PAUSE, false) })
+                sendBroadcastToUi(ACTION_SEEK_TO, Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
+            } else {
                 playMp3(getMp3PositionContinue(ActionPlay.ACTION_COMPLETE))
+            }
         }
     }
 
@@ -145,46 +154,18 @@ class Mp3Service : Service() {
         sendBroadcast(intent)
     }
 
-    fun getMp3PositionContinue(action: ActionPlay): Int {
-        var actionContinue = action
-        var position = mp3Position
-        when (playMode) {
-            PlayMode.DEFAULT.positionMode -> {
-                if (mp3Position == mp3Playlist.size - 1) {
-                    setDefaultMode()
-                    position = -1
-                } else {
-                    if (actionContinue == ActionPlay.ACTION_COMPLETE)
-                        actionContinue = ActionPlay.ACTION_NEXT
+    private fun getMp3PositionContinue(action: ActionPlay): Int {
+        return when {
+            playMode == PlayMode.SHUFFLE.positionMode -> getShufflePosition()
+            action == ActionPlay.ACTION_NEXT -> if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
+            action == ActionPlay.ACTION_PREV -> if (mp3Position == 0) mp3Playlist.size - 1 else mp3Position - 1
+            else -> {
+                if (playMode == PlayMode.REPEAT_ONE.positionMode) mp3Position
+                else {
+                    if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
                 }
-            }
-            PlayMode.REPEAT_ONE.positionMode -> Unit
-            PlayMode.SHUFFLE.positionMode -> position = getShufflePosition()
-            PlayMode.REPEAT_ALL.positionMode -> {
-                if (actionContinue == ActionPlay.ACTION_COMPLETE)
-                    actionContinue = ActionPlay.ACTION_NEXT
             }
         }
-        if (playMode != PlayMode.SHUFFLE.positionMode) {
-            when (actionContinue) {
-                ActionPlay.ACTION_NEXT -> {
-                    position = if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
-                }
-                ActionPlay.ACTION_PREV -> {
-                    position = if (mp3Position == 0) mp3Playlist.size - 1 else mp3Position - 1
-                }
-                else -> Unit
-            }
-        }
-        return position
-    }
-
-    private fun setDefaultMode() {
-        mediaPlayer.pause()
-        mediaPlayer.seekTo(0)
-        showNotification(R.drawable.ic_play)
-        sendBroadcastToUi(PLAY_OR_PAUSE, Bundle().apply { putBoolean(PLAY_OR_PAUSE, false) })
-        sendBroadcastToUi(ACTION_SEEK_TO, Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
     }
 
     private fun getShufflePosition(): Int {
@@ -209,6 +190,14 @@ class Mp3Service : Service() {
             PLAY_OR_PAUSE,
             Bundle().apply { putBoolean(PLAY_OR_PAUSE, mediaPlayer.isPlaying) }
         )
+    }
+
+    fun setNextMp3() {
+        playMp3(getMp3PositionContinue(ActionPlay.ACTION_NEXT))
+    }
+
+    fun setPrevMp3() {
+        playMp3(getMp3PositionContinue(ActionPlay.ACTION_PREV))
     }
 
     fun setMp3Time(time: Int) {

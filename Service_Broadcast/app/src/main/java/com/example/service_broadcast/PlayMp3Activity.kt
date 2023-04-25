@@ -94,8 +94,8 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
     override fun onClick(view: View?) {
         when (view) {
             binding.ivPlay -> mp3Service?.setPlayPauseMp3()
-            binding.ivNext -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_NEXT)!!)
-            binding.ivPre -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_PREV)!!)
+            binding.ivNext -> mp3Service?.setNextMp3()
+            binding.ivPre -> mp3Service?.setPrevMp3()
             binding.ivMode -> {
                 playMode++
                 setButton()

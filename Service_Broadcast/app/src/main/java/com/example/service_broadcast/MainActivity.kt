@@ -41,8 +41,8 @@ class MainActivity : BaseActivity(), OnClickListener {
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+            == PackageManager.PERMISSION_GRANTED)
+        {
             mp3ViewModel.getAllMp3Files(this)
         } else {
             ActivityCompat.requestPermissions(
@@ -92,8 +92,8 @@ class MainActivity : BaseActivity(), OnClickListener {
     override fun onClick(view: View?) {
         when (view) {
             binding.ivPlay -> mp3Service?.setPlayPauseMp3()
-            binding.ivNext -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_NEXT)!!)
-            binding.ivPre -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_PREV)!!)
+            binding.ivNext -> mp3Service?.setNextMp3()
+            binding.ivPre -> mp3Service?.setPrevMp3()
             binding.layoutPlayMp3Main -> {
                 val intent = Intent(this, PlayMp3Activity::class.java)
                 val bundle = bundleOf().apply {
