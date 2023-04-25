@@ -43,8 +43,8 @@ class Mp3Service : Service() {
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_PREV -> setNextMp3()
-                ACTION_NEXT -> setPrevMp3()
+                ACTION_PREV -> setPrevMp3()
+                ACTION_NEXT -> setNextMp3()
                 ACTION_PLAY -> setPlayPauseMp3()
             }
         }
