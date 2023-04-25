@@ -12,7 +12,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
 
     var mp3Service: Mp3Service? = null
     val mp3ViewModel: Mp3ViewModel by viewModels()
-    var isPlaying: Boolean = true
+    var isPlaying: Boolean = false
     var mp3Position = -1
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -21,16 +21,16 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                     val bundle = intent.extras
                     val song = bundle?.getString(Mp3Service.INFO_MP3)
                     val duration = bundle?.getInt(Mp3Service.DURATION_MP3, 0)
-                    val position = bundle?.getInt(Mp3Service.MP3_POSITION, 0)
-                    if (song != null && duration != null && position != null) {
-                        getInfoSong(Json.decodeFromString(song), duration, position)
+                    mp3Position = bundle?.getInt(Mp3Service.MP3_POSITION, 0)!!
+                    if (song != null && duration != null) {
+                        getInfoSong(Json.decodeFromString(song), duration)
                     }
                 }
                 Mp3Service.PLAY_OR_PAUSE -> {
                     val isMp3Playing = intent.extras?.getBoolean(Mp3Service.PLAY_OR_PAUSE)
                     if (isMp3Playing != null) {
                         isPlaying = isMp3Playing
-                        setPlayOrPause(isMp3Playing)
+                        setPlayOrPause()
                     }
                 }
                 Mp3Service.ACTION_SEEK_TO -> {
@@ -68,7 +68,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
 
     override fun onServiceDisconnected(p0: ComponentName?) = Unit
     open fun createdService() = Unit
-    open fun getInfoSong(song: Song, duration: Int, position: Int) = Unit
-    open fun setPlayOrPause(isPlaying: Boolean) = Unit
+    open fun getInfoSong(song: Song, duration: Int) = Unit
+    open fun setPlayOrPause() = Unit
     open fun setTimeSeekbar(time: Int) = Unit
 }

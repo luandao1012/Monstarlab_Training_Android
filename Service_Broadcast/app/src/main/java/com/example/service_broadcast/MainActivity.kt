@@ -92,8 +92,8 @@ class MainActivity : BaseActivity(), OnClickListener {
     override fun onClick(view: View?) {
         when (view) {
             binding.ivPlay -> mp3Service?.setPlayPauseMp3()
-            binding.ivNext -> mp3Service?.setNextMp3(true)
-            binding.ivPre -> mp3Service?.setNextMp3(false)
+            binding.ivNext -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_NEXT)!!)
+            binding.ivPre -> mp3Service?.playMp3(mp3Service?.getMp3PositionContinue(Mp3Service.ActionPlay.ACTION_PREV)!!)
             binding.layoutPlayMp3Main -> {
                 val intent = Intent(this, PlayMp3Activity::class.java)
                 val bundle = bundleOf().apply {
@@ -106,16 +106,15 @@ class MainActivity : BaseActivity(), OnClickListener {
         }
     }
 
-    override fun getInfoSong(song: Song, duration: Int, position: Int) {
-        super.getInfoSong(song, duration, position)
-        mp3Position = position
+    override fun getInfoSong(song: Song, duration: Int) {
+        super.getInfoSong(song, duration)
         songAdapter?.setMp3Position(mp3Position)
         binding.tvName.text = song.name
         binding.layoutPlayMp3Main.visibility = View.VISIBLE
     }
 
-    override fun setPlayOrPause(isPlaying: Boolean) {
-        super.setPlayOrPause(isPlaying)
+    override fun setPlayOrPause() {
+        super.setPlayOrPause()
         if (isPlaying) {
             binding.ivPlay.setImageResource(R.drawable.ic_pause)
         } else {
