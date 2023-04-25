@@ -1,22 +1,24 @@
 package com.example.service_broadcast
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import com.example.service_broadcast.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity(), OnClickListener {
     companion object {
         private const val READ_STORAGE_PERMISSION_CODE = 111
     }
 
-    private val mp3ViewModel: Mp3ViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var songAdapter: SongAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +32,17 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         songAdapter = SongAdapter()
         binding.rv.adapter = songAdapter
+        val channel =
+            NotificationChannel(
+                Mp3Service.CHANNEL_ID,
+                "Playing MP3",
+                NotificationManager.IMPORTANCE_LOW
+            )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+            == PackageManager.PERMISSION_GRANTED)
+        {
             mp3ViewModel.getAllMp3Files(this)
         } else {
             ActivityCompat.requestPermissions(
@@ -44,12 +54,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
+        binding.tvName.isSelected = true
+        binding.ivPlay.setOnClickListener(this)
+        binding.ivNext.setOnClickListener(this)
+        binding.ivPre.setOnClickListener(this)
+        binding.layoutPlayMp3Main.setOnClickListener(this)
         mp3ViewModel.allMp3.observe(this) {
+            mp3Service?.setMp3List(it)
             binding.tv.visibility = if (it.isNotEmpty()) View.GONE else View.VISIBLE
             songAdapter?.setData(it)
         }
+        songAdapter?.setOnClickItem {
+            val intent = Intent(this, PlayMp3Activity::class.java)
+            val bundle = bundleOf().apply {
+                putBoolean(Mp3Service.IS_CURRENT_MP3, false)
+                putInt(Mp3Service.MP3_POSITION, it)
+            }
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -61,6 +85,40 @@ class MainActivity : AppCompatActivity() {
             mp3ViewModel.getAllMp3Files(this)
         } else {
             Toast.makeText(this, "Không có quyền truy cập", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun onClick(view: View?) {
+        when (view) {
+            binding.ivPlay -> mp3Service?.setPlayPauseMp3()
+            binding.ivNext -> mp3Service?.setNextMp3()
+            binding.ivPre -> mp3Service?.setPrevMp3()
+            binding.layoutPlayMp3Main -> {
+                val intent = Intent(this, PlayMp3Activity::class.java)
+                val bundle = bundleOf().apply {
+                    putBoolean(Mp3Service.IS_CURRENT_MP3, true)
+                    putInt(Mp3Service.MP3_POSITION, mp3Position)
+                }
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+    }
+
+    override fun getInfoSong(song: Song, duration: Int) {
+        super.getInfoSong(song, duration)
+        songAdapter?.setMp3Position(mp3Position)
+        binding.tvName.text = song.name
+        binding.layoutPlayMp3Main.visibility = View.VISIBLE
+    }
+
+    override fun setPlayOrPause() {
+        super.setPlayOrPause()
+        if (isPlaying) {
+            binding.ivPlay.setImageResource(R.drawable.ic_pause)
+        } else {
+            binding.ivPlay.setImageResource(R.drawable.ic_play)
         }
     }
 }

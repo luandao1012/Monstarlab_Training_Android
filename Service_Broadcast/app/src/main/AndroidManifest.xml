@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.MEDIA_CONTENT_CONTROL"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Service_Broadcast"
         tools:targetApi="31">
+        <service
+            android:name=".Mp3Service"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".PlayMp3Activity"
+            android:exported="false"
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
