@@ -23,7 +23,7 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
     private var mp3CurrentTime = 0
     private var countDownTimer: CountDownTimer? = null
     private var isCurrentMp3 = false
-    private var playMode = 0
+    private var playMode: Mp3Service.PlayMode = Mp3Service.PlayMode.DEFAULT
     private val listMode = intArrayOf(
         R.drawable.ic_repeat, R.drawable.ic_repeat, R.drawable.ic_repeat_one, R.drawable.ic_shuffle
     )
@@ -99,7 +99,7 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
             binding.ivNext -> mp3Service?.setNextMp3()
             binding.ivPre -> mp3Service?.setPrevMp3()
             binding.ivMode -> {
-                playMode++
+                playMode = playMode.nextPlayMode()
                 setButton()
                 mp3Service?.setPlayMode(playMode)
             }
@@ -107,13 +107,12 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
     }
 
     private fun setButton() {
-        if (playMode == 4) playMode = 0
-        if (playMode != 0) {
+        if (playMode != Mp3Service.PlayMode.DEFAULT) {
             binding.ivMode.setColorFilter(Color.BLACK)
         } else {
             binding.ivMode.setColorFilter(Color.GRAY)
         }
-        binding.ivMode.setImageResource(listMode[playMode])
+        binding.ivMode.setImageResource(listMode[playMode.ordinal])
     }
 
     override fun onPlayNewMp3(song: Song, duration: Int) {

@@ -58,7 +58,7 @@ class Mp3Service : Service() {
     private var mp3Position = -1
     private var positionList = arrayListOf<Int>()
     private var playbackSpeed = 0f
-    private var playMode = 0
+    private var playMode: PlayMode = PlayMode.DEFAULT
 
     private val sharedPreferences by lazy {
         getSharedPreferences(SAVE_INFO_MP3, Context.MODE_PRIVATE)
@@ -77,7 +77,7 @@ class Mp3Service : Service() {
         }
         registerReceiver(mp3Receiver, intentFilter)
         mediaPlayer.setOnCompletionListener {
-            if (playMode == PlayMode.DEFAULT.ordinal && mp3Position == mp3Playlist.size - 1) {
+            if (playMode == PlayMode.DEFAULT && mp3Position == mp3Playlist.size - 1) {
                 mediaPlayer.pause()
                 mediaPlayer.seekTo(0)
                 showNotification(R.drawable.ic_play)
@@ -106,7 +106,7 @@ class Mp3Service : Service() {
         return START_NOT_STICKY
     }
 
-    fun setPlayMode(mode: Int) {
+    fun setPlayMode(mode: PlayMode) {
         playMode = mode
     }
 
@@ -156,11 +156,11 @@ class Mp3Service : Service() {
 
     private fun getMp3PositionContinue(action: ActionPlay): Int {
         return when {
-            playMode == PlayMode.SHUFFLE.ordinal -> getShufflePosition()
+            playMode == PlayMode.SHUFFLE -> getShufflePosition()
             action == ActionPlay.ACTION_NEXT -> if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
             action == ActionPlay.ACTION_PREV -> if (mp3Position == 0) mp3Playlist.size - 1 else mp3Position - 1
             else -> {
-                if (playMode == PlayMode.REPEAT_ONE.ordinal) mp3Position
+                if (playMode == PlayMode.REPEAT_ONE) mp3Position
                 else {
                     if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
                 }
@@ -291,7 +291,11 @@ class Mp3Service : Service() {
     }
 
     enum class PlayMode {
-        DEFAULT, REPEAT_ALL, REPEAT_ONE, SHUFFLE
+        DEFAULT, REPEAT_ALL, REPEAT_ONE, SHUFFLE;
+
+        fun nextPlayMode(): PlayMode {
+            return values()[(ordinal + 1) % (values().size)]
+        }
     }
 
     enum class ActionPlay {
