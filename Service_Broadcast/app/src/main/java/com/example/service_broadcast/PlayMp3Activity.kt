@@ -37,8 +37,10 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
 
     private fun initViews() {
         val bundle = intent.extras
-        mp3Position = bundle?.getInt(Mp3Service.MP3_POSITION, -1)!!
-        isCurrentMp3 = bundle.getBoolean(Mp3Service.IS_CURRENT_MP3)
+        bundle?.let {
+            mp3Position = it.getInt(Mp3Service.MP3_POSITION, -1)
+            isCurrentMp3 = it.getBoolean(Mp3Service.IS_CURRENT_MP3)
+        }
         rotateAnimation = ObjectAnimator.ofFloat(binding.ivCd, "rotation", 0f, 360f)
         rotateAnimation?.apply {
             duration = 10000
@@ -105,8 +107,8 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
     }
 
     private fun setButton() {
-        if (playMode == 4) playMode = Mp3Service.PlayMode.DEFAULT.positionMode
-        if (playMode != Mp3Service.PlayMode.DEFAULT.positionMode) {
+        if (playMode == 4) playMode = 0
+        if (playMode != 0) {
             binding.ivMode.setColorFilter(Color.BLACK)
         } else {
             binding.ivMode.setColorFilter(Color.GRAY)
@@ -114,28 +116,30 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
         binding.ivMode.setImageResource(listMode[playMode])
     }
 
-    override fun getInfoSong(song: Song, duration: Int) {
-        super.getInfoSong(song, duration)
+    override fun onPlayNewMp3(song: Song, duration: Int) {
+        super.onPlayNewMp3(song, duration)
         setMp3(song, duration)
     }
 
-    override fun createdService() {
-        super.createdService()
-        playMode = mp3Service?.getPlayMode()!!
+    override fun onCreatedService() {
+        super.onCreatedService()
+        mp3Service?.let {
+            playMode = it.getPlayMode()
+        }
         if (isCurrentMp3) {
             mp3Service?.getInfoCurrentMp3 { song, duration, currentTime, isPlaying ->
                 mp3CurrentTime = currentTime
                 this.isPlaying = isPlaying
                 setMp3(song, duration)
-                setPlayOrPause()
+                onPlayOrPauseMp3()
             }
         } else {
             mp3Service?.playMp3(mp3Position)
         }
     }
 
-    override fun setPlayOrPause() {
-        super.setPlayOrPause()
+    override fun onPlayOrPauseMp3() {
+        super.onPlayOrPauseMp3()
         if (isPlaying) {
             rotateAnimation?.resume()
             binding.ivPlay.setImageResource(R.drawable.ic_pause)
@@ -145,8 +149,8 @@ class PlayMp3Activity : BaseActivity(), OnClickListener {
         }
     }
 
-    override fun setTimeSeekbar(time: Int) {
-        super.setTimeSeekbar(time)
+    override fun onChangeTimeMp3(time: Int) {
+        super.onChangeTimeMp3(time)
         binding.seekbarTime.progress = time
         binding.tvCurrentTime.text = timeFormat.format(time)
     }

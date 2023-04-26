@@ -77,7 +77,7 @@ class Mp3Service : Service() {
         }
         registerReceiver(mp3Receiver, intentFilter)
         mediaPlayer.setOnCompletionListener {
-            if (playMode == PlayMode.DEFAULT.positionMode && mp3Position == mp3Playlist.size - 1) {
+            if (playMode == PlayMode.DEFAULT.ordinal && mp3Position == mp3Playlist.size - 1) {
                 mediaPlayer.pause()
                 mediaPlayer.seekTo(0)
                 showNotification(R.drawable.ic_play)
@@ -156,11 +156,11 @@ class Mp3Service : Service() {
 
     private fun getMp3PositionContinue(action: ActionPlay): Int {
         return when {
-            playMode == PlayMode.SHUFFLE.positionMode -> getShufflePosition()
+            playMode == PlayMode.SHUFFLE.ordinal -> getShufflePosition()
             action == ActionPlay.ACTION_NEXT -> if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
             action == ActionPlay.ACTION_PREV -> if (mp3Position == 0) mp3Playlist.size - 1 else mp3Position - 1
             else -> {
-                if (playMode == PlayMode.REPEAT_ONE.positionMode) mp3Position
+                if (playMode == PlayMode.REPEAT_ONE.ordinal) mp3Position
                 else {
                     if (mp3Position == mp3Playlist.size - 1) 0 else mp3Position + 1
                 }
@@ -290,8 +290,8 @@ class Mp3Service : Service() {
         fun getService(): Mp3Service = this@Mp3Service
     }
 
-    enum class PlayMode(val positionMode: Int) {
-        DEFAULT(0), REPEAT_ALL(1), REPEAT_ONE(2), SHUFFLE(3)
+    enum class PlayMode {
+        DEFAULT, REPEAT_ALL, REPEAT_ONE, SHUFFLE
     }
 
     enum class ActionPlay {
