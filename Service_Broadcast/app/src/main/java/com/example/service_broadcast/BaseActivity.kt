@@ -19,24 +19,26 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
             when (intent?.action) {
                 Mp3Service.INFO_MP3 -> {
                     val bundle = intent.extras
-                    val song = bundle?.getString(Mp3Service.INFO_MP3)
-                    val duration = bundle?.getInt(Mp3Service.DURATION_MP3, 0)
-                    mp3Position = bundle?.getInt(Mp3Service.MP3_POSITION, 0)!!
-                    if (song != null && duration != null) {
-                        getInfoSong(Json.decodeFromString(song), duration)
+                    bundle?.let {
+                        val song = it.getString(Mp3Service.INFO_MP3).toString()
+                        val duration = it.getInt(Mp3Service.DURATION_MP3, 0)
+                        mp3Position = it.getInt(Mp3Service.MP3_POSITION, 0)
+                        onPlayNewMp3(Json.decodeFromString(song), duration)
                     }
                 }
+
                 Mp3Service.PLAY_OR_PAUSE -> {
                     val isMp3Playing = intent.extras?.getBoolean(Mp3Service.PLAY_OR_PAUSE)
                     if (isMp3Playing != null) {
                         isPlaying = isMp3Playing
-                        setPlayOrPause()
+                        onPlayOrPauseMp3()
                     }
                 }
+
                 Mp3Service.ACTION_SEEK_TO -> {
                     val mp3CurrentTime = intent.extras?.getInt(Mp3Service.ACTION_SEEK_TO, 0)
                     if (mp3CurrentTime != null) {
-                        setTimeSeekbar(mp3CurrentTime)
+                        onChangeTimeMp3(mp3CurrentTime)
                     }
                 }
             }
@@ -59,16 +61,16 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
         unregisterReceiver(mp3Receiver)
     }
 
-    override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
-        val binder = service as Mp3Service.LocalBinder
-        mp3Service = binder.getService()
+    override fun onServiceConnected(p0: ComponentName, service: IBinder) {
+        val binder = service as? Mp3Service.LocalBinder
+        mp3Service = binder?.getService()
         mp3ViewModel.getAllMp3Files(this)
-        createdService()
+        onCreatedService()
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) = Unit
-    open fun createdService() = Unit
-    open fun getInfoSong(song: Song, duration: Int) = Unit
-    open fun setPlayOrPause() = Unit
-    open fun setTimeSeekbar(time: Int) = Unit
+    open fun onCreatedService() = Unit
+    open fun onPlayNewMp3(song: Song, duration: Int) = Unit
+    open fun onPlayOrPauseMp3() = Unit
+    open fun onChangeTimeMp3(time: Int) = Unit
 }

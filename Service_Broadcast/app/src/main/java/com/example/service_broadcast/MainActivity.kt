@@ -106,15 +106,15 @@ class MainActivity : BaseActivity(), OnClickListener {
         }
     }
 
-    override fun getInfoSong(song: Song, duration: Int) {
-        super.getInfoSong(song, duration)
+    override fun onPlayNewMp3(song: Song, duration: Int) {
+        super.onPlayNewMp3(song, duration)
         songAdapter?.setMp3Position(mp3Position)
         binding.tvName.text = song.name
         binding.layoutPlayMp3Main.visibility = View.VISIBLE
     }
 
-    override fun setPlayOrPause() {
-        super.setPlayOrPause()
+    override fun onPlayOrPauseMp3() {
+        super.onPlayOrPauseMp3()
         if (isPlaying) {
             binding.ivPlay.setImageResource(R.drawable.ic_pause)
         } else {

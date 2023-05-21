@@ -19,4 +19,7 @@
                 android:title="Restore" />
         </menu>
     </item>
+    <item
+        android:id="@+id/present"
+        android:title="Giới thiệu" />
 </menu>

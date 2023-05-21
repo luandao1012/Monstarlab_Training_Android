@@ -3,18 +3,19 @@ package com.example.roomdatabase.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.roomdatabase.data.Diary
-import com.example.roomdatabase.data.DiaryDao
+import com.example.roomdatabase.data.Note
+import com.example.roomdatabase.data.NoteDao
+import com.example.roomdatabase.data.Type
 import com.example.roomdatabase.setTimeCalendar
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CalendarViewModel(private val dao: DiaryDao) : ViewModel() {
-    var dateFlow = MutableSharedFlow<List<Diary>>(replay = 1)
+class CalendarViewModel(private val dao: NoteDao) : ViewModel() {
+    var dateFlow = MutableSharedFlow<List<Note>>(replay = 1)
 
     fun addDateOfMonth(month: Int, year: Int) {
-        val dateList = arrayListOf<Diary>()
+        val dateList = arrayListOf<Note>()
         viewModelScope.launch {
             val startMonth = Calendar.getInstance()
             startMonth.apply {
@@ -31,9 +32,21 @@ class CalendarViewModel(private val dao: DiaryDao) : ViewModel() {
             while (true) {
                 repeat(7) {
                     if (startMonth[Calendar.MONTH] == month) {
-                        dateList.add(Diary(startMonth.timeInMillis, ""))
+                        dateList.add(
+                            Note(
+                                date = startMonth.timeInMillis,
+                                content = "",
+                                type = Type.DIARY
+                            )
+                        )
                     } else {
-                        dateList.add(Diary(startMonth.timeInMillis, ""))
+                        dateList.add(
+                            Note(
+                                date = startMonth.timeInMillis,
+                                content = "",
+                                type = Type.DIARY
+                            )
+                        )
                     }
                     startMonth.add(Calendar.DATE, 1)
                 }
@@ -42,7 +55,7 @@ class CalendarViewModel(private val dao: DiaryDao) : ViewModel() {
                 }
             }
 
-            dao.getDiaryInMonth(dateList.first().date, dateList.last().date).collect { listDiary ->
+            dao.getNoteInMonth(dateList.first().date, dateList.last().date).collect { listDiary ->
                 dateList.forEach { it.content = "" }
                 listDiary.forEach { diary ->
                     dateList.firstOrNull { it.date == diary.date }?.content = diary.content
@@ -53,7 +66,7 @@ class CalendarViewModel(private val dao: DiaryDao) : ViewModel() {
     }
 }
 
-class CalendarViewModelFactory(private val dao: DiaryDao) : ViewModelProvider.Factory {
+class CalendarViewModelFactory(private val dao: NoteDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CalendarViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

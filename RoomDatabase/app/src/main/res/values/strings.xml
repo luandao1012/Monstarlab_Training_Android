@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">RoomDatabase</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="type">
+        <item>Nhật ký</item>
+        <item>Nhắc nhở</item>
+    </string-array>
 </resources>

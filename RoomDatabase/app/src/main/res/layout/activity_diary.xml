@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -52,6 +53,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_back" />
 
+    <TextView
+        android:id="@+id/tv_note_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Loại ghi chú"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@id/diary_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_diary_date" />
+
+    <Spinner
+        android:id="@+id/spinner_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/type"
+        app:layout_constraintBottom_toBottomOf="@id/tv_note_type"
+        app:layout_constraintEnd_toEndOf="@id/diary_content"
+        app:layout_constraintTop_toTopOf="@+id/tv_note_type" />
+
     <EditText
         android:id="@+id/diary_content"
         android:layout_width="match_parent"
@@ -63,8 +84,108 @@
         android:inputType="textMultiLine"
         android:padding="16dp"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/layout_remeider"
+        app:layout_constraintTop_toBottomOf="@id/tv_note_type"
+        app:layout_constraintVertical_bias="0.475"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_remeider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_diary_date" />
+        app:layout_constraintEnd_toEndOf="@id/diary_content"
+        app:layout_constraintStart_toStartOf="@id/diary_content">
+
+        <TextView
+            android:id="@+id/tv_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Nhắc nhở"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/layout_select_alarm"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:switchPadding="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_reminder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_reminder" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_select_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_search"
+            android:padding="20dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/tv_complete">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ngày"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_select_alarm_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="dd/MM/yyyy"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Giờ"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_alarm_date" />
+
+            <TextView
+                android:id="@+id/tv_select_alarm_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="hh:mm"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@id/tv_select_alarm_date"
+                app:layout_constraintStart_toStartOf="@id/tv_select_alarm_date"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_alarm_date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Hoàn thành"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <CheckBox
+            android:id="@+id/cb_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tv_complete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_complete" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
