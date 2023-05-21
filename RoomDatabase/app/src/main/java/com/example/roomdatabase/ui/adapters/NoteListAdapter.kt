@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.roomdatabase.data.Diary
+import com.example.roomdatabase.data.Note
 import com.example.roomdatabase.databinding.ItemDiaryBinding
 import java.util.*
 
-class DiaryListAdapter : Adapter<DiaryListAdapter.DiaryListViewHolder>() {
-    private var listDiary = listOf<Diary>()
+class NoteListAdapter : Adapter<NoteListAdapter.DiaryListViewHolder>() {
+    private var listData = listOf<Note>()
     private var callbackOnClick: ((date: Long) -> Unit)? = null
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(list: List<Diary>) {
-        listDiary = list
+    fun setData(list: List<Note>) {
+        listData = list
         notifyDataSetChanged()
     }
 
@@ -35,14 +35,14 @@ class DiaryListAdapter : Adapter<DiaryListAdapter.DiaryListViewHolder>() {
         holder.bind(position)
     }
 
-    override fun getItemCount(): Int = listDiary.size
+    override fun getItemCount(): Int = listData.size
 
     inner class DiaryListViewHolder(private val binding: ItemDiaryBinding) :
         ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(position: Int) {
             val calendar = Calendar.getInstance()
-            val diary = listDiary[position]
+            val diary = listData[position]
             calendar.timeInMillis = diary.date
             binding.tvDateTime.text =
                 "Ngày ${calendar[Calendar.DATE]} Tháng ${calendar[Calendar.MONTH] + 1} ${calendar[Calendar.YEAR]}"
@@ -51,7 +51,7 @@ class DiaryListAdapter : Adapter<DiaryListAdapter.DiaryListViewHolder>() {
 
         fun bindListeners() {
             binding.root.setOnClickListener {
-                val diary = if (adapterPosition != -1) listDiary[adapterPosition] else null
+                val diary = if (adapterPosition != -1) listData[adapterPosition] else null
                 diary?.let {
                     callbackOnClick?.invoke(it.date)
                 }

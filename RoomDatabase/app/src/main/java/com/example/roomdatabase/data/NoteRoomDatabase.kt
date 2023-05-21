@@ -4,18 +4,18 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@androidx.room.Database(entities = [Diary::class], version = 1, exportSchema = false)
-abstract class DiaryRoomDatabase : RoomDatabase() {
-    abstract fun diaryDao(): DiaryDao
+@androidx.room.Database(entities = [Note::class], version = 1, exportSchema = false)
+abstract class NoteRoomDatabase : RoomDatabase() {
+    abstract fun diaryDao(): NoteDao
 
     companion object {
         @Volatile
-        private var INSTANCE: DiaryRoomDatabase? = null
-        fun getDatabase(context: Context): DiaryRoomDatabase {
+        private var INSTANCE: NoteRoomDatabase? = null
+        fun getDatabase(context: Context): NoteRoomDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    DiaryRoomDatabase::class.java,
+                    NoteRoomDatabase::class.java,
                     "item_database"
                 )
                     .fallbackToDestructiveMigration()

@@ -11,21 +11,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.roomdatabase.R
-import com.example.roomdatabase.data.Diary
+import com.example.roomdatabase.data.Note
 import com.example.roomdatabase.databinding.ItemCalendarBinding
 import com.example.roomdatabase.setTimeCalendar
 import java.util.*
 
 @SuppressLint("NotifyDataSetChanged")
 class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
-    private var dateCalendarList = listOf<Diary>()
+    private var dateCalendarList = listOf<Note>()
     private var callbackSaveDateSelected: ((date: Long) -> Unit)? = null
-    private var callbackDoubleClick: ((date: Long) -> Unit)? = null
+    private var callbackDoubleClick: ((date: Note) -> Unit)? = null
     private var currentMonth = -1
     private var dateSelected = 0L
     private val calendarToday = Calendar.getInstance()
 
-    fun setData(list: List<Diary>) {
+    fun setData(list: List<Note>) {
         dateCalendarList = list
         notifyDataSetChanged()
     }
@@ -42,7 +42,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         dateSelected = date
     }
 
-    fun setDoubleClickListener(callback: (date: Long) -> Unit) {
+    fun setDoubleClickListener(callback: (date: Note) -> Unit) {
         callbackDoubleClick = callback
     }
 
@@ -85,11 +85,11 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                 if (day.date == calendarToday.timeInMillis) {
                     date.setTextColor(Color.GREEN)
                 }
-                if (day.content.isNotEmpty()) {
-                    date.setBackgroundResource(R.drawable.bg_diary)
+                if (day.date == dateSelected) {
+                    date.setBackgroundResource(R.drawable.bg_date_selected)
                 } else {
-                    if (day.date == dateSelected) {
-                        date.setBackgroundResource(R.drawable.bg_date_selected)
+                    if (day.content.isNotEmpty()) {
+                        date.setBackgroundResource(R.drawable.bg_diary)
                     } else {
                         date.setBackgroundColor(Color.WHITE)
                     }
@@ -106,6 +106,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
                     MotionEvent.ACTION_DOWN -> {
                         firstClickTime = SystemClock.elapsedRealtime()
                     }
+
                     MotionEvent.ACTION_UP -> {
                         clickHandler.postDelayed({
                             val lastClickTime = SystemClock.elapsedRealtime()
@@ -123,7 +124,7 @@ class CalendarAdapter : Adapter<CalendarAdapter.CalendarViewHolder>() {
         }
 
         private fun onDoubleClick() {
-            if (adapterPosition != -1) callbackDoubleClick?.invoke(dateCalendarList[adapterPosition].date)
+            if (adapterPosition != -1) callbackDoubleClick?.invoke(dateCalendarList[adapterPosition])
         }
 
         private fun changeDateColor() {

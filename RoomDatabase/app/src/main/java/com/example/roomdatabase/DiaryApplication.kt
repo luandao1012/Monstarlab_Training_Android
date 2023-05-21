@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.example.roomdatabase.ui.activities.MainActivity
 
 class DiaryApplication : Application(), DefaultLifecycleObserver {
 
@@ -13,8 +14,8 @@ class DiaryApplication : Application(), DefaultLifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)

@@ -2,27 +2,33 @@ package com.example.roomdatabase.ui.activities
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.roomdatabase.MainActivity
+import com.example.roomdatabase.AlarmReceiver
 import com.example.roomdatabase.R
-import com.example.roomdatabase.data.DiaryRoomDatabase
+import com.example.roomdatabase.collectFlow
+import com.example.roomdatabase.data.NoteRoomDatabase
+import com.example.roomdatabase.data.Type
 import com.example.roomdatabase.databinding.ActivityCalendarBinding
 import com.example.roomdatabase.setTimeCalendar
 import com.example.roomdatabase.ui.adapters.ViewPagerAdapter
 import com.example.roomdatabase.ui.fragments.CalendarFragment
-import com.example.roomdatabase.ui.viewmodels.DiaryViewModel
-import com.example.roomdatabase.ui.viewmodels.DiaryViewModelFactory
+import com.example.roomdatabase.ui.viewmodels.NoteViewModel
+import com.example.roomdatabase.ui.viewmodels.NoteViewModelFactory
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
@@ -36,10 +42,22 @@ class CalendarActivity : AppCompatActivity() {
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private lateinit var activityCreateFile: ActivityResultLauncher<Intent>
     private lateinit var activitySelectFile: ActivityResultLauncher<Intent>
-    private val diaryViewModel: DiaryViewModel by viewModels {
-        DiaryViewModelFactory(
-            DiaryRoomDatabase.getDatabase(applicationContext).diaryDao()
+    private val noteViewModel: NoteViewModel by viewModels {
+        NoteViewModelFactory(
+            NoteRoomDatabase.getDatabase(applicationContext).diaryDao()
         )
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        Log.d("test123", "onNewIntent: ")
+        super.onNewIntent(intent)
+        val bundle = intent.extras
+        val openNoteActivity = bundle?.getBoolean(CalendarFragment.IS_VIEW_OR_EDIT)
+        if (openNoteActivity == true) {
+            val intent = Intent(this, AddNoteActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +68,14 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        val bundle = intent.extras
+        Log.d("test123", bundle.toString())
+        val openNoteActivity = bundle?.getBoolean(CalendarFragment.IS_VIEW_OR_EDIT)
+        if (openNoteActivity == true) {
+            val intent = Intent(this, AddNoteActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewPager.apply {
             adapter = viewPagerAdapter
@@ -61,23 +87,23 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        activityCreateFile =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.data?.let { uri ->
-                        diaryViewModel.backupToCSV(this, uri)
-                        Toast.makeText(this, "Backup thành công", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        activitySelectFile =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.data?.let { uri ->
-                        diaryViewModel.restoreFromCSV(this, uri)
-                    }
-                }
-            }
+//        activityCreateFile =
+//            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//                if (result.resultCode == RESULT_OK) {
+//                    result.data?.data?.let { uri ->
+//                        diaryViewModel.backupToCSV(this, uri)
+//                        Toast.makeText(this, "Backup thành công", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        activitySelectFile =
+//            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//                if (result.resultCode == RESULT_OK) {
+//                    result.data?.data?.let { uri ->
+//                        diaryViewModel.restoreFromCSV(this, uri)
+//                    }
+//                }
+//            }
     }
 
     private fun setDateSelectedIsToday() {
@@ -95,7 +121,8 @@ class CalendarActivity : AppCompatActivity() {
     private fun checkPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
-            permission) == PackageManager.PERMISSION_GRANTED
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission(permission: String, requestCode: Int) {
@@ -114,6 +141,7 @@ class CalendarActivity : AppCompatActivity() {
                 setDateSelectedIsToday()
                 resetALlFragment()
             }
+
             R.id.set_password_menu -> {
                 val intent = Intent(this, MainActivity::class.java)
                 val bundle = Bundle().apply {
@@ -122,9 +150,11 @@ class CalendarActivity : AppCompatActivity() {
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
+
             R.id.diary_list_menu -> {
-                startActivity(Intent(this, DiaryListActivity::class.java))
+                startActivity(Intent(this, NoteListActivity::class.java))
             }
+
             R.id.backup_menu -> {
                 if (checkPermission(WRITE_EXTERNAL_STORAGE)) {
                     createFileCSVBackup()
@@ -132,12 +162,17 @@ class CalendarActivity : AppCompatActivity() {
                     requestPermission(WRITE_EXTERNAL_STORAGE, WRITE_STORAGE_PERMISSION_CODE)
                 }
             }
+
             R.id.restore_menu -> {
                 if (checkPermission(READ_EXTERNAL_STORAGE)) {
                     selectFileCSVRestore()
                 } else {
                     requestPermission(READ_EXTERNAL_STORAGE, READ_STORAGE_PERMISSION_CODE)
                 }
+            }
+
+            R.id.present -> {
+                startActivity(Intent(this, WebViewActivity::class.java))
             }
         }
         return true
@@ -176,6 +211,7 @@ class CalendarActivity : AppCompatActivity() {
                     Toast.makeText(this, "Không có quyền truy cập", Toast.LENGTH_SHORT).show()
                 }
             }
+
             READ_STORAGE_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     selectFileCSVRestore()
