@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "121146901739",
+    "project_id": "music-application-aeaff",
+    "storage_bucket": "music-application-aeaff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121146901739:android:18eb4806f25fd3af962aae",
+        "android_client_info": {
+          "package_name": "com.example.musicapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121146901739-rs1n7dukck86vejog83nepm9sgmd4ei6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GzZSIHlqxeDfJQ_A65wt0opS2ls8uLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121146901739-rs1n7dukck86vejog83nepm9sgmd4ei6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
