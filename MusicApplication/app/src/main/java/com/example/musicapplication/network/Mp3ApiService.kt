@@ -19,9 +19,6 @@ interface Mp3ApiService {
     suspend fun getMp3Charts(): Response<CustomResponse<Mp3Charts>>
 
     @GET("/xhr/media/get-source?type=audio")
-    fun getMp3Source(@Query("key") key: String): Call<CustomResponse<Song>>
-
-    @GET("/xhr/media/get-source?type=audio")
     suspend fun getMp3Info(@Query("key") key: String): Response<CustomResponse<Song>>
 
     @GET("/xhr/media/get-info?type=audio")

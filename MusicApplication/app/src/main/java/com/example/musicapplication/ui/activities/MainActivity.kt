@@ -3,9 +3,11 @@ package com.example.musicapplication.ui.activities
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,16 +17,20 @@ import com.example.musicapplication.R
 import com.example.musicapplication.ui.adapter.ViewPagerAdapter
 import com.example.musicapplication.databinding.ActivityMainBinding
 import com.example.musicapplication.loadImage
+import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
+import com.example.musicapplication.services.Mp3Service.Companion.ACTION_SEEK_TO
+import com.example.musicapplication.services.Mp3Service.Companion.INFO_MP3
+import com.example.musicapplication.services.Mp3Service.Companion.MP3_CURRENT_TIME
+import com.google.gson.Gson
 
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
 
     companion object {
-        private const val READ_STORAGE_PERMISSION_CODE = 111
-        private const val WRITE_STORAGE_PERMISSION_CODE = 222
+        private const val STORAGE_PERMISSION_CODE = 222
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +49,8 @@ class MainActivity : BaseActivity() {
             )
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
@@ -54,7 +58,7 @@ class MainActivity : BaseActivity() {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ),
-                WRITE_STORAGE_PERMISSION_CODE
+                STORAGE_PERMISSION_CODE
             )
         }
         viewPagerAdapter = ViewPagerAdapter(this)

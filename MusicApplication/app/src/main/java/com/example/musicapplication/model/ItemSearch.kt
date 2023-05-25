@@ -10,16 +10,14 @@ data class ItemSearch(
     val duration: Int,
     @SerializedName("thumb")
     val image: String,
-//    var link: String,
-//    var genres: List<Genres>? = null
 )
 
 data class SearchResponse(
     val result: Boolean,
-    val data: List<DataItemSearch>
+    val data: ArrayList<DataItemSearch>
 )
 
 data class DataItemSearch(
     @SerializedName("song")
-    val listItem: List<ItemSearch>,
+    val listItem: ArrayList<ItemSearch>,
 )

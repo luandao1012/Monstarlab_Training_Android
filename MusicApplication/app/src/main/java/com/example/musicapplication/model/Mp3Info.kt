@@ -12,12 +12,13 @@ data class Song(
     @SerializedName("thumbnail")
     val image: String,
     var source: Source? = null,
-    var isFavourite: Boolean = false
+    var isFavourite: Boolean = false,
+    var genre: Genre? = null
 )
 
 data class Mp3Charts(
     @SerializedName("song")
-    val mp3Charts: List<Song>
+    val mp3Charts: ArrayList<Song>
 )
 
 data class Source(
@@ -26,16 +27,15 @@ data class Source(
 )
 
 data class Genre(
-    val id: String,
     val name: String
 )
 
 data class Mp3Genres(
     @SerializedName("genres")
-    val mp3Genres: List<Genre>
+    val mp3Genres: ArrayList<Genre>
 )
 
 data class Mp3Recommend(
     @SerializedName("items")
-    val mp3Recommend: List<Song>
+    val mp3Recommend: ArrayList<Song>
 )

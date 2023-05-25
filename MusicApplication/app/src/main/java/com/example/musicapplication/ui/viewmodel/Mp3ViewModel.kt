@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
+import org.checkerframework.checker.units.qual.A
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,11 +37,11 @@ class Mp3ViewModel : ViewModel() {
     }
 
     private val store = Firebase.firestore
-    var mp3ChartsList = MutableLiveData<List<Song>?>()
-    var mp3Genres = MutableLiveData<List<Genre>?>()
+    var mp3ChartsList = MutableLiveData<ArrayList<Song>?>()
+    var mp3Genres = MutableLiveData<ArrayList<Genre>?>()
     var mp3Search = MutableLiveData<ArrayList<ItemSearch>?>()
-    var mp3FavouriteList = MutableLiveData<List<Song>?>()
-    var mp3OfflineList = MutableLiveData<List<Song>>()
+    var mp3FavouriteList = MutableLiveData<ArrayList<Song>?>()
+    var mp3OfflineList = MutableLiveData<ArrayList<Song>>()
     var mp3Recommend = MutableLiveData<ArrayList<Song>>()
     fun getMp3Charts() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -100,7 +101,7 @@ class Mp3ViewModel : ViewModel() {
                     if (result == true) {
                         withContext(Dispatchers.Main) {
                             val listItem = response.body()?.data?.get(0)
-                            mp3Search.value = listItem?.listItem as ArrayList<ItemSearch>?
+                            mp3Search.value = listItem?.listItem
                         }
                     }
                 }
@@ -141,7 +142,7 @@ class Mp3ViewModel : ViewModel() {
                         .get()
                         .await()
                 val codeMp3Favourite = data.documents
-                val listMp3 = mutableListOf<Song>()
+                val listMp3 = arrayListOf<Song>()
                 codeMp3Favourite.forEach { documents ->
                     val response =
                         ApiBuilder.mp3ApiService.getMp3Info(documents.data?.get("code") as String)
@@ -164,7 +165,7 @@ class Mp3ViewModel : ViewModel() {
             try {
                 val response = ApiBuilder.mp3ApiService.getMp3Recommend(id)
                 if (response.isSuccessful) {
-                    mp3Recommend.postValue(response.body()?.data?.mp3Recommend as ArrayList<Song>?)
+                    mp3Recommend.postValue(response.body()?.data?.mp3Recommend)
                 }
             } catch (e: Exception) {
                 Log.e("test123", e.message.toString())
@@ -192,8 +193,8 @@ class Mp3ViewModel : ViewModel() {
                                 fileName
                             )
                         val downloadManager =
-                            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                        downloadManager.enqueue(request)
+                            context.getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
+                        downloadManager?.enqueue(request)
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) = Unit
@@ -238,12 +239,13 @@ class Mp3ViewModel : ViewModel() {
                     if (path.endsWith(".mp3") && File(path).exists()) {
                         listMp3.add(
                             Song(
+                                id = index.toString(),
                                 name = name,
                                 singer = singer,
                                 image = image.toString(),
                                 duration = (duration / 1000).toInt(),
-                                code = "123",
-                                source = Source(songUri.toString())
+                                source = Source(songUri.toString()),
+                                genre = Genre(genre)
                             )
                         )
                     }
