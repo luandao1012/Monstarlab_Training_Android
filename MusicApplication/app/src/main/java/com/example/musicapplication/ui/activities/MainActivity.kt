@@ -1,33 +1,32 @@
 package com.example.musicapplication.ui.activities
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.musicapplication.R
-import com.example.musicapplication.ui.adapter.ViewPagerAdapter
 import com.example.musicapplication.databinding.ActivityMainBinding
 import com.example.musicapplication.loadImage
-import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
-import com.example.musicapplication.services.Mp3Service.Companion.ACTION_SEEK_TO
-import com.example.musicapplication.services.Mp3Service.Companion.INFO_MP3
-import com.example.musicapplication.services.Mp3Service.Companion.MP3_CURRENT_TIME
-import com.google.gson.Gson
+import com.example.musicapplication.ui.adapter.ViewPagerAdapter
+
 
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
+    var listPermissions = arrayOf<String>()
 
     companion object {
         private const val STORAGE_PERMISSION_CODE = 222
@@ -41,28 +40,53 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        val channel =
-            NotificationChannel(
-                Mp3Service.CHANNEL_ID,
-                "Playing MP3",
-                NotificationManager.IMPORTANCE_LOW
-            )
+        val channel = NotificationChannel(
+            Mp3Service.CHANNEL_ID, "Playing MP3", NotificationManager.IMPORTANCE_LOW
+        )
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
+        listPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
+        if (ContextCompat.checkSelfPermission(
+                this, listPermissions[0]
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                STORAGE_PERMISSION_CODE
+                this, listPermissions, STORAGE_PERMISSION_CODE
             )
         }
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewpager.adapter = viewPagerAdapter
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != STORAGE_PERMISSION_CODE || grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, listPermissions[0])) {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Yêu cầu quyền đọc TỆP ÂM THANH")
+                builder.setMessage("Ứng dụng cần quyền đọc TỆP ÂM THANH để lấy dữ liệu các bài hát đã tải. Vui lòng cấp quyền đọc TỆP ÂM THANH để sử dụng các tính năng này.")
+                builder.setPositiveButton("Đồng ý") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        this,
+                        listPermissions,
+                        STORAGE_PERMISSION_CODE
+                    )
+                }
+                builder.setNegativeButton("Hủy", null)
+                builder.show()
+            } else {
+                Toast.makeText(this, "Không có quyền truy cập", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun initListeners() {

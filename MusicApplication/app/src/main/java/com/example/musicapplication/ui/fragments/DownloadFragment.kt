@@ -1,11 +1,15 @@
 package com.example.musicapplication.ui.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.example.musicapplication.databinding.FragmentDownloadBinding
 import com.example.musicapplication.model.PlaylistType
@@ -34,7 +38,18 @@ class DownloadFragment : BaseFragment() {
 
     private fun initViews() {
         binding.rv.adapter = songOfflineAdapter
-        activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+        (activity as? MainActivity)?.listPermissions?.get(0)?.let { permissions ->
+            if (ContextCompat.checkSelfPermission(
+                    this.requireContext(),
+                    permissions
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                binding.tvWarning.visibility = View.VISIBLE
+            } else {
+                binding.tvWarning.visibility = View.GONE
+                activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+            }
+        }
     }
 
     private fun initListeners() {
