@@ -53,8 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 }
 
                 DownloadManager.ACTION_DOWNLOAD_COMPLETE -> {
-                    mp3ViewModel.getOfflineMp3(applicationContext)
-                    Toast.makeText(applicationContext, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

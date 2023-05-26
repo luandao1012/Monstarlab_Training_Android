@@ -26,11 +26,6 @@ import com.example.musicapplication.ui.adapter.ViewPagerAdapter
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    var listPermissions = arrayOf<String>()
-
-    companion object {
-        private const val STORAGE_PERMISSION_CODE = 222
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,48 +40,8 @@ class MainActivity : BaseActivity() {
         )
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
-        listPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
-        } else {
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        }
-        if (ContextCompat.checkSelfPermission(
-                this, listPermissions[0]
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, listPermissions, STORAGE_PERMISSION_CODE
-            )
-        }
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewpager.adapter = viewPagerAdapter
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode != STORAGE_PERMISSION_CODE || grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, listPermissions[0])) {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Yêu cầu quyền đọc TỆP ÂM THANH")
-                builder.setMessage("Ứng dụng cần quyền đọc TỆP ÂM THANH để lấy dữ liệu các bài hát đã tải. Vui lòng cấp quyền đọc TỆP ÂM THANH để sử dụng các tính năng này.")
-                builder.setPositiveButton("Đồng ý") { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        this,
-                        listPermissions,
-                        STORAGE_PERMISSION_CODE
-                    )
-                }
-                builder.setNegativeButton("Hủy", null)
-                builder.show()
-            } else {
-                Toast.makeText(this, "Không có quyền truy cập", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun initListeners() {

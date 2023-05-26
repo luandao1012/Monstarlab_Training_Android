@@ -1,7 +1,11 @@
 package com.example.musicapplication.ui.activities
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -9,6 +13,9 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.musicapplication.R
 import com.example.musicapplication.databinding.ActivityPlayBinding
 import com.example.musicapplication.formatSongTime
@@ -19,6 +26,7 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.adapter.SongOfflineAdapter
+import java.util.function.BinaryOperator
 
 class PlayActivity : BaseActivity() {
     companion object {
@@ -33,6 +41,17 @@ class PlayActivity : BaseActivity() {
     private var mp3Playlist = arrayListOf<Song>()
     private var currentSong: Song? = null
     private var playMode = PlayMode.DEFAULT
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                downloadMp3()
+            } else {
+                Toast.makeText(applicationContext, "Không có quyền để tải", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     private val listMode = intArrayOf(
         R.drawable.ic_repeat, R.drawable.ic_repeat, R.drawable.ic_repeat_one, R.drawable.ic_shuffle
     )
@@ -64,6 +83,39 @@ class PlayActivity : BaseActivity() {
         binding.rvPlaylist.adapter = songAdapter
     }
 
+    private fun checkPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                downloadMp3()
+            }
+
+            shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Yêu cầu quyền GHI BỘ NHỚ")
+                builder.setMessage("Ứng dụng cần quyền GHI BỘ NHỚ để lưu lại bài hát. CÀI ĐẶT ỨNG DỤNG -> QUYỀN -> TỆP VÀ NỘI DUNG NGHE NHÌN -> CHO PHÉP")
+                builder.setPositiveButton("Đồng ý", null)
+                builder.show()
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        }
+    }
+
+    private fun downloadMp3() {
+        Toast.makeText(applicationContext, "Bắt đầu tải xuống", Toast.LENGTH_SHORT).show()
+        currentSong?.id?.let { id ->
+            mp3ViewModel.downloadMp3(
+                applicationContext,
+                id, "${currentSong?.singer} - ${currentSong?.name}.mp3"
+            )
+        }
+    }
+
     private fun initListeners() {
         binding.ivBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -82,12 +134,10 @@ class PlayActivity : BaseActivity() {
             mp3Service?.playMp3(it)
         }
         binding.ivDownload.setOnClickListener {
-            Toast.makeText(applicationContext, "Bắt đầu tải xuống", Toast.LENGTH_SHORT).show()
-            currentSong?.id?.let { id ->
-                mp3ViewModel.downloadMp3(
-                    applicationContext,
-                    id, "${currentSong?.singer} - ${currentSong?.name}.mp3"
-                )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                downloadMp3()
+            } else {
+                checkPermission()
             }
         }
         binding.ivMode.setOnClickListener {
