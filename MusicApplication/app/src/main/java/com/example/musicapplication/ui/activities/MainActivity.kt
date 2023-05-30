@@ -1,31 +1,31 @@
 package com.example.musicapplication.ui.activities
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.musicapplication.R
-import com.example.musicapplication.ui.adapter.ViewPagerAdapter
 import com.example.musicapplication.databinding.ActivityMainBinding
 import com.example.musicapplication.loadImage
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
+import com.example.musicapplication.ui.adapter.ViewPagerAdapter
+
 
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
-
-    companion object {
-        private const val READ_STORAGE_PERMISSION_CODE = 111
-        private const val WRITE_STORAGE_PERMISSION_CODE = 222
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,28 +35,11 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        val channel =
-            NotificationChannel(
-                Mp3Service.CHANNEL_ID,
-                "Playing MP3",
-                NotificationManager.IMPORTANCE_LOW
-            )
+        val channel = NotificationChannel(
+            Mp3Service.CHANNEL_ID, "Playing MP3", NotificationManager.IMPORTANCE_LOW
+        )
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                WRITE_STORAGE_PERMISSION_CODE
-            )
-        }
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewpager.adapter = viewPagerAdapter
     }

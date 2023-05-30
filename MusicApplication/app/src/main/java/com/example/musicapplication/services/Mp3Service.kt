@@ -13,7 +13,9 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -26,13 +28,13 @@ import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
+import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 
 
 class Mp3Service : Service() {
@@ -49,6 +51,7 @@ class Mp3Service : Service() {
         const val MP3_CURRENT_TIME = "MP3_CURRENT_TIME"
         const val IS_CURRENT_MP3 = "IS_CURRENT_MP3"
         const val COMPLETE_LOAD_DATA = "COMPLETE_LOAD_DATA"
+        const val PLAYLIST_TYPE = "PLAYLIST_TYPE"
     }
 
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -70,10 +73,6 @@ class Mp3Service : Service() {
     private var positionList = arrayListOf<Int>()
     private var playbackSpeed = 0f
     private var playMode: PlayMode = PlayMode.DEFAULT
-
-    private val sharedPreferences by lazy {
-        getSharedPreferences(SAVE_INFO_MP3, Context.MODE_PRIVATE)
-    }
 
     override fun onBind(intent: Intent?): IBinder {
         return binder
@@ -104,11 +103,6 @@ class Mp3Service : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sharedPreferences.edit().apply {
-            putInt(MP3_POSITION, mp3Position)
-            putInt(MP3_CURRENT_TIME, mediaPlayer.currentPosition)
-            apply()
-        }
         unregisterReceiver(mp3Receiver)
         mediaPlayer.stop()
     }
@@ -126,14 +120,6 @@ class Mp3Service : Service() {
     fun setMp3List(list: ArrayList<Song>) {
         mp3Playlist = list
         mp3Playlist.forEachIndexed { index, _ -> positionList.add(index) }
-//        mp3Position = sharedPreferences.getInt(MP3_POSITION, -1)
-//        val time = sharedPreferences.getInt(MP3_CURRENT_TIME, 0)
-//        if (mp3Position != -1) {
-//            playMp3(mp3Position)
-//            setPlayPauseMp3()
-//            setMp3Time(time)
-//            sendBroadcastToUi(ACTION_SEEK_TO, Bundle().apply { putInt(ACTION_SEEK_TO, time) })
-//        }
         sendBroadcastToUi(COMPLETE_LOAD_DATA, null)
     }
 
@@ -164,33 +150,42 @@ class Mp3Service : Service() {
     }
 
     fun playMp3(position: Int) {
-        if (mp3Playlist.size > 0) {
-            mp3Position = position
-            getMp3Source(mp3Playlist[position].id) { url ->
-                mediaPlayer.apply {
-                    reset()
-                    setDataSource(applicationContext, Uri.parse(url))
-                    prepare()
-                    start()
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            if (mp3Playlist.size > 0) {
+                mp3Position = position
+                getMp3Source(mp3Playlist[position].id) { url ->
+                    mediaPlayer.apply {
+                        reset()
+                        setDataSource(applicationContext, Uri.parse(url))
+                        prepare()
+                        start()
+                    }
+                    val bundle = bundleOf().apply {
+                        putString(INFO_MP3, Gson().toJson(mp3Playlist[position]))
+                        putInt(MP3_POSITION, mp3Position)
+                    }
+                    sendBroadcastToUi(INFO_MP3, bundle)
+                    sendBroadcastToUi(
+                        PLAY_OR_PAUSE,
+                        Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
+                    sendBroadcastToUi(
+                        ACTION_SEEK_TO,
+                        Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
+                    showNotification(R.drawable.ic_pause_noti)
                 }
-                val bundle = bundleOf().apply {
-                    putString(INFO_MP3, Gson().toJson(mp3Playlist[position]))
-                    putInt(MP3_POSITION, mp3Position)
-                }
-                sendBroadcastToUi(INFO_MP3, bundle)
-                sendBroadcastToUi(
-                    PLAY_OR_PAUSE,
-                    Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
-                sendBroadcastToUi(
-                    ACTION_SEEK_TO,
-                    Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
-                showNotification(R.drawable.ic_pause_noti)
-
             }
-        }
+            handler.removeCallbacksAndMessages(null)
+        }, 700)
     }
 
-    private fun sendBroadcastToUi(action: String, bundle: Bundle?) {
+    fun setFavouriteMp3() {
+        mp3Playlist[mp3Position].isFavourite = !mp3Playlist[mp3Position].isFavourite
+    }
+
+    fun getFavouriteMp3() = mp3Playlist[mp3Position].isFavourite
+
+    fun sendBroadcastToUi(action: String, bundle: Bundle?) {
         val intent = Intent(action)
         if (bundle != null) {
             intent.putExtras(bundle)

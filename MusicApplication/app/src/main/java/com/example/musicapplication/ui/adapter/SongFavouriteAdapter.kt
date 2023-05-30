@@ -2,6 +2,7 @@ package com.example.musicapplication.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -15,8 +16,8 @@ import com.example.musicapplication.model.Song
 class SongFavouriteAdapter : Adapter<SongFavouriteAdapter.SongFavouriteViewHolder>() {
     private var songList = listOf<Song>()
     private var callbackOnClick: ((position: Int) -> Unit)? = null
-    private var callbackDownload: ((song: Song) -> Unit)? = null
     private var callbackFavourite: ((song: Song) -> Unit)? = null
+    private var mp3IdPlaying = ""
 
     fun setData(list: List<Song>) {
         songList = list
@@ -27,8 +28,9 @@ class SongFavouriteAdapter : Adapter<SongFavouriteAdapter.SongFavouriteViewHolde
         callbackOnClick = callback
     }
 
-    fun setDownload(callback: ((song: Song) -> Unit)? = null) {
-        callbackDownload = callback
+    fun setMp3IdPlaying(id: String) {
+        mp3IdPlaying = id
+        notifyDataSetChanged()
     }
 
     fun setFavourite(callback: ((song: Song) -> Unit)? = null) {
@@ -62,6 +64,7 @@ class SongFavouriteAdapter : Adapter<SongFavouriteAdapter.SongFavouriteViewHolde
             binding.tvItemSingle.text = song.singer
             binding.tvItemTime.text = song.duration.formatSongTime()
             binding.ivFavourite.setImageResource(R.drawable.ic_favourite)
+            binding.ivPlaying.visibility = if (song.id == mp3IdPlaying) View.VISIBLE else View.GONE
         }
 
         fun bindListeners() {
@@ -73,11 +76,6 @@ class SongFavouriteAdapter : Adapter<SongFavouriteAdapter.SongFavouriteViewHolde
                     songList[adapterPosition].isFavourite = !songList[adapterPosition].isFavourite
                     callbackFavourite?.invoke(songList[adapterPosition])
                     notifyItemChanged(adapterPosition)
-                }
-            }
-            binding.ivItemDownload.setOnClickListener {
-                if (adapterPosition != -1) {
-                    callbackDownload?.invoke(songList[adapterPosition])
                 }
             }
         }

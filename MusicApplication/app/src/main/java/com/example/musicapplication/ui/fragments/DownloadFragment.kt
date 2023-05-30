@@ -1,15 +1,20 @@
 package com.example.musicapplication.ui.fragments
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import com.example.musicapplication.R
 import com.example.musicapplication.databinding.FragmentDownloadBinding
 import com.example.musicapplication.model.PlaylistType
@@ -18,13 +23,26 @@ import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
 import com.example.musicapplication.ui.adapter.SongOfflineAdapter
-import com.example.musicapplication.ui.viewmodel.Mp3ViewModel
 
-class DownloadFragment : Fragment() {
+class DownloadFragment : BaseFragment() {
     private lateinit var binding: FragmentDownloadBinding
-    private var playlistType: PlaylistType? = null
     private val songOfflineAdapter by lazy { SongOfflineAdapter() }
-    private val mp3ViewModel: Mp3ViewModel by activityViewModels()
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                binding.tvWarning.visibility = View.GONE
+                activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+            } else {
+                Toast.makeText(
+                    activity?.applicationContext,
+                    "Không có quyền truy cập",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +59,39 @@ class DownloadFragment : Fragment() {
 
     private fun initViews() {
         binding.rv.adapter = songOfflineAdapter
-        activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkPermission()
+    }
+
+    private fun checkPermission() {
+        val readPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_AUDIO
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+        when {
+            activity?.applicationContext?.let {
+                ContextCompat.checkSelfPermission(it, readPermission)
+            } == PackageManager.PERMISSION_GRANTED -> {
+                binding.tvWarning.visibility = View.GONE
+                activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+            }
+
+            shouldShowRequestPermissionRationale(readPermission) -> {
+                val builder = AlertDialog.Builder(this.requireContext())
+                builder.setTitle("Yêu cầu quyền đọc TỆP ÂM THANH")
+                builder.setMessage("Ứng dụng cần quyền đọc TỆP ÂM THANH để lấy dữ liệu các bài hát đã tải. CÀI ĐẶT ỨNG DỤNG -> QUYỀN -> NHẠC VÀ ÂM THANH -> CHO PHÉP")
+                builder.setPositiveButton("Đồng ý", null)
+                builder.show()
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(readPermission)
+            }
+        }
     }
 
     private fun initListeners() {
@@ -64,5 +114,10 @@ class DownloadFragment : Fragment() {
             intent.putExtras(bundle)
             activity?.startActivity(intent)
         }
+    }
+
+    override fun onPlayNewMp3(song: Song) {
+        super.onPlayNewMp3(song)
+        song.id?.let { songOfflineAdapter.setMp3IdPlaying(it) }
     }
 }

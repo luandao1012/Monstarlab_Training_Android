@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.viewmodel.Mp3ViewModel
@@ -19,6 +20,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
     val mp3ViewModel: Mp3ViewModel by viewModels()
     var isPlaying: Boolean = false
     var mp3Position = -1
+    var playlistType: PlaylistType? = null
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -51,8 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 }
 
                 DownloadManager.ACTION_DOWNLOAD_COMPLETE -> {
-                    mp3ViewModel.getOfflineMp3(applicationContext)
-                    Toast.makeText(applicationContext, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

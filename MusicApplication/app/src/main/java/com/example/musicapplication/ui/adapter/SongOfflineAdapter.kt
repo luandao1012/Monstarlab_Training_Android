@@ -2,6 +2,7 @@ package com.example.musicapplication.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -14,9 +15,7 @@ import com.example.musicapplication.model.Song
 class SongOfflineAdapter : Adapter<SongOfflineAdapter.SongOffline>() {
     private var songList = listOf<Song>()
     private var callbackOnClick: ((position: Int) -> Unit)? = null
-    private var callbackDownload: ((song: Song) -> Unit)? = null
-    private var callbackFavourite: ((song: Song) -> Unit)? = null
-
+    private var mp3IdPlaying = ""
     fun setData(list: List<Song>) {
         songList = list
         notifyDataSetChanged()
@@ -26,12 +25,9 @@ class SongOfflineAdapter : Adapter<SongOfflineAdapter.SongOffline>() {
         callbackOnClick = callback
     }
 
-    fun setDownload(callback: ((song: Song) -> Unit)? = null) {
-        callbackDownload = callback
-    }
-
-    fun setFavourite(callback: ((song: Song) -> Unit)? = null) {
-        callbackFavourite = callback
+    fun setMp3IdPlaying(id: String) {
+        mp3IdPlaying = id
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongOffline {
@@ -59,6 +55,7 @@ class SongOfflineAdapter : Adapter<SongOfflineAdapter.SongOffline>() {
             binding.tvItemName.text = song.name
             binding.tvItemSingle.text = song.singer
             binding.tvItemTime.text = song.duration.formatSongTime()
+            binding.ivPlaying.visibility = if (song.id == mp3IdPlaying) View.VISIBLE else View.GONE
         }
 
         fun bindListeners() {

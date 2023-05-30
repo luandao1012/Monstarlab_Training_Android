@@ -21,11 +21,9 @@ import com.example.musicapplication.ui.activities.PlayActivity
 import com.example.musicapplication.ui.adapter.ItemSearchAdapter
 import com.example.musicapplication.ui.viewmodel.Mp3ViewModel
 
-class SearchFragment : Fragment() {
+class SearchFragment : BaseFragment() {
     private lateinit var binding: FragmentSearchBinding
-    private val mp3ViewModel: Mp3ViewModel by viewModels()
     private var itemSearchAdapter: ItemSearchAdapter? = null
-    private var playlistType: PlaylistType? = null
     private var song: Song? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +70,6 @@ class SearchFragment : Fragment() {
         }
         mp3ViewModel.mp3Recommend.observe(this.viewLifecycleOwner) {
             song?.let { song -> it.add(0, song) }
-            Log.d("test123", it.toString())
             (activity as? MainActivity)?.mp3Service?.setMp3List(it)
         }
         mp3ViewModel.mp3Search.observe(this.viewLifecycleOwner) {
