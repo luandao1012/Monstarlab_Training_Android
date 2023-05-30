@@ -149,11 +149,7 @@ class PlayActivity : BaseActivity() {
             currentSong?.let {
                 mp3Service?.setFavouriteMp3()
                 mp3Service?.getFavouriteMp3()?.let { isFavourite ->
-                    mp3ViewModel.addFavourite(
-                        currentSong?.id.toString(),
-                        currentSong?.code.toString(),
-                        isFavourite
-                    )
+                    mp3ViewModel.addFavourite(it, isFavourite)
                 }
             }
             if (mp3Service?.getFavouriteMp3() == true) {

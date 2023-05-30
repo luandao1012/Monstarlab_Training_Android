@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -111,19 +112,23 @@ class Mp3ViewModel : ViewModel() {
         }
     }
 
-    fun addFavourite(id: String, code: String, isFavourite: Boolean) {
+    fun addFavourite(song: Song, isFavourite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (isFavourite) {
                     val favourite = hashMapOf(
-                        "code" to code,
+                        "song" to Gson().toJson(song),
                         "timestamp" to FieldValue.serverTimestamp()
                     )
-                    store.collection("ListMp3Favourite").document("List").collection("List")
-                        .document(id).set(favourite).await()
+                    song.id?.let { id ->
+                        store.collection("ListMp3Favourite").document("List").collection("List")
+                            .document(id).set(favourite).await()
+                    }
                 } else {
-                    store.collection("ListMp3Favourite").document("List").collection("List")
-                        .document(id).delete().await()
+                    song.id?.let { id ->
+                        store.collection("ListMp3Favourite").document("List").collection("List")
+                            .document(id).delete().await()
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("test123", e.message.toString())
@@ -141,17 +146,11 @@ class Mp3ViewModel : ViewModel() {
                         .orderBy("timestamp", Query.Direction.DESCENDING)
                         .get()
                         .await()
-                val codeMp3Favourite = data.documents
+                val codeMp3Favourite = data?.documents
                 val listMp3 = arrayListOf<Song>()
-                codeMp3Favourite.forEach { documents ->
-                    val response =
-                        ApiBuilder.mp3ApiService.getMp3Info(documents.data?.get("code") as String)
-                    if (response.isSuccessful) {
-                        response.body()?.data?.let { song ->
-                            song.isFavourite = true
-                            listMp3.add(song)
-                        }
-                    }
+                codeMp3Favourite?.forEach { documents ->
+                    val song = documents.data?.get("song").toString()
+                    listMp3.add(Gson().fromJson(song, Song::class.java))
                 }
                 mp3FavouriteList.postValue(listMp3)
             } catch (e: Exception) {
@@ -231,7 +230,7 @@ class Mp3ViewModel : ViewModel() {
                     val path = cursor.getString(3)
                     val duration = cursor.getLong(4)
                     val albumId = cursor.getLong(5)
-                    val genre = cursor.getString(6)
+                    val genre = cursor.getString(6) ?: ""
                     val image = ContentUris.withAppendedId(
                         Uri.parse("content://media/external/audio/albumart"),
                         albumId

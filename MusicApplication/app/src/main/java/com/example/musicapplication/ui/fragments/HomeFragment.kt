@@ -18,8 +18,7 @@ class HomeFragment : BaseFragment() {
     private lateinit var binding: FragmentHomeBinding
     private val songAdapter by lazy { SongAdapter() }
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -60,11 +59,7 @@ class HomeFragment : BaseFragment() {
             }
         }
         songAdapter.setFavourite {
-            it.id?.let { id ->
-                it.code?.let { code ->
-                    mp3ViewModel.addFavourite(id, code, it.isFavourite)
-                }
-            }
+            mp3ViewModel.addFavourite(it, it.isFavourite)
         }
     }
 

@@ -2,7 +2,6 @@ package com.example.musicapplication.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,11 +44,7 @@ class FavouriteFragment : BaseFragment() {
             }
         }
         songFavouriteAdapter.setFavourite {
-            it.id?.let { id ->
-                it.code?.let { code ->
-                    mp3ViewModel.addFavourite(id, code, it.isFavourite)
-                }
-            }
+            mp3ViewModel.addFavourite(it, it.isFavourite)
             mp3ViewModel.getAllMp3Favourite()
         }
         songFavouriteAdapter.setOnClickItem {
