@@ -7,16 +7,15 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.example.musicapplication.R
+import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.ActivityPlayBinding
 import com.example.musicapplication.formatSongTime
 import com.example.musicapplication.loadImage
@@ -26,7 +25,7 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.adapter.SongOfflineAdapter
-import java.util.function.BinaryOperator
+import com.example.musicapplication.ui.viewmodel.ActionMp3ViewModel
 
 class PlayActivity : BaseActivity() {
     companion object {
@@ -34,12 +33,11 @@ class PlayActivity : BaseActivity() {
     }
 
     private val binding by lazy { ActivityPlayBinding.inflate(layoutInflater) }
-    private var countDownTimer: CountDownTimer? = null
+    private val actionMp3ViewModel by viewModels<ActionMp3ViewModel>()
     private var isCurrentMp3 = false
     private var mp3CurrentTime = 0
     private val songAdapter by lazy { SongOfflineAdapter() }
     private var mp3Playlist = arrayListOf<Song>()
-    private var currentSong: Song? = null
     private var playMode = PlayMode.DEFAULT
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -73,12 +71,31 @@ class PlayActivity : BaseActivity() {
             mp3Position = it.getInt(Mp3Service.MP3_POSITION, -1)
             isCurrentMp3 = it.getBoolean(Mp3Service.IS_CURRENT_MP3)
         }
-        mp3ViewModel.mp3Genres.observe(this) { listGenres ->
-            var genre = ""
-            listGenres?.forEach {
-                genre += "${it.name}, "
+        collectFlow(currentMp3ViewModel.mp3GenresList) { listGenres ->
+            if (listGenres.isNotEmpty()) {
+                var genre = ""
+                listGenres.forEach {
+                    genre += "${it.name}, "
+                }
+                binding.tvGenres.text = genre.substring(0, genre.length - 2)
             }
-            binding.tvGenres.text = genre.substring(0, genre.length - 2)
+        }
+        collectFlow(currentMp3ViewModel.isPlaying) {
+            if (it) {
+                binding.ivPlay.setImageResource(R.drawable.ic_pause)
+            } else {
+                binding.ivPlay.setImageResource(R.drawable.ic_play)
+            }
+        }
+        collectFlow(currentMp3ViewModel.mp3Info) {
+            if (it != null) {
+                setMp3(it)
+                it.id?.let { id -> actionMp3ViewModel.getStreaming(id, 0) }
+            }
+        }
+        collectFlow(currentMp3ViewModel.currentTime) {
+            binding.tvCurrentTime.text = (binding.seekbarTime.progress / 1000).formatSongTime()
+            binding.seekbarTime.progress += 1000
         }
         binding.rvPlaylist.adapter = songAdapter
     }
@@ -108,12 +125,10 @@ class PlayActivity : BaseActivity() {
 
     private fun downloadMp3() {
         Toast.makeText(applicationContext, "Bắt đầu tải xuống", Toast.LENGTH_SHORT).show()
-        currentSong?.id?.let { id ->
-            mp3ViewModel.downloadMp3(
-                applicationContext,
-                id, "${currentSong?.singer} - ${currentSong?.name}.mp3"
-            )
-        }
+        actionMp3ViewModel.downloadMp3(
+            applicationContext,
+            "${currentMp3ViewModel.mp3Info.value?.singer} - ${currentMp3ViewModel.mp3Info.value?.name}.mp3"
+        )
     }
 
     private fun initListeners() {
@@ -146,10 +161,10 @@ class PlayActivity : BaseActivity() {
             mp3Service?.setPlayMode(playMode)
         }
         binding.ivFavourite.setOnClickListener {
-            currentSong?.let {
+            currentMp3ViewModel.mp3Info.value?.let {
                 mp3Service?.setFavouriteMp3()
                 mp3Service?.getFavouriteMp3()?.let { isFavourite ->
-                    mp3ViewModel.addFavourite(it, isFavourite)
+                    actionMp3ViewModel.addFavourite(it, isFavourite)
                 }
             }
             if (mp3Service?.getFavouriteMp3() == true) {
@@ -183,7 +198,6 @@ class PlayActivity : BaseActivity() {
 
     private fun setMp3(song: Song) {
         setButton()
-        currentSong = song
         binding.tvNameMp3.text = song.name
         binding.tvSingleMp3.text = song.singer
         binding.tvTimeTotal.text = song.duration.formatSongTime()
@@ -196,7 +210,7 @@ class PlayActivity : BaseActivity() {
             }
             image = image.substring(index, image.length)
             image = ApiBuilder.IMAGE_URL + image
-            song.id?.let { mp3ViewModel.getGenres(it) }
+            song.id?.let { currentMp3ViewModel.getGenres(it) }
         } else {
             binding.tvGenres.text = song.genre?.name
         }
@@ -229,19 +243,7 @@ class PlayActivity : BaseActivity() {
             progress = mp3CurrentTime
         }
         binding.tvCurrentTime.text = (mp3CurrentTime / 1000).formatSongTime()
-        countDownTimer?.cancel()
-        countDownTimer = object : CountDownTimer(timeTotal.toLong(), 1000) {
-            override fun onTick(p0: Long) {
-                if (isPlaying) {
-                    binding.tvCurrentTime.text =
-                        (binding.seekbarTime.progress / 1000).formatSongTime()
-                    binding.seekbarTime.progress += 1000
-                }
-            }
-
-            override fun onFinish() = Unit
-        }
-        countDownTimer?.start()
+        currentMp3ViewModel.countDownTimeMp3(timeTotal.toLong())
     }
 
 
@@ -256,10 +258,9 @@ class PlayActivity : BaseActivity() {
         if (isCurrentMp3) {
             mp3Service?.getInfoCurrentMp3 { song, currentTime, isPlaying ->
                 mp3CurrentTime = currentTime
-                this.isPlaying = isPlaying
+                currentMp3ViewModel.setIsPlaying(isPlaying)
                 setViews()
-                setMp3(song)
-                onPlayOrPauseMp3()
+                currentMp3ViewModel.setMp3CurrentInfo(song)
             }
         } else {
             if (playlistType != PlaylistType.RECOMMEND_PLAYLIST) {
@@ -281,7 +282,7 @@ class PlayActivity : BaseActivity() {
         super.onPlayNewMp3(song)
         song.id?.let { songAdapter.setMp3IdPlaying(it) }
         setViews()
-        setMp3(song)
+        currentMp3ViewModel.setMp3CurrentInfo(song)
     }
 
     override fun onLoadDataComplete() {
@@ -290,15 +291,6 @@ class PlayActivity : BaseActivity() {
         songAdapter.setData(mp3Playlist)
         if (playlistType == PlaylistType.RECOMMEND_PLAYLIST) {
             mp3Service?.playMp3(mp3Position)
-        }
-    }
-
-    override fun onPlayOrPauseMp3() {
-        super.onPlayOrPauseMp3()
-        if (isPlaying) {
-            binding.ivPlay.setImageResource(R.drawable.ic_pause)
-        } else {
-            binding.ivPlay.setImageResource(R.drawable.ic_play)
         }
     }
 

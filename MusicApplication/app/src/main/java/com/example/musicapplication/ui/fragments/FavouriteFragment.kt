@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentFavouriteBinding
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
@@ -13,9 +15,11 @@ import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
 import com.example.musicapplication.ui.adapter.SongFavouriteAdapter
+import com.example.musicapplication.ui.viewmodel.ActionMp3ViewModel
 
 class FavouriteFragment : BaseFragment() {
     private lateinit var binding: FragmentFavouriteBinding
+    private val actionMp3ViewModel by viewModels<ActionMp3ViewModel>()
     private val songFavouriteAdapter by lazy { SongFavouriteAdapter() }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,19 +37,17 @@ class FavouriteFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        mp3ViewModel.getAllMp3Favourite()
+        dataMp3ViewModel.getAllMp3Favourite()
     }
 
     private fun initListeners() {
-        mp3ViewModel.mp3FavouriteList.observe(this.viewLifecycleOwner) {
+        collectFlow(dataMp3ViewModel.mp3FavouriteList) {
             binding.progressBar.visibility = View.GONE
-            if (it != null) {
-                songFavouriteAdapter.setData(it)
-            }
+            songFavouriteAdapter.setData(it)
         }
         songFavouriteAdapter.setFavourite {
-            mp3ViewModel.addFavourite(it, it.isFavourite)
-            mp3ViewModel.getAllMp3Favourite()
+            actionMp3ViewModel.addFavourite(it, it.isFavourite)
+            dataMp3ViewModel.getAllMp3Favourite()
         }
         songFavouriteAdapter.setOnClickItem {
             val intent = Intent(activity, PlayActivity::class.java)
@@ -59,7 +61,7 @@ class FavouriteFragment : BaseFragment() {
             if (playlistType != PlaylistType.FAVOURITE_PLAYLIST) {
                 (activity as? MainActivity)?.mp3Service?.apply {
                     setPlaylistType(PlaylistType.FAVOURITE_PLAYLIST)
-                    mp3ViewModel.mp3FavouriteList.value?.let { list -> setMp3List(list) }
+                    dataMp3ViewModel.mp3FavouriteList.value?.let { list -> setMp3List(list) }
                 }
             }
         }

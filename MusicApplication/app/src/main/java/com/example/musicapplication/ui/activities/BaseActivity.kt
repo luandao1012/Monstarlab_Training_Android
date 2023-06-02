@@ -4,23 +4,22 @@ import android.app.DownloadManager
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
-import com.example.musicapplication.ui.viewmodel.Mp3ViewModel
+import com.example.musicapplication.ui.viewmodel.CurrentMp3ViewModel
+import com.example.musicapplication.ui.viewmodel.DataMp3ViewModel
 import com.google.gson.Gson
 
 abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
 
     var mp3Service: Mp3Service? = null
-    val mp3ViewModel: Mp3ViewModel by viewModels()
-    var isPlaying: Boolean = false
     var mp3Position = -1
     var playlistType: PlaylistType? = null
+    val currentMp3ViewModel by viewModels<CurrentMp3ViewModel>()
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -36,8 +35,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 Mp3Service.PLAY_OR_PAUSE -> {
                     val isMp3Playing = intent.extras?.getBoolean(Mp3Service.PLAY_OR_PAUSE)
                     if (isMp3Playing != null) {
-                        isPlaying = isMp3Playing
-                        onPlayOrPauseMp3()
+                        currentMp3ViewModel.setIsPlaying(isMp3Playing)
                     }
                 }
 
@@ -81,14 +79,12 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
     override fun onServiceConnected(p0: ComponentName, service: IBinder) {
         val binder = service as? Mp3Service.LocalBinder
         mp3Service = binder?.getService()
-        mp3ViewModel.getMp3Charts()
         onCreatedService()
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) = Unit
     open fun onCreatedService() = Unit
     open fun onPlayNewMp3(song: Song) = Unit
-    open fun onPlayOrPauseMp3() = Unit
     open fun onChangeTimeMp3(time: Int) = Unit
     open fun onLoadDataComplete() = Unit
 }

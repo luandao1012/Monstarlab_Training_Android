@@ -19,22 +19,22 @@ import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import com.example.musicapplication.R
 import com.example.musicapplication.model.ActionPlay
 import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
-import com.example.musicapplication.network.ApiBuilder
-import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
+import com.example.musicapplication.ui.viewmodel.ActionMp3ViewModel
 import com.google.gson.Gson
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class Mp3Service : Service() {
@@ -73,6 +73,10 @@ class Mp3Service : Service() {
     private var positionList = arrayListOf<Int>()
     private var playbackSpeed = 0f
     private var playMode: PlayMode = PlayMode.DEFAULT
+    private lateinit var actionMp3ViewModel: ActionMp3ViewModel
+    private val jobs = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + jobs)
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
 
     override fun onBind(intent: Intent?): IBinder {
         return binder
@@ -80,6 +84,8 @@ class Mp3Service : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        actionMp3ViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            .create(ActionMp3ViewModel::class.java)
         val intentFilter = IntentFilter().apply {
             addAction(ACTION_PLAY)
             addAction(ACTION_PREV)
@@ -99,12 +105,42 @@ class Mp3Service : Service() {
                 playMp3(getMp3PositionContinue(ActionPlay.ACTION_COMPLETE))
             }
         }
+        scope.launch {
+            actionMp3ViewModel.mp3Streaming.collect {
+                if (it != null) {
+                    if (mp3Playlist.size > 0) {
+                        mp3Position = it.second
+                        mediaPlayer.apply {
+                            reset()
+                            setDataSource(applicationContext, Uri.parse(it.first))
+                            prepare()
+                            start()
+                        }
+                        val bundle = bundleOf().apply {
+                            putString(INFO_MP3, Gson().toJson(mp3Playlist[it.second]))
+                            putInt(MP3_POSITION, mp3Position)
+                        }
+                        sendBroadcastToUi(INFO_MP3, bundle)
+                        sendBroadcastToUi(
+                            PLAY_OR_PAUSE,
+                            Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
+                        sendBroadcastToUi(
+                            ACTION_SEEK_TO,
+                            Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
+                        withContext(Dispatchers.Main) {
+                            showNotification(R.drawable.ic_pause_noti)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(mp3Receiver)
         mediaPlayer.stop()
+        jobs.cancel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -130,51 +166,10 @@ class Mp3Service : Service() {
 
     fun getPlaylistType() = mp3PlaylistType
 
-    private fun getMp3Source(id: String?, callback: (url: String?) -> Unit) {
-        if (mp3PlaylistType == PlaylistType.OFFLINE_PLAYLIST) {
-            callback.invoke(mp3Playlist[mp3Position].source?.link)
-        } else {
-            val call =
-                ApiBuilder.mp3ApiService.getLinkStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    callback.invoke(response.headers()[("Location")].toString())
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) = Unit
-            })
-        }
-    }
 
     fun playMp3(position: Int) {
-        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            if (mp3Playlist.size > 0) {
-                mp3Position = position
-                getMp3Source(mp3Playlist[position].id) { url ->
-                    mediaPlayer.apply {
-                        reset()
-                        setDataSource(applicationContext, Uri.parse(url))
-                        prepare()
-                        start()
-                    }
-                    val bundle = bundleOf().apply {
-                        putString(INFO_MP3, Gson().toJson(mp3Playlist[position]))
-                        putInt(MP3_POSITION, mp3Position)
-                    }
-                    sendBroadcastToUi(INFO_MP3, bundle)
-                    sendBroadcastToUi(
-                        PLAY_OR_PAUSE,
-                        Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
-                    sendBroadcastToUi(
-                        ACTION_SEEK_TO,
-                        Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
-                    showNotification(R.drawable.ic_pause_noti)
-                }
-            }
+            mp3Playlist[position].id?.let { actionMp3ViewModel.getStreaming(it, position) }
             handler.removeCallbacksAndMessages(null)
         }, 700)
     }

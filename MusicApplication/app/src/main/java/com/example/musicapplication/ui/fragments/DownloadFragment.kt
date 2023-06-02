@@ -6,16 +6,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import com.example.musicapplication.R
+import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentDownloadBinding
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
@@ -33,7 +31,7 @@ class DownloadFragment : BaseFragment() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 binding.tvWarning.visibility = View.GONE
-                activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+                activity?.applicationContext?.let { dataMp3ViewModel.getOfflineMp3(it) }
             } else {
                 Toast.makeText(
                     activity?.applicationContext,
@@ -77,7 +75,7 @@ class DownloadFragment : BaseFragment() {
                 ContextCompat.checkSelfPermission(it, readPermission)
             } == PackageManager.PERMISSION_GRANTED -> {
                 binding.tvWarning.visibility = View.GONE
-                activity?.applicationContext?.let { mp3ViewModel.getOfflineMp3(it) }
+                activity?.applicationContext?.let { dataMp3ViewModel.getOfflineMp3(it) }
             }
 
             shouldShowRequestPermissionRationale(readPermission) -> {
@@ -95,7 +93,7 @@ class DownloadFragment : BaseFragment() {
     }
 
     private fun initListeners() {
-        mp3ViewModel.mp3OfflineList.observe(this.viewLifecycleOwner) {
+        collectFlow(dataMp3ViewModel.mp3OfflineList) {
             songOfflineAdapter.setData(it)
         }
         songOfflineAdapter.setOnClickItem {
@@ -103,7 +101,7 @@ class DownloadFragment : BaseFragment() {
             if (playlistType != PlaylistType.OFFLINE_PLAYLIST) {
                 (activity as? MainActivity)?.mp3Service?.apply {
                     setPlaylistType(PlaylistType.OFFLINE_PLAYLIST)
-                    setMp3List(mp3ViewModel.mp3OfflineList.value as ArrayList<Song>)
+                    setMp3List(dataMp3ViewModel.mp3OfflineList.value)
                 }
             }
             val intent = Intent(activity, PlayActivity::class.java)
