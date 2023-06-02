@@ -11,11 +11,9 @@ import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.PlayActivity
-import com.example.musicapplication.ui.viewmodel.DataMp3ViewModel
 import com.google.gson.Gson
 
 abstract class BaseFragment : Fragment() {
-    val dataMp3ViewModel: DataMp3ViewModel by activityViewModels()
     var playlistType: PlaylistType? = null
     private var broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {

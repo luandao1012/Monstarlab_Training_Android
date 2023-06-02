@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentSearchBinding
 import com.example.musicapplication.model.PlaylistType
@@ -17,10 +18,12 @@ import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
 import com.example.musicapplication.ui.adapter.ItemSearchAdapter
+import com.example.musicapplication.ui.viewmodel.SearchViewModel
 
 class SearchFragment : BaseFragment() {
     private lateinit var binding: FragmentSearchBinding
     private var itemSearchAdapter: ItemSearchAdapter? = null
+    private val searchViewModel by viewModels<SearchViewModel>()
     private var song: Song? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +59,7 @@ class SearchFragment : BaseFragment() {
                     setPlaylistType(PlaylistType.RECOMMEND_PLAYLIST)
                 }
             }
-            dataMp3ViewModel.getMp3Recommend(it.id)
+            searchViewModel.getMp3Recommend(it.id)
             val intent = Intent(activity, PlayActivity::class.java)
             val bundle = bundleOf().apply {
                 putBoolean(Mp3Service.IS_CURRENT_MP3, false)
@@ -65,13 +68,13 @@ class SearchFragment : BaseFragment() {
             intent.putExtras(bundle)
             activity?.startActivity(intent)
         }
-        collectFlow(dataMp3ViewModel.mp3RecommendList) {
+        collectFlow(searchViewModel.mp3RecommendList) {
             if (it.isNotEmpty()) {
                 song?.let { song -> it.add(0, song) }
                 (activity as? MainActivity)?.mp3Service?.setMp3List(it)
             }
         }
-        collectFlow(dataMp3ViewModel.mp3SearchList) {
+        collectFlow(searchViewModel.mp3SearchList) {
             if (it.isNotEmpty()) {
                 itemSearchAdapter?.setData(it)
             }
@@ -82,7 +85,7 @@ class SearchFragment : BaseFragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
             override fun afterTextChanged(key: Editable?) {
-                dataMp3ViewModel.search(key.toString())
+                searchViewModel.search(key.toString())
             }
         })
     }

@@ -3,10 +3,12 @@ package com.example.musicapplication.ui.viewmodel
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.musicapplication.model.Genre
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import com.google.firebase.firestore.FieldValue
@@ -18,11 +20,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
-class ActionMp3ViewModel : ViewModel() {
+class PlayViewModel : ViewModel() {
     private val store = Firebase.firestore
     private val _mp3Streaming = MutableStateFlow<Pair<String, Int>?>(null)
+    private val _currentTime = MutableStateFlow(0)
+    private val _isPlaying = MutableStateFlow(false)
+    private val _mp3GenresList = MutableStateFlow<ArrayList<Genre>>(arrayListOf())
     val mp3Streaming: StateFlow<Pair<String, Int>?> = _mp3Streaming
+    val currentTime: StateFlow<Int> = _currentTime
+    val isPlaying: StateFlow<Boolean> = _isPlaying
+    var mp3GenresList: StateFlow<ArrayList<Genre>> = _mp3GenresList
+    private var countDownTimer: CountDownTimer? = null
+    fun setIsPlaying(isPlaying: Boolean) {
+        viewModelScope.launch {
+            _isPlaying.emit(isPlaying)
+        }
+    }
 
     fun getStreaming(id: String, position: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,7 +51,7 @@ class ActionMp3ViewModel : ViewModel() {
         }
     }
 
-    fun addFavourite(song: Song, isFavourite: Boolean) {
+    fun changeFavourite(song: Song, isFavourite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (isFavourite) {
@@ -78,6 +93,36 @@ class ActionMp3ViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.d("test123", e.message.toString())
+            }
+        }
+    }
+
+    fun countDownTimeMp3(timeTotal: Long) {
+        _currentTime.value = 0
+        countDownTimer?.cancel()
+        countDownTimer = object : CountDownTimer(timeTotal, 1000) {
+            override fun onTick(p0: Long) {
+                if (_isPlaying.value) {
+                    _currentTime.value += 1
+                }
+            }
+
+            override fun onFinish() = Unit
+        }
+        countDownTimer?.start()
+    }
+
+    fun getGenres(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiBuilder.mp3ApiService.getGenres(id)
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        response.body()?.data?.mp3Genres?.let { _mp3GenresList.emit(it) }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("test123", e.toString())
             }
         }
     }

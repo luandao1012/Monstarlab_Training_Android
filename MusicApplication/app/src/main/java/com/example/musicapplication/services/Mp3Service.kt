@@ -28,7 +28,7 @@ import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.ui.activities.PlayActivity
-import com.example.musicapplication.ui.viewmodel.ActionMp3ViewModel
+import com.example.musicapplication.ui.viewmodel.PlayViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +73,7 @@ class Mp3Service : Service() {
     private var positionList = arrayListOf<Int>()
     private var playbackSpeed = 0f
     private var playMode: PlayMode = PlayMode.DEFAULT
-    private lateinit var actionMp3ViewModel: ActionMp3ViewModel
+    private lateinit var playViewModel: PlayViewModel
     private val jobs = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + jobs)
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -84,8 +84,8 @@ class Mp3Service : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        actionMp3ViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-            .create(ActionMp3ViewModel::class.java)
+        playViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            .create(PlayViewModel::class.java)
         val intentFilter = IntentFilter().apply {
             addAction(ACTION_PLAY)
             addAction(ACTION_PREV)
@@ -106,7 +106,7 @@ class Mp3Service : Service() {
             }
         }
         scope.launch {
-            actionMp3ViewModel.mp3Streaming.collect {
+            playViewModel.mp3Streaming.collect {
                 if (it != null) {
                     if (mp3Playlist.size > 0) {
                         mp3Position = it.second
@@ -169,7 +169,7 @@ class Mp3Service : Service() {
 
     fun playMp3(position: Int) {
         handler.postDelayed({
-            mp3Playlist[position].id?.let { actionMp3ViewModel.getStreaming(it, position) }
+            mp3Playlist[position].id?.let { playViewModel.getStreaming(it, position) }
             handler.removeCallbacksAndMessages(null)
         }, 700)
     }

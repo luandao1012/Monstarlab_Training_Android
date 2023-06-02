@@ -15,13 +15,13 @@ import com.example.musicapplication.loadImage
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.adapter.ViewPagerAdapter
-import com.example.musicapplication.ui.viewmodel.DataMp3ViewModel
+import com.example.musicapplication.ui.viewmodel.HomeViewModel
 
 
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
-    private val dataMp3ViewModel by viewModels<DataMp3ViewModel>()
+    private val homeViewModel by viewModels<HomeViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +38,7 @@ class MainActivity : BaseActivity() {
         notificationManager.createNotificationChannel(channel)
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewpager.adapter = viewPagerAdapter
-        collectFlow(currentMp3ViewModel.mp3Info) {
-            if (it != null) {
-                binding.layoutPlayMp3Main.visibility = View.VISIBLE
-                binding.tvName.text = it.name
-                binding.tvSingle.text = it.singer
-                binding.ivItemMp3.loadImage(it.image)
-            }
-        }
-        collectFlow(currentMp3ViewModel.isPlaying) {
+        collectFlow(playViewModel.isPlaying) {
             if (it) {
                 binding.ivPlay.setImageResource(R.drawable.ic_pause)
             } else {
@@ -88,16 +80,18 @@ class MainActivity : BaseActivity() {
             }
             true
         }
-
     }
 
     override fun onCreatedService() {
         super.onCreatedService()
-        dataMp3ViewModel.getMp3Charts()
+        homeViewModel.getMp3Charts()
     }
 
     override fun onPlayNewMp3(song: Song) {
         super.onPlayNewMp3(song)
-        currentMp3ViewModel.setMp3CurrentInfo(song)
+        binding.layoutPlayMp3Main.visibility = View.VISIBLE
+        binding.tvName.text = song.name
+        binding.tvSingle.text = song.singer
+        binding.ivItemMp3.loadImage(song.image)
     }
 }

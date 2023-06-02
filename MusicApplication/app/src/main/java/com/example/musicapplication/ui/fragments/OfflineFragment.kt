@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentDownloadBinding
 import com.example.musicapplication.model.PlaylistType
@@ -21,17 +22,19 @@ import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
 import com.example.musicapplication.ui.adapter.SongOfflineAdapter
+import com.example.musicapplication.ui.viewmodel.OfflineViewModel
 
-class DownloadFragment : BaseFragment() {
+class OfflineFragment : BaseFragment() {
     private lateinit var binding: FragmentDownloadBinding
     private val songOfflineAdapter by lazy { SongOfflineAdapter() }
+    private val offlineViewModel by viewModels<OfflineViewModel>()
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
                 binding.tvWarning.visibility = View.GONE
-                activity?.applicationContext?.let { dataMp3ViewModel.getOfflineMp3(it) }
+                activity?.applicationContext?.let { offlineViewModel.getOfflineMp3(it) }
             } else {
                 Toast.makeText(
                     activity?.applicationContext,
@@ -75,7 +78,7 @@ class DownloadFragment : BaseFragment() {
                 ContextCompat.checkSelfPermission(it, readPermission)
             } == PackageManager.PERMISSION_GRANTED -> {
                 binding.tvWarning.visibility = View.GONE
-                activity?.applicationContext?.let { dataMp3ViewModel.getOfflineMp3(it) }
+                activity?.applicationContext?.let { offlineViewModel.getOfflineMp3(it) }
             }
 
             shouldShowRequestPermissionRationale(readPermission) -> {
@@ -93,7 +96,7 @@ class DownloadFragment : BaseFragment() {
     }
 
     private fun initListeners() {
-        collectFlow(dataMp3ViewModel.mp3OfflineList) {
+        collectFlow(offlineViewModel.mp3OfflineList) {
             songOfflineAdapter.setData(it)
         }
         songOfflineAdapter.setOnClickItem {
@@ -101,7 +104,7 @@ class DownloadFragment : BaseFragment() {
             if (playlistType != PlaylistType.OFFLINE_PLAYLIST) {
                 (activity as? MainActivity)?.mp3Service?.apply {
                     setPlaylistType(PlaylistType.OFFLINE_PLAYLIST)
-                    setMp3List(dataMp3ViewModel.mp3OfflineList.value)
+                    setMp3List(offlineViewModel.mp3OfflineList.value)
                 }
             }
             val intent = Intent(activity, PlayActivity::class.java)

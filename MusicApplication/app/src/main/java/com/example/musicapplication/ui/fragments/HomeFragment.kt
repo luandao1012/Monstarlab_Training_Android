@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.ui.adapter.SongAdapter
@@ -15,13 +16,14 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
-import com.example.musicapplication.ui.viewmodel.ActionMp3ViewModel
-import com.example.musicapplication.ui.viewmodel.CurrentMp3ViewModel
+import com.example.musicapplication.ui.viewmodel.HomeViewModel
+import com.example.musicapplication.ui.viewmodel.PlayViewModel
 
 class HomeFragment : BaseFragment() {
     private lateinit var binding: FragmentHomeBinding
     private val songAdapter by lazy { SongAdapter() }
-    private val actionMp3ViewModel by viewModels<ActionMp3ViewModel>()
+    private val playViewModel by viewModels<PlayViewModel>()
+    private val homeViewModel by activityViewModels<HomeViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -37,7 +39,7 @@ class HomeFragment : BaseFragment() {
 
     private fun initViews() {
         binding.rv.adapter = songAdapter
-        collectFlow(dataMp3ViewModel.mp3ChartsList) { listSong ->
+        collectFlow(homeViewModel.mp3ChartsList) { listSong ->
             if (listSong.isNotEmpty()) {
                 binding.progressBar.visibility = View.GONE
                 songAdapter.setData(listSong)
@@ -59,12 +61,12 @@ class HomeFragment : BaseFragment() {
             if (playlistType != PlaylistType.TOP100_PLAYLIST) {
                 (activity as? MainActivity)?.mp3Service?.apply {
                     setPlaylistType(PlaylistType.TOP100_PLAYLIST)
-                    setMp3List(dataMp3ViewModel.mp3ChartsList.value)
+                    setMp3List(homeViewModel.mp3ChartsList.value)
                 }
             }
         }
         songAdapter.setFavourite {
-            actionMp3ViewModel.addFavourite(it, it.isFavourite)
+            playViewModel.changeFavourite(it, it.isFavourite)
         }
     }
 

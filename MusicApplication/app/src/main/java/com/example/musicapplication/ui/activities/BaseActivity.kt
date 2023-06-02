@@ -10,8 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
-import com.example.musicapplication.ui.viewmodel.CurrentMp3ViewModel
-import com.example.musicapplication.ui.viewmodel.DataMp3ViewModel
+import com.example.musicapplication.ui.viewmodel.PlayViewModel
 import com.google.gson.Gson
 
 abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
@@ -19,7 +18,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
     var mp3Service: Mp3Service? = null
     var mp3Position = -1
     var playlistType: PlaylistType? = null
-    val currentMp3ViewModel by viewModels<CurrentMp3ViewModel>()
+    val playViewModel by viewModels<PlayViewModel>()
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -35,7 +34,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 Mp3Service.PLAY_OR_PAUSE -> {
                     val isMp3Playing = intent.extras?.getBoolean(Mp3Service.PLAY_OR_PAUSE)
                     if (isMp3Playing != null) {
-                        currentMp3ViewModel.setIsPlaying(isMp3Playing)
+                        playViewModel.setIsPlaying(isMp3Playing)
                     }
                 }
 
@@ -51,7 +50,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 }
 
                 DownloadManager.ACTION_DOWNLOAD_COMPLETE -> {
-                    Toast.makeText(context, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
