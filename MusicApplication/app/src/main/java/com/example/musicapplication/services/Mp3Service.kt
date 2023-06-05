@@ -22,15 +22,21 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import com.example.musicapplication.R
 import com.example.musicapplication.model.ActionPlay
 import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
-import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
+import com.example.musicapplication.ui.viewmodel.PlayViewModel
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,7 +46,6 @@ import retrofit2.Response
 class Mp3Service : Service() {
     companion object {
         const val CHANNEL_ID = "CHANNEL_ID"
-        const val SAVE_INFO_MP3 = "SAVE_INFO_MP3"
         const val ACTION_PLAY = "ACTION_PLAY"
         const val ACTION_PREV = "ACTION_PREV"
         const val ACTION_NEXT = "ACTION_NEXT"
@@ -48,10 +53,8 @@ class Mp3Service : Service() {
         const val INFO_MP3 = "INFO_MP3"
         const val PLAY_OR_PAUSE = "PLAY_OR_PAUSE"
         const val MP3_POSITION = "MP3_POSITION"
-        const val MP3_CURRENT_TIME = "MP3_CURRENT_TIME"
         const val IS_CURRENT_MP3 = "IS_CURRENT_MP3"
         const val COMPLETE_LOAD_DATA = "COMPLETE_LOAD_DATA"
-        const val PLAYLIST_TYPE = "PLAYLIST_TYPE"
     }
 
     private var mp3Receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -73,6 +76,8 @@ class Mp3Service : Service() {
     private var positionList = arrayListOf<Int>()
     private var playbackSpeed = 0f
     private var playMode: PlayMode = PlayMode.DEFAULT
+    private val jobs = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + jobs)
 
     override fun onBind(intent: Intent?): IBinder {
         return binder
@@ -105,6 +110,7 @@ class Mp3Service : Service() {
         super.onDestroy()
         unregisterReceiver(mp3Receiver)
         mediaPlayer.stop()
+        jobs.cancel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -134,18 +140,13 @@ class Mp3Service : Service() {
         if (mp3PlaylistType == PlaylistType.OFFLINE_PLAYLIST) {
             callback.invoke(mp3Playlist[mp3Position].source?.link)
         } else {
-            val call =
-                ApiBuilder.mp3ApiService.getLinkStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
+            scope.launch {
+                val response =
+                    ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
+                withContext(Dispatchers.Main) {
                     callback.invoke(response.headers()[("Location")].toString())
                 }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) = Unit
-            })
+            }
         }
     }
 

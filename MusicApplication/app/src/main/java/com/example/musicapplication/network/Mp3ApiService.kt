@@ -18,9 +18,6 @@ interface Mp3ApiService {
     @GET("/xhr/chart-realtime?songId=0&videoId=0&albumId=0&chart=song&time=-1")
     suspend fun getMp3Charts(): Response<CustomResponse<Mp3Charts>>
 
-    @GET("/xhr/media/get-source?type=audio")
-    suspend fun getMp3Info(@Query("key") key: String): Response<CustomResponse<Song>>
-
     @GET("/xhr/media/get-info?type=audio")
     suspend fun getGenres(@Query("id") id: String): Response<CustomResponse<Mp3Genres>>
 
@@ -33,4 +30,8 @@ interface Mp3ApiService {
     @Streaming
     @GET
     fun getLinkStreaming(@Url url: String): Call<ResponseBody>
+
+    @Streaming
+    @GET
+    suspend fun getStreaming(@Url url: String): Response<ResponseBody>
 }

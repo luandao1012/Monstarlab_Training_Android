@@ -1,31 +1,27 @@
 package com.example.musicapplication.ui.activities
 
-import android.Manifest
-import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.musicapplication.R
+import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.ActivityMainBinding
 import com.example.musicapplication.loadImage
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.adapter.ViewPagerAdapter
+import com.example.musicapplication.ui.viewmodel.HomeViewModel
 
 
 class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
+    private val homeViewModel by viewModels<HomeViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +38,13 @@ class MainActivity : BaseActivity() {
         notificationManager.createNotificationChannel(channel)
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewpager.adapter = viewPagerAdapter
+        collectFlow(playViewModel.isPlaying) {
+            if (it) {
+                binding.ivPlay.setImageResource(R.drawable.ic_pause)
+            } else {
+                binding.ivPlay.setImageResource(R.drawable.ic_play)
+            }
+        }
     }
 
     private fun initListeners() {
@@ -79,18 +82,14 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onPlayOrPauseMp3() {
-        super.onPlayOrPauseMp3()
-        binding.layoutPlayMp3Main.visibility = View.VISIBLE
-        if (isPlaying) {
-            binding.ivPlay.setImageResource(R.drawable.ic_pause)
-        } else {
-            binding.ivPlay.setImageResource(R.drawable.ic_play)
-        }
+    override fun onCreatedService() {
+        super.onCreatedService()
+        homeViewModel.getMp3Charts()
     }
 
     override fun onPlayNewMp3(song: Song) {
         super.onPlayNewMp3(song)
+        binding.layoutPlayMp3Main.visibility = View.VISIBLE
         binding.tvName.text = song.name
         binding.tvSingle.text = song.singer
         binding.ivItemMp3.loadImage(song.image)
