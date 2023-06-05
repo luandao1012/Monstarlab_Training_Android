@@ -24,11 +24,9 @@ import kotlinx.coroutines.withContext
 
 class PlayViewModel : ViewModel() {
     private val store = Firebase.firestore
-    private val _mp3Streaming = MutableStateFlow<Pair<String, Int>?>(null)
     private val _currentTime = MutableStateFlow(0)
     private val _isPlaying = MutableStateFlow(false)
     private val _mp3GenresList = MutableStateFlow<ArrayList<Genre>>(arrayListOf())
-    val mp3Streaming: StateFlow<Pair<String, Int>?> = _mp3Streaming
     val currentTime: StateFlow<Int> = _currentTime
     val isPlaying: StateFlow<Boolean> = _isPlaying
     var mp3GenresList: StateFlow<ArrayList<Genre>> = _mp3GenresList
@@ -36,18 +34,6 @@ class PlayViewModel : ViewModel() {
     fun setIsPlaying(isPlaying: Boolean) {
         viewModelScope.launch {
             _isPlaying.emit(isPlaying)
-        }
-    }
-
-    fun getStreaming(id: String, position: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response =
-                    ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
-                _mp3Streaming.emit(Pair(response.headers()[("Location")].toString(), position))
-            } catch (e: Exception) {
-                Log.d("test123", e.message.toString())
-            }
         }
     }
 
@@ -75,10 +61,12 @@ class PlayViewModel : ViewModel() {
         }
     }
 
-    fun downloadMp3(context: Context, fileName: String) {
+    fun downloadMp3(context: Context, id: String, fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val url = _mp3Streaming.value?.first.toString()
+                val response =
+                    ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
+                val url = response.headers()[("Location")].toString()
                 val request = DownloadManager.Request(Uri.parse(url))
                     .setTitle(fileName)
                     .setDescription("Đang tải...")
@@ -90,7 +78,6 @@ class PlayViewModel : ViewModel() {
                 val downloadManager =
                     context.getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
                 downloadManager?.enqueue(request)
-
             } catch (e: Exception) {
                 Log.d("test123", e.message.toString())
             }

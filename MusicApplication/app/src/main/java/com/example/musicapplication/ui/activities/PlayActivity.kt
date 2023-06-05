@@ -117,10 +117,13 @@ class PlayActivity : BaseActivity() {
 
     private fun downloadMp3() {
         Toast.makeText(applicationContext, "Bắt đầu tải xuống", Toast.LENGTH_SHORT).show()
-        playViewModel.downloadMp3(
-            applicationContext,
-            "${currentSong?.singer} - ${currentSong?.name}.mp3"
-        )
+        currentSong?.id?.let {
+            playViewModel.downloadMp3(
+                applicationContext,
+                it,
+                "${currentSong?.singer} - ${currentSong?.name}.mp3"
+            )
+        }
     }
 
     private fun initListeners() {
