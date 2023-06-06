@@ -29,9 +29,8 @@ class FavouriteViewModel : ViewModel() {
                         .orderBy("timestamp", Query.Direction.DESCENDING)
                         .get()
                         .await()
-                val codeMp3Favourite = data?.documents
                 val listMp3 = arrayListOf<Song>()
-                codeMp3Favourite?.forEach { documents ->
+                data?.documents?.forEach { documents ->
                     val song = documents.data?.get("song").toString()
                     listMp3.add(Gson().fromJson(song, Song::class.java))
                 }

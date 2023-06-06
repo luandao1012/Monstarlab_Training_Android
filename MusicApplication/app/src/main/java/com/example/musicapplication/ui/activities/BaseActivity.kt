@@ -50,8 +50,7 @@ abstract class BaseActivity : AppCompatActivity(), ServiceConnection {
                 }
 
                 DownloadManager.ACTION_DOWNLOAD_COMPLETE -> {
-                    Toast.makeText(applicationContext, "Tải xuống hoàn tất", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "Tải xuống hoàn tất", Toast.LENGTH_SHORT).show()
                 }
             }
         }

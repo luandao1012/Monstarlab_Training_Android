@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.ItemSearch
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchViewModel : ViewModel() {
     private val _mp3SearchList = MutableStateFlow<ArrayList<ItemSearch>>(arrayListOf())
@@ -27,14 +24,12 @@ class SearchViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val result = response.body()?.result
                     if (result == true) {
-                        withContext(Dispatchers.Main) {
-                            val listItem = response.body()?.data?.get(0)
-                            listItem?.listItem?.let { _mp3SearchList.emit(it) }
-                        }
+                        val listItem = response.body()?.data?.get(0)
+                        listItem?.listItem?.let { _mp3SearchList.emit(it) }
                     }
                 }
             } catch (e: Exception) {
-                Log.d("test123", e.toString())
+                Log.d("test123", e.message.toString())
             }
         }
     }
