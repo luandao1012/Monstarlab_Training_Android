@@ -11,17 +11,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.Genre
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
+import com.example.musicapplication.repository.FavouriteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class PlayViewModel : ViewModel() {
-    private val store = Firebase.firestore
+    private val favouriteRepository by lazy { FavouriteRepository() }
     var currentTime = MutableStateFlow(0)
         private set
     var isPlaying = MutableStateFlow(false)
@@ -37,25 +33,7 @@ class PlayViewModel : ViewModel() {
 
     fun changeFavourite(song: Song, isFavourite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                if (isFavourite) {
-                    val favourite = hashMapOf(
-                        "song" to Gson().toJson(song),
-                        "timestamp" to FieldValue.serverTimestamp()
-                    )
-                    song.id?.let { id ->
-                        store.collection("ListMp3Favourite").document("List").collection("List")
-                            .document(id).set(favourite).await()
-                    }
-                } else {
-                    song.id?.let { id ->
-                        store.collection("ListMp3Favourite").document("List").collection("List")
-                            .document(id).delete().await()
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("test123", e.message.toString())
-            }
+            favouriteRepository.changeFavourite(song, isFavourite)
         }
     }
 

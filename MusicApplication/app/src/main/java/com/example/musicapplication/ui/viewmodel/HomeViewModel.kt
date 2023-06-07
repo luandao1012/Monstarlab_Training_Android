@@ -5,28 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.example.musicapplication.repository.FavouriteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class HomeViewModel : ViewModel() {
-    private val store = Firebase.firestore
+    private val favouriteRepository by lazy { FavouriteRepository() }
     var mp3ChartsList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
         private set
 
     fun getMp3Charts() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data =
-                    store.collection("ListMp3Favourite")
-                        .document("List")
-                        .collection("List")
-                        .get()
-                        .await()
-                val listIdMp3Favourite = data.documents.map { it.id }
+                val listIdMp3Favourite = favouriteRepository.getAllIdMp3Favourite()
                 val response = ApiBuilder.mp3ApiService.getMp3Charts()
                 if (response.isSuccessful) {
                     val listSong = response.body()?.data?.mp3Charts
