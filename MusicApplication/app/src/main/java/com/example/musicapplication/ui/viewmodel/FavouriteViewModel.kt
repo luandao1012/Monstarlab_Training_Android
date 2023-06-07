@@ -10,14 +10,13 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class FavouriteViewModel : ViewModel() {
     private val store = Firebase.firestore
-    private val _mp3FavouriteList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
-    var mp3FavouriteList: StateFlow<ArrayList<Song>> = _mp3FavouriteList
+    var mp3FavouriteList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
+        private set
 
     fun getAllMp3Favourite() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,7 +33,7 @@ class FavouriteViewModel : ViewModel() {
                     val song = documents.data?.get("song").toString()
                     listMp3.add(Gson().fromJson(song, Song::class.java))
                 }
-                _mp3FavouriteList.emit(listMp3)
+                mp3FavouriteList.emit(listMp3)
             } catch (e: Exception) {
                 Log.e("test123", e.message.toString())
             }

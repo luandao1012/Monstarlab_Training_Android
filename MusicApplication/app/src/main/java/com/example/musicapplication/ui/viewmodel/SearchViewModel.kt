@@ -8,14 +8,13 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
-    private val _mp3SearchList = MutableStateFlow<ArrayList<ItemSearch>>(arrayListOf())
-    var mp3SearchList: StateFlow<ArrayList<ItemSearch>> = _mp3SearchList
-    private val _mp3RecommendList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
-    var mp3RecommendList: StateFlow<ArrayList<Song>> = _mp3RecommendList
+    var mp3SearchList = MutableStateFlow<ArrayList<ItemSearch>>(arrayListOf())
+        private set
+    var mp3RecommendList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
+        private set
 
     fun search(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -25,7 +24,7 @@ class SearchViewModel : ViewModel() {
                     val result = response.body()?.result
                     if (result == true) {
                         val listItem = response.body()?.data?.get(0)
-                        listItem?.listItem?.let { _mp3SearchList.emit(it) }
+                        listItem?.listItem?.let { mp3SearchList.emit(it) }
                     }
                 }
             } catch (e: Exception) {
@@ -39,7 +38,7 @@ class SearchViewModel : ViewModel() {
             try {
                 val response = ApiBuilder.mp3ApiService.getMp3Recommend(id)
                 if (response.isSuccessful) {
-                    response.body()?.data?.mp3Recommend?.let { _mp3RecommendList.emit(it) }
+                    response.body()?.data?.mp3Recommend?.let { mp3RecommendList.emit(it) }
                 }
             } catch (e: Exception) {
                 Log.e("test123", e.message.toString())

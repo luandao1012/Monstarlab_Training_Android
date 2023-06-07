@@ -13,13 +13,12 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.model.Source
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
 class OfflineViewModel : ViewModel() {
-    private val _mp3OfflineList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
-    var mp3OfflineList: StateFlow<ArrayList<Song>> = _mp3OfflineList
+    var mp3OfflineList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
+        private set
 
     fun getOfflineMp3(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -68,7 +67,7 @@ class OfflineViewModel : ViewModel() {
                         }
                     }
                     cursor.close()
-                    _mp3OfflineList.emit(listMp3)
+                    mp3OfflineList.emit(listMp3)
                 }
             } catch (e: Exception) {
                 Log.d("test123", e.message.toString())

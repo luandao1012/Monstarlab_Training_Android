@@ -9,14 +9,13 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class HomeViewModel : ViewModel() {
     private val store = Firebase.firestore
-    private val _mp3ChartsList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
-    var mp3ChartsList: StateFlow<ArrayList<Song>> = _mp3ChartsList
+    var mp3ChartsList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
+        private set
 
     fun getMp3Charts() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,7 +35,7 @@ class HomeViewModel : ViewModel() {
                             song.isFavourite = true
                         }
                     }
-                    listSong?.let { _mp3ChartsList.emit(it) }
+                    listSong?.let { mp3ChartsList.emit(it) }
                 }
             } catch (e: Exception) {
                 Log.d("test123", e.toString())
@@ -46,14 +45,14 @@ class HomeViewModel : ViewModel() {
 
     fun removeFavourite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newStateFlow = _mp3ChartsList.value.map { item ->
+            val newStateFlow = mp3ChartsList.value.map { item ->
                 if (item.id == id) {
                     item.copy(isFavourite = false)
                 } else {
                     item
                 }
             }
-            _mp3ChartsList.emit(newStateFlow as ArrayList<Song>)
+            mp3ChartsList.emit(newStateFlow as ArrayList<Song>)
         }
     }
 }

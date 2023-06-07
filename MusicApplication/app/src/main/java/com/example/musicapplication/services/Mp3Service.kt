@@ -19,10 +19,8 @@ import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
 import com.example.musicapplication.R
 import com.example.musicapplication.model.ActionPlay
 import com.example.musicapplication.model.PlayMode
@@ -30,17 +28,12 @@ import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import com.example.musicapplication.ui.activities.PlayActivity
-import com.example.musicapplication.ui.viewmodel.PlayViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class Mp3Service : Service() {

@@ -17,23 +17,21 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class PlayViewModel : ViewModel() {
     private val store = Firebase.firestore
-    private val _currentTime = MutableStateFlow(0)
-    private val _isPlaying = MutableStateFlow(false)
-    private val _mp3GenresList = MutableStateFlow<ArrayList<Genre>>(arrayListOf())
-    val currentTime: StateFlow<Int> = _currentTime
-    val isPlaying: StateFlow<Boolean> = _isPlaying
-    var mp3GenresList: StateFlow<ArrayList<Genre>> = _mp3GenresList
+    var currentTime = MutableStateFlow(0)
+        private set
+    var isPlaying = MutableStateFlow(false)
+        private set
+    var mp3GenresList = MutableStateFlow<ArrayList<Genre>>(arrayListOf())
+        private set
     private var countDownTimer: CountDownTimer? = null
-    fun setIsPlaying(isPlaying: Boolean) {
+    fun setIsPlaying(playing: Boolean) {
         viewModelScope.launch {
-            _isPlaying.emit(isPlaying)
+            isPlaying.emit(playing)
         }
     }
 
@@ -85,12 +83,12 @@ class PlayViewModel : ViewModel() {
     }
 
     fun countDownTimeMp3(timeTotal: Long) {
-        _currentTime.value = 0
+        currentTime.value = 0
         countDownTimer?.cancel()
         countDownTimer = object : CountDownTimer(timeTotal, 1000) {
             override fun onTick(p0: Long) {
-                if (_isPlaying.value) {
-                    _currentTime.value += 1
+                if (isPlaying.value) {
+                    currentTime.value += 1
                 }
             }
 
@@ -104,9 +102,7 @@ class PlayViewModel : ViewModel() {
             try {
                 val response = ApiBuilder.mp3ApiService.getGenres(id)
                 if (response.isSuccessful) {
-                    withContext(Dispatchers.Main) {
-                        response.body()?.data?.mp3Genres?.let { _mp3GenresList.emit(it) }
-                    }
+                    response.body()?.data?.mp3Genres?.let { mp3GenresList.emit(it) }
                 }
             } catch (e: Exception) {
                 Log.d("test123", e.toString())
