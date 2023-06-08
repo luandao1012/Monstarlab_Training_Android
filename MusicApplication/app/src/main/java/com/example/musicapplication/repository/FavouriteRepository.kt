@@ -16,52 +16,39 @@ class FavouriteRepository {
         .collection("List")
 
     suspend fun changeFavourite(song: Song, isFavourite: Boolean) {
-        try {
-            if (isFavourite) {
-                val favourite = hashMapOf(
-                    "song" to Gson().toJson(song),
-                    "timestamp" to FieldValue.serverTimestamp()
-                )
-                song.id?.let { id ->
-                    store.document(id).set(favourite).await()
-                }
-            } else {
-                song.id?.let { id ->
-                    store.document(id).delete().await()
-                }
+        if (isFavourite) {
+            val favourite = hashMapOf(
+                "song" to Gson().toJson(song),
+                "timestamp" to FieldValue.serverTimestamp()
+            )
+            song.id?.let { id ->
+                store.document(id).set(favourite).await()
             }
-        } catch (e: Exception) {
-            Log.e("test123", e.message.toString())
+        } else {
+            song.id?.let { id ->
+                store.document(id).delete().await()
+            }
         }
     }
 
     suspend fun getAllMp3Favourite(): List<Song> {
         val mp3List = arrayListOf<Song>()
-        try {
-            val data =
-                store.orderBy("timestamp", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-            data?.documents?.forEach { documents ->
-                val song = documents.data?.get("song").toString()
-                mp3List.add(Gson().fromJson(song, Song::class.java))
-            }
-        } catch (e: Exception) {
-            Log.e("test123", e.message.toString())
+        val data =
+            store.orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .await()
+        data?.documents?.forEach { documents ->
+            val song = documents.data?.get("song").toString()
+            mp3List.add(Gson().fromJson(song, Song::class.java))
         }
         return mp3List
     }
 
     suspend fun getAllIdMp3Favourite(): List<String> {
-        var idList: List<String>
-        try {
-            val data =
-                store.get().await()
-            idList = data.documents.map { it.id }
-        } catch (e: Exception) {
-            idList = listOf()
-            Log.e("test123", e.message.toString())
-        }
+        val idList: List<String>
+        val data =
+            store.get().await()
+        idList = data.documents.map { it.id }
         return idList
     }
 }

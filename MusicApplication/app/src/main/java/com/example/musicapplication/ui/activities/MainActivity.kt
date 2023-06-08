@@ -2,15 +2,21 @@ package com.example.musicapplication.ui.activities
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.musicapplication.R
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.ActivityMainBinding
+import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.loadImage
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
@@ -22,14 +28,33 @@ class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private val homeViewModel by viewModels<HomeViewModel>()
+//    private val connectivityManager by lazy {
+//        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//    }
+//    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+//        override fun onAvailable(network: Network) {
+//            super.onAvailable(network)
+//            Log.d("test123", "onAvailable: ")
+//        }
+//
+//        override fun onUnavailable() {
+//            super.onUnavailable()
+//            Log.d("test123", "onUnavailable: ")
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+//        connectivityManager.registerDefaultNetworkCallback(networkCallback)
         initViews()
         initListeners()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+//        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
     private fun initViews() {
         val channel = NotificationChannel(
             Mp3Service.CHANNEL_ID, "Playing MP3", NotificationManager.IMPORTANCE_LOW
@@ -84,7 +109,11 @@ class MainActivity : BaseActivity() {
 
     override fun onCreatedService() {
         super.onCreatedService()
-        homeViewModel.getMp3Charts()
+        if (isConnectInternet()) {
+            homeViewModel.getMp3Charts()
+        } else {
+            Toast.makeText(this, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPlayNewMp3(song: Song) {

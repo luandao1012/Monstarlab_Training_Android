@@ -39,24 +39,20 @@ class PlayViewModel : ViewModel() {
 
     fun downloadMp3(context: Context, id: String, fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response =
-                    ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
-                val url = response.headers()[("Location")].toString()
-                val request = DownloadManager.Request(Uri.parse(url))
-                    .setTitle(fileName)
-                    .setDescription("Đang tải...")
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                    .setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_DOWNLOADS,
-                        fileName
-                    )
-                val downloadManager =
-                    context.getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
-                downloadManager?.enqueue(request)
-            } catch (e: Exception) {
-                Log.d("test123", e.message.toString())
-            }
+            val response =
+                ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
+            val url = response.headers()[("Location")].toString()
+            val request = DownloadManager.Request(Uri.parse(url))
+                .setTitle(fileName)
+                .setDescription("Đang tải...")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    fileName
+                )
+            val downloadManager =
+                context.getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
+            downloadManager?.enqueue(request)
         }
     }
 
@@ -77,13 +73,9 @@ class PlayViewModel : ViewModel() {
 
     fun getGenres(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = ApiBuilder.mp3ApiService.getGenres(id)
-                if (response.isSuccessful) {
-                    response.body()?.data?.mp3Genres?.let { mp3GenresList.emit(it) }
-                }
-            } catch (e: Exception) {
-                Log.d("test123", e.toString())
+            val response = ApiBuilder.mp3ApiService.getGenres(id)
+            if (response.isSuccessful) {
+                response.body()?.data?.mp3Genres?.let { mp3GenresList.emit(it) }
             }
         }
     }

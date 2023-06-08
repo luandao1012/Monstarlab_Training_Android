@@ -16,11 +16,7 @@ class FavouriteViewModel : ViewModel() {
 
     fun getAllMp3Favourite() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                mp3FavouriteList.emit(favouriteRepository.getAllMp3Favourite() as ArrayList<Song>)
-            } catch (e: Exception) {
-                Log.e("test123", e.message.toString())
-            }
+            mp3FavouriteList.emit(favouriteRepository.getAllMp3Favourite() as ArrayList<Song>)
         }
     }
 }

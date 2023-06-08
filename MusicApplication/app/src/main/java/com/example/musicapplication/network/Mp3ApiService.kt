@@ -29,9 +29,5 @@ interface Mp3ApiService {
 
     @Streaming
     @GET
-    fun getLinkStreaming(@Url url: String): Call<ResponseBody>
-
-    @Streaming
-    @GET
     suspend fun getStreaming(@Url url: String): Response<ResponseBody>
 }

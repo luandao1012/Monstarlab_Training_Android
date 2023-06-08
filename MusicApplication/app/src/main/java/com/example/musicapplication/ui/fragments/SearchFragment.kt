@@ -7,10 +7,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentSearchBinding
+import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
@@ -46,27 +48,31 @@ class SearchFragment : BaseFragment() {
 
     private fun initListeners() {
         itemSearchAdapter?.setItemOnClick {
-            song = Song(
-                id = it.id,
-                name = it.name,
-                singer = it.single,
-                duration = it.duration,
-                image = ApiBuilder.IMAGE_URL + it.image
-            )
-            playlistType = (activity as? MainActivity)?.mp3Service?.getPlaylistType()
-            if (playlistType != PlaylistType.RECOMMEND_PLAYLIST) {
-                (activity as? MainActivity)?.mp3Service?.apply {
-                    setPlaylistType(PlaylistType.RECOMMEND_PLAYLIST)
+            if (isConnectInternet()) {
+                song = Song(
+                    id = it.id,
+                    name = it.name,
+                    singer = it.single,
+                    duration = it.duration,
+                    image = ApiBuilder.IMAGE_URL + it.image
+                )
+                playlistType = (activity as? MainActivity)?.mp3Service?.getPlaylistType()
+                if (playlistType != PlaylistType.RECOMMEND_PLAYLIST) {
+                    (activity as? MainActivity)?.mp3Service?.apply {
+                        setPlaylistType(PlaylistType.RECOMMEND_PLAYLIST)
+                    }
                 }
+                searchViewModel.getMp3Recommend(it.id)
+                val intent = Intent(activity, PlayActivity::class.java)
+                val bundle = bundleOf().apply {
+                    putBoolean(Mp3Service.IS_CURRENT_MP3, false)
+                    putInt(Mp3Service.MP3_POSITION, 0)
+                }
+                intent.putExtras(bundle)
+                activity?.startActivity(intent)
+            } else {
+                Toast.makeText(this.requireContext(), "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
             }
-            searchViewModel.getMp3Recommend(it.id)
-            val intent = Intent(activity, PlayActivity::class.java)
-            val bundle = bundleOf().apply {
-                putBoolean(Mp3Service.IS_CURRENT_MP3, false)
-                putInt(Mp3Service.MP3_POSITION, 0)
-            }
-            intent.putExtras(bundle)
-            activity?.startActivity(intent)
         }
         collectFlow(searchViewModel.mp3RecommendList) {
             if (it.isNotEmpty()) {
@@ -85,8 +91,17 @@ class SearchFragment : BaseFragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
             override fun afterTextChanged(key: Editable?) {
-                searchViewModel.search(key.toString())
+                search(key.toString())
             }
         })
+    }
+
+    private fun search(key: String) {
+        if (isConnectInternet()) {
+            binding.tvNoInternet.visibility = View.GONE
+            searchViewModel.search(key)
+        } else {
+            binding.tvNoInternet.visibility = View.VISIBLE
+        }
     }
 }

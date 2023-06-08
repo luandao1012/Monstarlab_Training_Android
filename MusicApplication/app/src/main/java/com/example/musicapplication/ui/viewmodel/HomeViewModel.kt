@@ -1,6 +1,10 @@
 package com.example.musicapplication.ui.viewmodel
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.Song
@@ -10,27 +14,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val favouriteRepository by lazy { FavouriteRepository() }
+
     var mp3ChartsList = MutableStateFlow<ArrayList<Song>>(arrayListOf())
         private set
 
     fun getMp3Charts() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val listIdMp3Favourite = favouriteRepository.getAllIdMp3Favourite()
-                val response = ApiBuilder.mp3ApiService.getMp3Charts()
-                if (response.isSuccessful) {
-                    val listSong = response.body()?.data?.mp3Charts
-                    listSong?.forEach { song ->
-                        if (listIdMp3Favourite.contains(song.id)) {
-                            song.isFavourite = true
-                        }
+            val listIdMp3Favourite = favouriteRepository?.getAllIdMp3Favourite()
+            val response = ApiBuilder.mp3ApiService.getMp3Charts()
+            if (response.isSuccessful) {
+                val listSong = response.body()?.data?.mp3Charts
+                listSong?.forEach { song ->
+                    if (listIdMp3Favourite?.contains(song.id) == true) {
+                        song.isFavourite = true
                     }
-                    listSong?.let { mp3ChartsList.emit(it) }
                 }
-            } catch (e: Exception) {
-                Log.d("test123", e.toString())
+                listSong?.let { mp3ChartsList.emit(it) }
             }
         }
     }
