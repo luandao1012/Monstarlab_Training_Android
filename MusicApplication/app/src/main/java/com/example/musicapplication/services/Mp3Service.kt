@@ -19,12 +19,15 @@ import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.musicapplication.R
+import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.model.ActionPlay
 import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
+import com.example.musicapplication.model.PlaylistType.OFFLINE_PLAYLIST
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
 import com.example.musicapplication.ui.activities.PlayActivity
@@ -130,14 +133,18 @@ class Mp3Service : Service() {
     fun getPlaylistType() = mp3PlaylistType
 
     private fun getMp3Source(id: String?, callback: (url: String?) -> Unit) {
-        if (mp3PlaylistType == PlaylistType.OFFLINE_PLAYLIST) {
+        if (mp3PlaylistType == OFFLINE_PLAYLIST) {
             callback.invoke(mp3Playlist[mp3Position].source?.link)
         } else {
             scope.launch {
-                val response =
-                    ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
-                withContext(Dispatchers.Main) {
-                    callback.invoke(response.headers()[("Location")].toString())
+                if (baseContext.isConnectInternet()) {
+                    val response =
+                        ApiBuilder.mp3ApiService.getStreaming("http://api.mp3.zing.vn/api/streaming/audio/${id}/320")
+                    withContext(Dispatchers.Main) {
+                        callback.invoke(response.headers()[("Location")].toString())
+                    }
+                } else {
+                    callback.invoke(null)
                 }
             }
         }
@@ -149,24 +156,26 @@ class Mp3Service : Service() {
             if (mp3Playlist.size > 0) {
                 mp3Position = position
                 getMp3Source(mp3Playlist[position].id) { url ->
-                    mediaPlayer.apply {
-                        reset()
-                        setDataSource(applicationContext, Uri.parse(url))
-                        prepare()
-                        start()
+                    if (url != null) {
+                        mediaPlayer.apply {
+                            reset()
+                            setDataSource(applicationContext, Uri.parse(url))
+                            prepare()
+                            start()
+                        }
+                        val bundle = bundleOf().apply {
+                            putString(INFO_MP3, Gson().toJson(mp3Playlist[position]))
+                            putInt(MP3_POSITION, mp3Position)
+                        }
+                        sendBroadcastToUi(INFO_MP3, bundle)
+                        sendBroadcastToUi(
+                            PLAY_OR_PAUSE,
+                            Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
+                        sendBroadcastToUi(
+                            ACTION_SEEK_TO,
+                            Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
+                        showNotification(R.drawable.ic_pause_noti)
                     }
-                    val bundle = bundleOf().apply {
-                        putString(INFO_MP3, Gson().toJson(mp3Playlist[position]))
-                        putInt(MP3_POSITION, mp3Position)
-                    }
-                    sendBroadcastToUi(INFO_MP3, bundle)
-                    sendBroadcastToUi(
-                        PLAY_OR_PAUSE,
-                        Bundle().apply { putBoolean(PLAY_OR_PAUSE, true) })
-                    sendBroadcastToUi(
-                        ACTION_SEEK_TO,
-                        Bundle().apply { putInt(ACTION_SEEK_TO, 0) })
-                    showNotification(R.drawable.ic_pause_noti)
                 }
             }
             handler.removeCallbacksAndMessages(null)
@@ -212,17 +221,23 @@ class Mp3Service : Service() {
     }
 
     fun setPlayPauseMp3() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            showNotification(R.drawable.ic_play_noti)
+        if ((baseContext.isConnectInternet() && mp3PlaylistType != OFFLINE_PLAYLIST)
+            or (mp3PlaylistType == OFFLINE_PLAYLIST)
+        ) {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                showNotification(R.drawable.ic_play_noti)
+            } else {
+                mediaPlayer.start()
+                showNotification(R.drawable.ic_pause_noti)
+            }
+            sendBroadcastToUi(
+                PLAY_OR_PAUSE,
+                Bundle().apply { putBoolean(PLAY_OR_PAUSE, mediaPlayer.isPlaying) }
+            )
         } else {
-            mediaPlayer.start()
-            showNotification(R.drawable.ic_pause_noti)
+            Toast.makeText(this.baseContext, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
         }
-        sendBroadcastToUi(
-            PLAY_OR_PAUSE,
-            Bundle().apply { putBoolean(PLAY_OR_PAUSE, mediaPlayer.isPlaying) }
-        )
     }
 
     fun setNextMp3() {

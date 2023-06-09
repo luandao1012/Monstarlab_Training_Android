@@ -17,6 +17,7 @@ import com.example.musicapplication.R
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.ActivityPlayBinding
 import com.example.musicapplication.formatSongTime
+import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.loadImage
 import com.example.musicapplication.model.PlayMode
 import com.example.musicapplication.model.PlaylistType
@@ -141,13 +142,22 @@ class PlayActivity : BaseActivity() {
             binding.ivPre.isEnabled = false
         }
         songAdapter.setOnClickItem {
-            mp3Service?.playMp3(it)
+            if (isConnectInternet()) {
+                mp3Service?.playMp3(it)
+            } else {
+                Toast.makeText(this, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.ivDownload.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                downloadMp3()
+            if (isConnectInternet()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    downloadMp3()
+                } else {
+                    checkPermission()
+                }
             } else {
-                checkPermission()
+                Toast.makeText(this, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
             }
         }
         binding.ivMode.setOnClickListener {
@@ -156,20 +166,24 @@ class PlayActivity : BaseActivity() {
             mp3Service?.setPlayMode(playMode)
         }
         binding.ivFavourite.setOnClickListener {
-            currentSong?.let {
-                mp3Service?.setFavouriteMp3()
-                mp3Service?.getFavouriteMp3()?.let { isFavourite ->
-                    playViewModel.changeFavourite(it, isFavourite)
+            if (isConnectInternet()) {
+                currentSong?.let {
+                    mp3Service?.setFavouriteMp3()
+                    mp3Service?.getFavouriteMp3()?.let { isFavourite ->
+                        playViewModel.changeFavourite(it, isFavourite)
+                    }
                 }
-            }
-            if (mp3Service?.getFavouriteMp3() == true) {
-                binding.ivFavourite.setImageResource(R.drawable.ic_favourite)
+                if (mp3Service?.getFavouriteMp3() == true) {
+                    binding.ivFavourite.setImageResource(R.drawable.ic_favourite)
+                } else {
+                    binding.ivFavourite.setImageResource(R.drawable.ic_not_favourite)
+                }
+                val intent = Intent(ACTION_FAVOURITE)
+                intent.putExtra(ACTION_FAVOURITE, mp3Position)
+                sendBroadcast(intent)
             } else {
-                binding.ivFavourite.setImageResource(R.drawable.ic_not_favourite)
+                Toast.makeText(this, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
             }
-            val intent = Intent(ACTION_FAVOURITE)
-            intent.putExtra(ACTION_FAVOURITE, mp3Position)
-            sendBroadcast(intent)
         }
         binding.ivPlaylist.setOnClickListener {
             if (binding.rvPlaylist.visibility == View.VISIBLE) {

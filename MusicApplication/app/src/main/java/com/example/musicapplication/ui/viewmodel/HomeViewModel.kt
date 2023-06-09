@@ -1,11 +1,7 @@
 package com.example.musicapplication.ui.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.network.ApiBuilder
@@ -22,12 +18,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getMp3Charts() {
         viewModelScope.launch(Dispatchers.IO) {
-            val listIdMp3Favourite = favouriteRepository?.getAllIdMp3Favourite()
+            val listIdMp3Favourite = favouriteRepository.getAllIdMp3Favourite()
             val response = ApiBuilder.mp3ApiService.getMp3Charts()
             if (response.isSuccessful) {
                 val listSong = response.body()?.data?.mp3Charts
                 listSong?.forEach { song ->
-                    if (listIdMp3Favourite?.contains(song.id) == true) {
+                    if (listIdMp3Favourite.contains(song.id)) {
                         song.isFavourite = true
                     }
                 }

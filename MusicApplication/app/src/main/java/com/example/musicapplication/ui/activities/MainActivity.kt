@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -28,33 +27,29 @@ class MainActivity : BaseActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var viewPagerAdapter: ViewPagerAdapter? = null
     private val homeViewModel by viewModels<HomeViewModel>()
-//    private val connectivityManager by lazy {
-//        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    }
-//    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-//        override fun onAvailable(network: Network) {
-//            super.onAvailable(network)
-//            Log.d("test123", "onAvailable: ")
-//        }
-//
-//        override fun onUnavailable() {
-//            super.onUnavailable()
-//            Log.d("test123", "onUnavailable: ")
-//        }
-//    }
+    private val connectivityManager by lazy {
+        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            homeViewModel.getMp3Charts()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-//        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
         initViews()
         initListeners()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        connectivityManager.unregisterNetworkCallback(networkCallback)
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
+
     private fun initViews() {
         val channel = NotificationChannel(
             Mp3Service.CHANNEL_ID, "Playing MP3", NotificationManager.IMPORTANCE_LOW

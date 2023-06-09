@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.CountDownTimer
 import android.os.Environment
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicapplication.model.Genre

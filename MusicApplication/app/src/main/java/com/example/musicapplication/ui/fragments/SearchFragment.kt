@@ -48,7 +48,7 @@ class SearchFragment : BaseFragment() {
 
     private fun initListeners() {
         itemSearchAdapter?.setItemOnClick {
-            if (isConnectInternet()) {
+            if (this.requireContext().isConnectInternet()) {
                 song = Song(
                     id = it.id,
                     name = it.name,
@@ -97,7 +97,7 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun search(key: String) {
-        if (isConnectInternet()) {
+        if (this.requireContext().isConnectInternet()) {
             binding.tvNoInternet.visibility = View.GONE
             searchViewModel.search(key)
         } else {

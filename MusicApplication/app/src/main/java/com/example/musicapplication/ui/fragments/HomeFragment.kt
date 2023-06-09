@@ -10,7 +10,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
-import com.example.musicapplication.ui.adapter.SongAdapter
 import com.example.musicapplication.databinding.FragmentHomeBinding
 import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.model.PlaylistType
@@ -18,6 +17,7 @@ import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
 import com.example.musicapplication.ui.activities.MainActivity
 import com.example.musicapplication.ui.activities.PlayActivity
+import com.example.musicapplication.ui.adapter.SongAdapter
 import com.example.musicapplication.ui.viewmodel.HomeViewModel
 import com.example.musicapplication.ui.viewmodel.PlayViewModel
 
@@ -51,7 +51,7 @@ class HomeFragment : BaseFragment() {
 
     private fun initListeners() {
         songAdapter.setOnClickItem {
-            if (isConnectInternet()) {
+            if (this.requireContext().isConnectInternet()) {
                 val intent = Intent(activity, PlayActivity::class.java)
                 val bundle = bundleOf().apply {
                     putBoolean(Mp3Service.IS_CURRENT_MP3, false)
@@ -72,7 +72,7 @@ class HomeFragment : BaseFragment() {
             }
         }
         songAdapter.setFavourite {
-            if (isConnectInternet()) {
+            if (this.requireContext().isConnectInternet()) {
                 playViewModel.changeFavourite(it, it.isFavourite)
             } else {
                 Toast.makeText(this.requireContext(), "Không có kết nối Internet", Toast.LENGTH_SHORT).show()

@@ -53,7 +53,7 @@ class FavouriteFragment : BaseFragment() {
             songFavouriteAdapter.setData(it)
         }
         songFavouriteAdapter.setFavourite {
-            if (isConnectInternet()) {
+            if (this.requireContext().isConnectInternet()) {
                 playViewModel.changeFavourite(it, it.isFavourite)
                 favouriteViewModel.getAllMp3Favourite()
                 it.id?.let { id -> homeViewModel.removeFavourite(id) }
@@ -62,7 +62,7 @@ class FavouriteFragment : BaseFragment() {
             }
         }
         songFavouriteAdapter.setOnClickItem {
-            if (isConnectInternet()) {
+            if (this.requireContext().isConnectInternet()) {
                 val intent = Intent(activity, PlayActivity::class.java)
                 val bundle = bundleOf().apply {
                     putBoolean(Mp3Service.IS_CURRENT_MP3, false)
@@ -85,7 +85,7 @@ class FavouriteFragment : BaseFragment() {
 
     private fun initViews() {
         binding.rv.adapter = songFavouriteAdapter
-        if (!isConnectInternet()) {
+        if (!this.requireContext().isConnectInternet()) {
             binding.rv.visibility = View.GONE
             binding.tvNoInternet.visibility = View.VISIBLE
         } else {

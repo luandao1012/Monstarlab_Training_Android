@@ -33,27 +33,10 @@ fun <T> Fragment.collectFlow(flow: Flow<T>, callback: (T) -> Unit) {
     }
 }
 
-fun AppCompatActivity.isConnectInternet(): Boolean {
+fun Context.isConnectInternet(): Boolean {
     var result = false
     val connectivityManager =
         this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkCapabilities =
-        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-    if (networkCapabilities != null) {
-        result = when {
-            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-    }
-    return result
-}
-
-fun Fragment.isConnectInternet(): Boolean {
-    var result = false
-    val connectivityManager =
-        this.requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkCapabilities =
         connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
     if (networkCapabilities != null) {
