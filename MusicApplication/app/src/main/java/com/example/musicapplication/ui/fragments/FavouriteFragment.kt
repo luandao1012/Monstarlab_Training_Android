@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.musicapplication.collectFlow
 import com.example.musicapplication.databinding.FragmentFavouriteBinding
+import com.example.musicapplication.isConnectInternet
 import com.example.musicapplication.model.PlaylistType
 import com.example.musicapplication.model.Song
 import com.example.musicapplication.services.Mp3Service
@@ -51,30 +53,44 @@ class FavouriteFragment : BaseFragment() {
             songFavouriteAdapter.setData(it)
         }
         songFavouriteAdapter.setFavourite {
-            playViewModel.changeFavourite(it, it.isFavourite)
-            favouriteViewModel.getAllMp3Favourite()
-            it.id?.let { id -> homeViewModel.removeFavourite(id) }
+            if (this.requireContext().isConnectInternet()) {
+                playViewModel.changeFavourite(it, it.isFavourite)
+                favouriteViewModel.getAllMp3Favourite()
+                it.id?.let { id -> homeViewModel.removeFavourite(id) }
+            } else {
+                Toast.makeText(this.requireContext(), "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+            }
         }
         songFavouriteAdapter.setOnClickItem {
-            val intent = Intent(activity, PlayActivity::class.java)
-            val bundle = bundleOf().apply {
-                putBoolean(Mp3Service.IS_CURRENT_MP3, false)
-                putInt(Mp3Service.MP3_POSITION, it)
-            }
-            intent.putExtras(bundle)
-            activity?.startActivity(intent)
-            playlistType = (activity as? MainActivity)?.mp3Service?.getPlaylistType()
-            if (playlistType != PlaylistType.FAVOURITE_PLAYLIST) {
-                (activity as? MainActivity)?.mp3Service?.apply {
-                    setPlaylistType(PlaylistType.FAVOURITE_PLAYLIST)
-                    favouriteViewModel.mp3FavouriteList.value.let { list -> setMp3List(list) }
+            if (this.requireContext().isConnectInternet()) {
+                val intent = Intent(activity, PlayActivity::class.java)
+                val bundle = bundleOf().apply {
+                    putBoolean(Mp3Service.IS_CURRENT_MP3, false)
+                    putInt(Mp3Service.MP3_POSITION, it)
                 }
+                intent.putExtras(bundle)
+                activity?.startActivity(intent)
+                playlistType = (activity as? MainActivity)?.mp3Service?.getPlaylistType()
+                if (playlistType != PlaylistType.FAVOURITE_PLAYLIST) {
+                    (activity as? MainActivity)?.mp3Service?.apply {
+                        setPlaylistType(PlaylistType.FAVOURITE_PLAYLIST)
+                        favouriteViewModel.mp3FavouriteList.value.let { list -> setMp3List(list) }
+                    }
+                }
+            } else {
+                Toast.makeText(this.requireContext(), "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun initViews() {
         binding.rv.adapter = songFavouriteAdapter
+        if (!this.requireContext().isConnectInternet()) {
+            binding.rv.visibility = View.GONE
+            binding.tvNoInternet.visibility = View.VISIBLE
+        } else {
+            binding.rv.visibility = View.VISIBLE
+        }
     }
 
     override fun onPlayNewMp3(song: Song) {
