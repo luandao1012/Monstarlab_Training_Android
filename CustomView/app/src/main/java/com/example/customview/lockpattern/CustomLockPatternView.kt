@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.os.CountDownTimer
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class CustomLockPatternView @JvmOverloads constructor(
         private const val LINE_COLOR = Color.LTGRAY
         private const val ERROR_COLOR = Color.RED
         private const val SUCCESS_COLOR = Color.GREEN
+        private const val PADDING_DOT = 30
     }
 
     private var touchedPointX = 0f
@@ -36,7 +38,6 @@ class CustomLockPatternView @JvmOverloads constructor(
         arrayOf("4", "5", "6"),
         arrayOf("7", "8", "9")
     )
-    private val rect by lazy { Rect() }
     private var dotList = arrayListOf<Dot>()
     private var selectedDotList = arrayListOf<Dot>()
     private var state = PatternState.INITIAL
@@ -126,19 +127,12 @@ class CustomLockPatternView @JvmOverloads constructor(
             (view as? ViewGroup)?.forEachIndexed { columnIndex, viewGroup ->
                 (viewGroup as? ViewGroup)?.forEach { dotView ->
                     if (dotView !is CustomDotView) return
-                    dotView.getLocalVisibleRect(rect)
-                    offsetDescendantRectToMyCoords(dotView, rect)
-
+                    val left = dotView.width / 2 * (columnIndex * 2 + 1) - CustomDotView.RADIUS - PADDING_DOT
+                    val top = dotView.height / 2 * (rowIndex * 2 + 1) + CustomDotView.RADIUS + PADDING_DOT
+                    val right = dotView.width / 2 * (columnIndex * 2 + 1) + CustomDotView.RADIUS + PADDING_DOT
+                    val bottom = dotView.height / 2 * (rowIndex * 2 + 1) - CustomDotView.RADIUS - PADDING_DOT
                     dotList.add(
-                        Dot(
-                            rowIndex,
-                            columnIndex,
-                            rect.left - 20,
-                            rect.right + 20,
-                            rect.top - 20,
-                            rect.bottom + 20,
-                            dotView.key
-                        )
+                        Dot(rowIndex, columnIndex, left, top, right, bottom, dotView.key)
                     )
                 }
             }
@@ -224,7 +218,7 @@ class CustomLockPatternView @JvmOverloads constructor(
     }
 
     private fun getDotByPoint(pointX: Float, pointY: Float) = dotList.firstOrNull {
-        (it.leftPoint <= pointX) and (it.rightPoint >= pointX) and (it.topPoint <= pointY) and (it.bottomPoint >= pointY)
+        (it.leftPoint <= pointX) and (it.rightPoint >= pointX) and (it.topPoint >= pointY) and (it.bottomPoint <= pointY)
     }
 
     private fun isDotSelected(dot: Dot) = selectedDotList.firstOrNull { it == dot } != null

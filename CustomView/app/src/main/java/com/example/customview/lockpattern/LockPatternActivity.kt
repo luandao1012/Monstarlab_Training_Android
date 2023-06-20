@@ -2,6 +2,7 @@ package com.example.customview.lockpattern
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.customview.databinding.ActivityLockPatternBinding
@@ -35,6 +36,14 @@ class LockPatternActivity : AppCompatActivity() {
         binding.lockPattern.setPasswordListener {
             if (password == null) {
                 sharedPreferences.edit().putString(PASSWORD, it).apply()
+                binding.lockPattern.updatePatternState(PatternState.SUCCESS)
+                object : CountDownTimer(1000, 2000) {
+                    override fun onTick(millisUntilFinished: Long) = Unit
+
+                    override fun onFinish() {
+                        recreate()
+                    }
+                }.start()
             } else {
                 if (password == it) {
                     Toast.makeText(this, "Mật khẩu đúng", Toast.LENGTH_SHORT).show()
