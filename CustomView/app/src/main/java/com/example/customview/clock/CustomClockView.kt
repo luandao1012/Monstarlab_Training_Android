@@ -1,5 +1,6 @@
-package com.example.customview
+package com.example.customview.clock
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,25 +9,24 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.os.postDelayed
+import com.example.customview.databinding.TimePickerDialogBinding
 import kotlinx.coroutines.Runnable
 import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.sin
 
 
-class CustomClock @JvmOverloads constructor(context: Context, att: AttributeSet? = null) :
-    View(context, att) {
+class CustomClockView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    View(context, attrs) {
     private val paint by lazy { Paint() }
     private val hours = intArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
     private var radius: Int = 0
     private val padding = 50
     private val calendar by lazy { Calendar.getInstance() }
-    private var onClickListener: ((time: Long) -> Unit)? = null
     private val handler = Handler(Looper.getMainLooper())
     private val rect = Rect()
     private val runnable = object : Runnable {
@@ -35,10 +35,6 @@ class CustomClock @JvmOverloads constructor(context: Context, att: AttributeSet?
             calendar.timeInMillis += 1000
             handler.postDelayed(this, 1000)
         }
-    }
-
-    fun onClickListener(callback: ((time: Long) -> Unit)? = null) {
-        onClickListener = callback
     }
 
     override fun onAttachedToWindow() {
@@ -123,7 +119,7 @@ class CustomClock @JvmOverloads constructor(context: Context, att: AttributeSet?
         canvas.drawCircle(width / 2f, width / 2f, 12f, paint)
         for (i in 0 until 60) {
             val angle = Math.PI / 30 * (i - 15)
-            var length = if (i % 5 == 0) 25 else 10
+            val length = if (i % 5 == 0) 25 else 10
             val startX = width / 2f + (radius - padding - length) * cos(angle).toFloat()
             val startY = width / 2f + (radius - padding - length) * sin(angle).toFloat()
             val stopX = width / 2f + (radius - padding) * cos(angle).toFloat()
@@ -135,13 +131,12 @@ class CustomClock @JvmOverloads constructor(context: Context, att: AttributeSet?
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         radius = measuredWidth.coerceAtMost(measuredHeight) / 2
-        setMeasuredDimension(widthMeasureSpec, widthMeasureSpec)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
-                onClickListener?.invoke(calendar.timeInMillis)
+                showDialog()
                 true
             }
 
@@ -149,8 +144,28 @@ class CustomClock @JvmOverloads constructor(context: Context, att: AttributeSet?
         }
     }
 
-    fun setTime(time: Long) {
-        calendar.timeInMillis = time
-        invalidate()
+    private fun showDialog() {
+        val binding = TimePickerDialogBinding.inflate(LayoutInflater.from(context))
+        val builder = AlertDialog.Builder(context)
+        builder.setView(binding.root)
+        binding.pickerHour.apply {
+            minValue = 0
+            maxValue = 23
+            value = calendar[Calendar.HOUR_OF_DAY]
+        }
+        binding.pickerMinute.apply {
+            minValue = 0
+            maxValue = 59
+            value = calendar[Calendar.MINUTE]
+        }
+        builder.setPositiveButton("Đồng ý") { _, _ ->
+            calendar.apply {
+                set(Calendar.HOUR_OF_DAY, binding.pickerHour.value)
+                set(Calendar.MINUTE, binding.pickerMinute.value)
+            }
+        }
+        builder.setNegativeButton("Hủy") { _, _ -> }
+        val dialog = builder.create()
+        dialog.show()
     }
 }
